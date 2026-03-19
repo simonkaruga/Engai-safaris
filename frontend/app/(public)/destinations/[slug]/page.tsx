@@ -28,6 +28,7 @@ const DESTINATION_SAFARIS: Record<string, string[]> = {
   "masai-mara":    ["3-day-masai-mara", "5-day-mara-amboseli", "3-day-mara-nakuru"],
   "amboseli":      ["5-day-mara-amboseli"],
   "lake-nakuru":   ["lake-nakuru-day-trip", "naivasha-nakuru-2-day", "3-day-mara-nakuru"],
+  "nairobi":       ["nairobi-national-park-half-day", "nairobi-park-sheldrick", "nairobi-full-day"],
 };
 
 export default async function DestinationPage({ params }: { params: { slug: string } }) {
@@ -267,6 +268,22 @@ export default async function DestinationPage({ params }: { params: { slug: stri
                   className="text-teal-DEFAULT font-semibold hover:underline"
                 >
                   View 2-Day Circuit →
+                </Link>
+              </div>
+            )}
+
+            {/* Nairobi — add-on callout on every multi-day safari destination */}
+            {["masai-mara", "amboseli", "lake-nakuru", "lake-naivasha", "hells-gate"].includes(dest.slug) && (
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm">
+                <p className="font-semibold text-gray-800 mb-2">✈️ Add a Nairobi Day</p>
+                <p className="text-gray-600 mb-3">
+                  Every tourist lands at JKIA. Add Nairobi NP + Sheldrick elephants to the start or end of any safari.
+                </p>
+                <Link
+                  href="/safaris/nairobi-full-day"
+                  className="text-teal-DEFAULT font-semibold hover:underline"
+                >
+                  View Nairobi Full Day →
                 </Link>
               </div>
             )}
