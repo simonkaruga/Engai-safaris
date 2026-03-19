@@ -44,6 +44,10 @@ export const getBlogPosts = (category?: string, page = 1) =>
 
 export const getBlogPost = (slug: string) => get<BlogPost>(`/blog/${slug}`, 86400);
 
+// Availability
+export const getSafariAvailability = (slug: string, month: string) =>
+  get<import("@/types/api").AvailabilityDay[]>(`/safaris/${slug}/availability?month=${month}`, 0);
+
 // Enquiry
 export const createEnquiry = (data: EnquiryCreate) => post<EnquiryOut>("/enquiries", data);
 

@@ -4,10 +4,10 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from app.config import settings
-from app.routers.public import safaris, destinations, guides, reviews, blog, enquiries, ai_planner, partner_lodges
+from app.routers.public import safaris, destinations, guides, reviews, blog, enquiries, ai_planner, partner_lodges, availability
 from app.routers.booking import payments
 from app.routers.agent import auth as agent_auth
-from app.routers.admin import auth as admin_auth, dashboard, enquiries as admin_enquiries
+from app.routers.admin import auth as admin_auth, dashboard, enquiries as admin_enquiries, availability as admin_availability
 
 limiter = Limiter(key_func=get_remote_address)
 
@@ -33,6 +33,8 @@ app.include_router(enquiries.router, prefix="/api")
 app.include_router(ai_planner.router, prefix="/api")
 app.include_router(partner_lodges.router, prefix="/api")
 
+app.include_router(availability.router, prefix="/api")
+
 # Booking
 app.include_router(payments.router, prefix="/api")
 
@@ -43,6 +45,7 @@ app.include_router(agent_auth.router, prefix="/api")
 app.include_router(admin_auth.router, prefix="/api")
 app.include_router(dashboard.router, prefix="/api")
 app.include_router(admin_enquiries.router, prefix="/api")
+app.include_router(admin_availability.router, prefix="/api")
 
 
 @app.get("/health")

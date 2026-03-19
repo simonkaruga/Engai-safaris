@@ -107,6 +107,13 @@ export interface Review {
   created_at: string;
 }
 
+export interface AvailabilityDay {
+  date: string;
+  status: "available" | "blocked" | "full";
+  spots_left: number | null;
+  note: string | null;
+}
+
 export interface BlogPost {
   id: string;
   slug: string;

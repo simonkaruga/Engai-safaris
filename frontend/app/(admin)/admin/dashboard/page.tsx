@@ -41,6 +41,7 @@ export default function AdminDashboardPage() {
   const QUICK_LINKS = [
     { label: "Enquiries Pipeline", href: "/admin/enquiries", icon: "📋" },
     { label: "Bookings", href: "/admin/bookings", icon: "📅" },
+    { label: "Availability", href: "/admin/availability", icon: "🗓️" },
     { label: "Safaris", href: "/admin/safaris", icon: "🦁" },
     { label: "Guides", href: "/admin/guides", icon: "👤" },
     { label: "Agents", href: "/admin/agents", icon: "🤝" },

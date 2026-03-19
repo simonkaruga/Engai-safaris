@@ -3,9 +3,9 @@ import { notFound } from "next/navigation";
 import ItineraryAccordion from "@/components/safari/ItineraryAccordion";
 import GroupPricingTable from "@/components/safari/GroupPricingTable";
 import BeachExtensionCard from "@/components/safari/BeachExtensionCard";
+import BookingSidebar from "@/components/safari/BookingSidebar";
 import SchemaOrg from "@/components/seo/SchemaOrg";
 import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
-import Link from "next/link";
 import type { Metadata } from "next";
 
 export const dynamicParams = true;
@@ -127,28 +127,14 @@ export default async function SafariDetailPage({ params }: { params: { slug: str
         <div className="space-y-6">
           <GroupPricingTable safari={safari} />
 
-          <Link
-            href={`/enquire?safari=${safari.slug}`}
-            className="block w-full bg-teal-DEFAULT hover:bg-teal-600 text-white text-center py-4 rounded-lg font-semibold text-lg transition-colors"
-          >
-            Book This Safari
-          </Link>
-
-          {safari.installments_ok && (
-            <div className="bg-gold-50 border border-gold-100 rounded-lg p-4 text-sm">
-              <p className="font-semibold text-gold-DEFAULT mb-1">💳 Lipa Polepole Available</p>
-              <p className="text-gray-600">Pay in 4 monthly M-Pesa instalments. No interest.</p>
-            </div>
-          )}
+          <BookingSidebar
+            safariSlug={safari.slug}
+            durationDays={safari.duration_days}
+            depositPct={safari.deposit_pct}
+            installmentsOk={safari.installments_ok}
+          />
 
           <BeachExtensionCard safari={safari} />
-
-          <div className="bg-gray-50 rounded-lg p-4 text-sm space-y-2">
-            <p className="font-semibold">Quick Facts</p>
-            <p>⏱ {safari.duration_days} day{safari.duration_days > 1 ? "s" : ""}</p>
-            <p>👥 Max {safari.group_size_max} per vehicle</p>
-            <p>💰 {safari.deposit_pct}% deposit to confirm</p>
-          </div>
         </div>
       </div>
     </>
