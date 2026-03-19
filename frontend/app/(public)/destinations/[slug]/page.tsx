@@ -24,9 +24,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 // Destinations that have directly bookable safaris — map slug → safari slugs to surface
 const DESTINATION_SAFARIS: Record<string, string[]> = {
   "hells-gate":    ["hells-gate-cycling-day", "naivasha-hells-gate-combo"],
-  "lake-naivasha": ["naivasha-day-trip", "naivasha-hells-gate-combo"],
-  "masai-mara":    ["3-day-masai-mara", "5-day-mara-amboseli"],
+  "lake-naivasha": ["naivasha-day-trip", "naivasha-hells-gate-combo", "naivasha-nakuru-2-day"],
+  "masai-mara":    ["3-day-masai-mara", "5-day-mara-amboseli", "3-day-mara-nakuru"],
   "amboseli":      ["5-day-mara-amboseli"],
+  "lake-nakuru":   ["lake-nakuru-day-trip", "naivasha-nakuru-2-day", "3-day-mara-nakuru"],
 };
 
 export default async function DestinationPage({ params }: { params: { slug: string } }) {
@@ -250,6 +251,38 @@ export default async function DestinationPage({ params }: { params: { slug: stri
                   className="text-teal-DEFAULT font-semibold hover:underline"
                 >
                   View Combo Package →
+                </Link>
+              </div>
+            )}
+
+            {/* Naivasha cross-sell to Nakuru */}
+            {dest.slug === "lake-naivasha" && (
+              <div className="bg-amber-50 border border-amber-100 rounded-xl p-4 text-sm">
+                <p className="font-semibold text-amber-700 mb-2">🦏 Add Lake Nakuru</p>
+                <p className="text-gray-600 mb-3">
+                  Nakuru is 45 minutes away. Both rhino species + 2 million flamingos — Kenya's best 2-day circuit.
+                </p>
+                <Link
+                  href="/safaris/naivasha-nakuru-2-day"
+                  className="text-teal-DEFAULT font-semibold hover:underline"
+                >
+                  View 2-Day Circuit →
+                </Link>
+              </div>
+            )}
+
+            {/* Nakuru cross-sell to Naivasha */}
+            {dest.slug === "lake-nakuru" && (
+              <div className="bg-teal-50 border border-teal-100 rounded-xl p-4 text-sm">
+                <p className="font-semibold text-teal-DEFAULT mb-2">🚤 Add Lake Naivasha</p>
+                <p className="text-gray-600 mb-3">
+                  Naivasha is 45 minutes away. Add a boat safari + Hell's Gate cycling for Kenya's best 2-day circuit.
+                </p>
+                <Link
+                  href="/safaris/naivasha-nakuru-2-day"
+                  className="text-teal-DEFAULT font-semibold hover:underline"
+                >
+                  View 2-Day Circuit →
                 </Link>
               </div>
             )}
