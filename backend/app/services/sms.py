@@ -24,6 +24,12 @@ TEMPLATES = {
         "Leave a review (2 min): {review_link}\n"
         "10% off your next trip as our thanks!"
     ),
+    "ai_confirm": (
+        "Hi {name}! Your safari enquiry is received (Ref: {ref}).\n"
+        "Our team will send your personalised quote within 4 hours.\n"
+        "Questions? WhatsApp: +254XXXXXXXXX\n"
+        "- Engai Safaris"
+    ),
 }
 
 
