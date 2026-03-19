@@ -20,6 +20,7 @@ SAFARIS = [
         "price_kes_solo": 23400, "price_kes_2pax": 19500, "price_kes_4pax": 15600, "price_kes_6pax": 13000,
         "wholesale_usd": 100,
         "is_featured": True,
+        "sort_order": 1,
         "highlights": ["Boat safari with hippos", "Crescent Island walking safari", "Hell's Gate cycling"],
         "inclusions": ["4x4 Land Cruiser", "Professional guide", "Boat hire", "Park fees", "Lunch"],
         "exclusions": ["Accommodation", "Personal items", "Tips"],
@@ -39,6 +40,7 @@ SAFARIS = [
         "price_kes_solo": 123500, "price_kes_2pax": 97500, "price_kes_4pax": 80600, "price_kes_6pax": 71500,
         "wholesale_usd": 580,
         "is_featured": True,
+        "sort_order": 2,
         "highlights": ["Big Five", "Maasai village visit", "Sunrise game drive", "Mara River crossing (seasonal)"],
         "inclusions": ["4x4 Land Cruiser", "Professional guide", "2 nights lodge", "All meals", "Park fees", "Airport transfers"],
         "exclusions": ["Flights", "Travel insurance", "Tips", "Personal items"],
@@ -66,6 +68,7 @@ SAFARIS = [
         "price_kes_solo": 214500, "price_kes_2pax": 175500, "price_kes_4pax": 143000, "price_kes_6pax": 127400,
         "wholesale_usd": 1050,
         "is_featured": True,
+        "sort_order": 3,
         "highlights": ["Big Five", "Kilimanjaro views", "Elephant herds", "Great Migration (seasonal)"],
         "inclusions": ["4x4 Land Cruiser", "Professional guide", "4 nights lodges", "All meals", "Park fees"],
         "exclusions": ["Flights", "Travel insurance", "Tips"],
@@ -84,16 +87,20 @@ async def seed():
     async with SessionLocal() as db:
         for s in SAFARIS:
             days = s.pop("days")
-            existing = await db.execute(select(Safari).where(Safari.slug == s["slug"]))
-            safari = existing.scalar_one_or_none()
-            if not safari:
+            result = await db.execute(select(Safari).where(Safari.slug == s["slug"]))
+            safari = result.scalar_one_or_none()
+            if safari:
+                for k, v in s.items():
+                    setattr(safari, k, v)
+                print(f"✅ Updated safari: {safari.slug}")
+            else:
                 safari = Safari(**s)
                 db.add(safari)
                 await db.flush()
                 for day in days:
                     db.add(ItineraryDay(safari_id=safari.id, **day))
+                print(f"✅ Created safari: {safari.slug}")
         await db.commit()
-        print(f"✅ Seeded {len(SAFARIS)} safaris with itinerary days")
 
 
 asyncio.run(seed())
