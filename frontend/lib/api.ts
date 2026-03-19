@@ -19,7 +19,7 @@ async function post<T>(path: string, body: unknown): Promise<T> {
 }
 
 // Safaris
-export const getSafaris = (params?: { category?: string }) =>
+export const getSafaris = (params?: { category?: string; destination_slug?: string }) =>
   get<SafariList[]>(`/safaris${params?.category ? `?category=${params.category}` : ""}`);
 
 export const getFeaturedSafaris = () => get<SafariList[]>("/safaris/featured");

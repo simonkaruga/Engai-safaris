@@ -15,6 +15,8 @@ export interface Destination {
   wildlife_list: string[] | null;
   latitude: number | null;
   longitude: number | null;
+  peak_fee_usd: number | null;
+  low_fee_usd: number | null;
   meta_title: string | null;
   meta_desc: string | null;
 }
