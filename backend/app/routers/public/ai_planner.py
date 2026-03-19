@@ -37,8 +37,11 @@ async def ai_chat(
 ):
     if len(body.conversation) > 20:
         raise HTTPException(status_code=400, detail="Conversation too long. Please start a new chat.")
-    response = await chat(body.conversation, db)
-    return {"response": response}
+    try:
+        response = await chat(body.conversation, db)
+        return {"response": response}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/submit-enquiry")

@@ -63,12 +63,16 @@ export default function SafariPlannerChat() {
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify({ conversation: updated, session_id: getSessionId() }),
       });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail ?? `Server error ${res.status}`);
+      }
       const data = await res.json();
       setMessages((prev) => [...prev, { role: "assistant", content: data.response }]);
-    } catch {
+    } catch (e: any) {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Sorry, I'm having a moment! Please try again or WhatsApp us directly." },
+        { role: "assistant", content: `Error: ${e.message ?? "Unknown error"}. Please try again or WhatsApp us.` },
       ]);
     } finally {
       setLoading(false);
