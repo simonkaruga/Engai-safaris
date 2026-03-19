@@ -37,7 +37,7 @@ export default async function HomePage() {
             Where the Sky<br />Meets the Wild
           </h1>
           <p className="text-xl md:text-2xl text-gray-200 mb-8 max-w-2xl mx-auto">
-            Watch a lion yawn 10 metres from your Land Cruiser at 6am as the Mara mist clears.
+            Elephant herds under Kilimanjaro at dawn. Lions in the Mara at 6am.
             Transparent pricing. Real guides. Instant booking.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
