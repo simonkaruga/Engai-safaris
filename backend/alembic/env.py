@@ -14,6 +14,7 @@ import app.models.review        # noqa
 import app.models.blog          # noqa
 import app.models.agent         # noqa
 import app.models.affiliate     # noqa
+import app.models.partner_lodge  # noqa
 
 config = context.config
 if config.config_file_name is not None:

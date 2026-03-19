@@ -2,6 +2,7 @@ import { getSafari, getSafaris } from "@/lib/api";
 import { notFound } from "next/navigation";
 import ItineraryAccordion from "@/components/safari/ItineraryAccordion";
 import GroupPricingTable from "@/components/safari/GroupPricingTable";
+import BeachExtensionCard from "@/components/safari/BeachExtensionCard";
 import SchemaOrg from "@/components/seo/SchemaOrg";
 import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
 import Link from "next/link";
@@ -137,6 +138,8 @@ export default async function SafariDetailPage({ params }: { params: { slug: str
               <p className="text-gray-600">Pay in 4 monthly M-Pesa instalments. No interest.</p>
             </div>
           )}
+
+          <BeachExtensionCard safari={safari} />
 
           <div className="bg-gray-50 rounded-lg p-4 text-sm space-y-2">
             <p className="font-semibold">Quick Facts</p>

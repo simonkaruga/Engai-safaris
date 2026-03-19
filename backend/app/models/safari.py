@@ -48,4 +48,10 @@ class Safari(Base):
     meta_title: Mapped[str | None] = mapped_column(String(300))
     meta_desc: Mapped[str | None] = mapped_column(String(500))
     sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    # Beach extension add-on
+    has_beach_extension: Mapped[bool] = mapped_column(Boolean, default=False)
+    beach_extension_days: Mapped[int | None] = mapped_column(Integer)
+    beach_extension_price_usd: Mapped[float | None] = mapped_column(Numeric(10, 2))
+    beach_extension_price_kes: Mapped[float | None] = mapped_column(Numeric(10, 2))
+    beach_extension_desc: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now())

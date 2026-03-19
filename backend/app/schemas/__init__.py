@@ -106,6 +106,11 @@ class SafariDetailOut(SafariListOut):
     meta_title: str | None
     meta_desc: str | None
     itinerary_days: list[ItineraryDayOut] = []
+    has_beach_extension: bool = False
+    beach_extension_days: int | None = None
+    beach_extension_price_usd: float | None = None
+    beach_extension_price_kes: float | None = None
+    beach_extension_desc: str | None = None
 
 
 # ── Enquiry ───────────────────────────────────────────────────────────────────

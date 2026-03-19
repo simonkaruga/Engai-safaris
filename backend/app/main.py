@@ -4,7 +4,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from app.config import settings
-from app.routers.public import safaris, destinations, guides, reviews, blog, enquiries, ai_planner
+from app.routers.public import safaris, destinations, guides, reviews, blog, enquiries, ai_planner, partner_lodges
 from app.routers.booking import payments
 from app.routers.agent import auth as agent_auth
 from app.routers.admin import auth as admin_auth, dashboard, enquiries as admin_enquiries
@@ -31,6 +31,7 @@ app.include_router(reviews.router, prefix="/api")
 app.include_router(blog.router, prefix="/api")
 app.include_router(enquiries.router, prefix="/api")
 app.include_router(ai_planner.router, prefix="/api")
+app.include_router(partner_lodges.router, prefix="/api")
 
 # Booking
 app.include_router(payments.router, prefix="/api")
