@@ -24,6 +24,8 @@ class Destination(Base):
     wildlife_list: Mapped[dict | None] = mapped_column(JSONB)
     latitude: Mapped[float | None] = mapped_column(Numeric(9, 6))
     longitude: Mapped[float | None] = mapped_column(Numeric(9, 6))
+    peak_fee_usd: Mapped[float | None] = mapped_column(Numeric(10, 2))
+    low_fee_usd: Mapped[float | None] = mapped_column(Numeric(10, 2))
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     meta_title: Mapped[str | None] = mapped_column(String(300))
     meta_desc: Mapped[str | None] = mapped_column(String(500))

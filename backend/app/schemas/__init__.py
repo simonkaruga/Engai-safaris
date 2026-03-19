@@ -23,6 +23,8 @@ class DestinationOut(BaseModel):
     wildlife_list: Any
     latitude: float | None
     longitude: float | None
+    peak_fee_usd: float | None
+    low_fee_usd: float | None
     meta_title: str | None
     meta_desc: str | None
 
