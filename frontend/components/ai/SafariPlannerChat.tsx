@@ -58,7 +58,7 @@ export default function SafariPlannerChat() {
     setLoading(true);
 
     try {
-      const res  = await fetch("/api/ai-planner/chat", {
+      const res  = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/ai-planner/chat`, {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify({ conversation: updated, session_id: getSessionId() }),
@@ -78,7 +78,7 @@ export default function SafariPlannerChat() {
   async function submitEnquiry() {
     if (!name || !email || loading) return;
     setLoading(true);
-    await fetch("/api/ai-planner/submit-enquiry", {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/ai-planner/submit-enquiry`, {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
       body:    JSON.stringify({ conversation: messages, customer_name: name, customer_email: email, customer_phone: phone }),
