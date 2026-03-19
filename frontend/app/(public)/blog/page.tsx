@@ -1,4 +1,6 @@
 import { getBlogPosts } from "@/lib/api";
+
+export const dynamic = "force-dynamic";
 import Link from "next/link";
 import type { Metadata } from "next";
 

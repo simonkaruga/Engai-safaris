@@ -6,8 +6,10 @@ import SafariCard from "@/components/safari/SafariCard";
 import Link from "next/link";
 import type { Metadata } from "next";
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
-  const destinations = await getDestinations();
+  const destinations = await getDestinations().catch(() => []);
   return destinations.map((d) => ({ slug: d.slug }));
 }
 

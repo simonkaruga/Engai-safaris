@@ -1,4 +1,6 @@
 import { getDestinations } from "@/lib/api";
+
+export const dynamic = "force-dynamic";
 import DestinationCard from "@/components/destination/DestinationCard";
 import type { Metadata } from "next";
 

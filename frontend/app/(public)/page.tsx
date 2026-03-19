@@ -3,6 +3,8 @@ import SafariCard from "@/components/safari/SafariCard";
 import SchemaOrg from "@/components/seo/SchemaOrg";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const [safaris, reviews] = await Promise.all([getFeaturedSafaris(), getReviews(true)]);
 

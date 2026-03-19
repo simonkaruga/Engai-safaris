@@ -1,4 +1,6 @@
 import { getSafaris } from "@/lib/api";
+
+export const dynamic = "force-dynamic";
 import SafariCard from "@/components/safari/SafariCard";
 import type { Metadata } from "next";
 

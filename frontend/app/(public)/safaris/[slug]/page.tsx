@@ -8,8 +8,10 @@ import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
 import Link from "next/link";
 import type { Metadata } from "next";
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
-  const safaris = await getSafaris();
+  const safaris = await getSafaris().catch(() => []);
   return safaris.map((s) => ({ slug: s.slug }));
 }
 

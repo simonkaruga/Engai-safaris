@@ -1,4 +1,6 @@
 import { getGuides } from "@/lib/api";
+
+export const dynamic = "force-dynamic";
 import GuideCard from "@/components/safari/GuideCard";
 import type { Metadata } from "next";
 

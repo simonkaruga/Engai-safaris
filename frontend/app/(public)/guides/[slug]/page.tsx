@@ -4,8 +4,10 @@ import SchemaOrg from "@/components/seo/SchemaOrg";
 import type { Metadata } from "next";
 import Image from "next/image";
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
-  const guides = await getGuides();
+  const guides = await getGuides().catch(() => []);
   return guides.map((g) => ({ slug: g.slug }));
 }
 
