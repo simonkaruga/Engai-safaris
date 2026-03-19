@@ -27,7 +27,7 @@ export const getFeaturedSafaris = () => get<SafariList[]>("/safaris/featured");
 export const getSafari = (slug: string) => get<SafariDetail>(`/safaris/${slug}`);
 
 // Destinations
-export const getDestinations = () => get<Destination[]>("/destinations");
+export const getDestinations = () => get<Destination[]>("/destinations", 300);
 export const getDestination = (slug: string) => get<Destination>(`/destinations/${slug}`);
 
 // Guides
