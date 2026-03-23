@@ -29,6 +29,7 @@ class SafariUpdate(BaseModel):
     deposit_pct: int | None = None
     installments_ok: bool | None = None
     cover_image: str | None = None
+    gallery: list[str] | None = None
     video_url: str | None = None
     highlights: Any = None
     inclusions: Any = None

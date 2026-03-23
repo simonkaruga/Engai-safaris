@@ -68,6 +68,7 @@ export default function AdminSafarisPage() {
                 <th className="px-5 py-3 text-left">Order</th>
                 <th className="px-5 py-3 text-center">Featured</th>
                 <th className="px-5 py-3 text-center">Active</th>
+                <th className="px-5 py-3 text-left">Photos</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -106,6 +107,18 @@ export default function AdminSafarisPage() {
                       }`}
                       title={s.is_active ? "Deactivate" : "Activate"}
                     />
+                  </td>
+                  <td className="px-5 py-3">
+                    <Link
+                      href={`/admin/safaris/${s.id}/photos`}
+                      className={`text-xs font-semibold px-2.5 py-1 rounded-lg border transition-colors ${
+                        s.cover_image
+                          ? "text-green-700 border-green-200 bg-green-50 hover:bg-green-100"
+                          : "text-amber-700 border-amber-200 bg-amber-50 hover:bg-amber-100"
+                      }`}
+                    >
+                      {s.cover_image ? "Edit" : "⚠ Add Photos"}
+                    </Link>
                   </td>
                 </tr>
               ))}
