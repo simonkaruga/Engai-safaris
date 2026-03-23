@@ -308,6 +308,43 @@ async def send_photo_album_ready(to: str, name: str, memories_url: str) -> None:
     })
 
 
+async def send_balance_payment_email(
+    to: str,
+    name: str,
+    reference: str,
+    safari_name: str,
+    travel_date: str,
+    balance_kes: int,
+    payment_url: str,
+) -> None:
+    """Admin triggered — balance payment link"""
+    resend.Emails.send({
+        "from": FROM, "to": to,
+        "subject": f"Balance payment for your {safari_name} — {reference} | Engai Safaris",
+        "html": f"""
+        <div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;color:#1a1a1a">
+        <h2 style="color:#0D7A5F">Hi {name},</h2>
+        <p>Your safari is confirmed and your travel date is approaching!</p>
+        <p>This is a reminder to settle the balance for:</p>
+        <table style="width:100%;border-collapse:collapse;margin:16px 0">
+        <tr><td style="padding:8px 0;color:#666">Safari:</td><td style="padding:8px 0;font-weight:bold">{safari_name}</td></tr>
+        <tr><td style="padding:8px 0;color:#666">Travel date:</td><td style="padding:8px 0;font-weight:bold">{travel_date}</td></tr>
+        <tr><td style="padding:8px 0;color:#666">Balance due:</td><td style="padding:8px 0;font-weight:bold;font-size:18px;color:#0D7A5F">KES {balance_kes:,}</td></tr>
+        <tr><td style="padding:8px 0;color:#666">Reference:</td><td style="padding:8px 0;font-weight:bold">{reference}</td></tr>
+        </table>
+        <p style="text-align:center;margin:28px 0">
+        <a href="{payment_url}" style="background:#0D7A5F;color:white;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">
+        Pay Balance Now &#x2192;
+        </a>
+        </p>
+        <p style="font-size:13px;color:#888">This link expires in 48 hours. If you have any questions, WhatsApp us:
+        <a href="https://wa.me/{_WA.replace('+','')}" style="color:#0D7A5F">{_WA}</a></p>
+        <p style="margin-top:32px;color:#666">— The Engai Safaris Team</p>
+        </div>
+        """,
+    })
+
+
 async def send_return_offer(to: str, name: str, reference: str) -> None:
     """T+30 days — come back offer"""
     resend.Emails.send({

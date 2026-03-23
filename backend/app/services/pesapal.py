@@ -44,6 +44,29 @@ class PesapalService:
         r.raise_for_status()
         return r.json()
 
+    async def submit_balance_order(self, booking, token: str) -> dict:
+        async with httpx.AsyncClient() as c:
+            r = await c.post(
+                f"{self.base}/api/Transactions/SubmitOrderRequest",
+                headers={"Authorization": f"Bearer {token}"},
+                json={
+                    "id": f"{booking.id}-balance",
+                    "currency": "KES",
+                    "amount": float(booking.balance_kes),
+                    "description": f"Balance — {booking.reference}",
+                    "callback_url": f"{settings.FRONTEND_URL}/booking/confirmation?ref={booking.reference}&type=balance",
+                    "notification_id": settings.PESAPAL_IPN_ID,
+                    "billing_address": {
+                        "email_address": booking.customer_email,
+                        "phone_number": booking.customer_phone,
+                        "first_name": booking.customer_name.split()[0],
+                    },
+                },
+                timeout=15,
+            )
+        r.raise_for_status()
+        return r.json()
+
     async def get_transaction_status(self, order_tracking_id: str, token: str) -> dict:
         async with httpx.AsyncClient() as c:
             r = await c.get(

@@ -7,6 +7,8 @@ from app.database import get_db
 from app.models.booking import Booking
 from app.models.safari import Safari
 from app.services.auth import require_admin
+from app.services.pesapal import pesapal
+from app.services.email import send_balance_payment_email, send_review_request, send_photo_album_ready
 from app.config import settings
 
 logger = logging.getLogger(__name__)
@@ -48,6 +50,112 @@ async def update_booking(booking_id: str, data: dict, db: AsyncSession = Depends
             setattr(booking, k, v)
     await db.commit()
     return booking
+
+
+@router.post("/{booking_id}/send-balance")
+async def send_balance_request(
+    booking_id: str,
+    db: AsyncSession = Depends(get_db),
+    _=Depends(require_admin),
+):
+    """Create a Pesapal payment link for the remaining balance and email it to the customer."""
+    result = await db.execute(
+        select(Booking, Safari)
+        .join(Safari, Booking.safari_id == Safari.id)
+        .where(Booking.id == booking_id)
+    )
+    row = result.first()
+    if not row:
+        raise HTTPException(404, "Booking not found")
+    booking, safari = row
+
+    if float(booking.balance_kes) <= 0:
+        raise HTTPException(400, "No balance outstanding on this booking")
+
+    try:
+        token = await pesapal.get_token()
+        order = await pesapal.submit_balance_order(booking, token)
+        payment_url = order.get("redirect_url", "")
+    except Exception as exc:
+        logger.exception("Pesapal balance order failed for %s", booking.reference)
+        raise HTTPException(502, f"Payment gateway error: {exc}") from exc
+
+    try:
+        await send_balance_payment_email(
+            to=booking.customer_email,
+            name=booking.customer_name.split()[0],
+            reference=booking.reference,
+            safari_name=safari.name,
+            travel_date=str(booking.travel_date),
+            balance_kes=int(booking.balance_kes),
+            payment_url=payment_url,
+        )
+    except Exception:
+        logger.exception("Failed to send balance email for %s", booking.reference)
+
+    return {
+        "booking_reference": booking.reference,
+        "balance_kes": int(booking.balance_kes),
+        "payment_url": payment_url,
+        "email_sent_to": booking.customer_email,
+    }
+
+
+@router.post("/{booking_id}/complete")
+async def mark_trip_complete(
+    booking_id: str,
+    data: dict = {},
+    db: AsyncSession = Depends(get_db),
+    _=Depends(require_admin),
+):
+    """Mark a trip as completed, send review request, and optionally send album link."""
+    result = await db.execute(
+        select(Booking, Safari)
+        .join(Safari, Booking.safari_id == Safari.id)
+        .where(Booking.id == booking_id)
+    )
+    row = result.first()
+    if not row:
+        raise HTTPException(404, "Booking not found")
+    booking, safari = row
+
+    # Update status + optional memories URL
+    booking.status = "completed"
+    memories_url = data.get("memories_url") if data else None
+    if memories_url:
+        booking.memories_url = memories_url
+    await db.commit()
+
+    first_name = booking.customer_name.split()[0] if booking.customer_name else "there"
+    review_link = f"{settings.FRONTEND_URL}/reviews?safari={safari.slug}&ref={booking.reference}"
+
+    emails_sent = []
+    try:
+        await send_review_request(
+            to=booking.customer_email,
+            name=first_name,
+            review_link=review_link,
+        )
+        emails_sent.append("review_request")
+    except Exception:
+        logger.exception("Failed to send review request for %s", booking.reference)
+
+    if memories_url:
+        try:
+            await send_photo_album_ready(
+                to=booking.customer_email,
+                name=first_name,
+                memories_url=memories_url,
+            )
+            emails_sent.append("photo_album_ready")
+        except Exception:
+            logger.exception("Failed to send album email for %s", booking.reference)
+
+    return {
+        "booking_reference": booking.reference,
+        "status": "completed",
+        "emails_sent": emails_sent,
+    }
 
 
 @router.post("/{booking_id}/recover")
