@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font-family: Georgia, serif; color: #1a1a1a; margin: 0; padding: 0; }
+  .header { background: #0d6e6e; color: white; padding: 40px; }
+  .header h1 { margin: 0; font-size: 28px; letter-spacing: 2px; }
+  .header p { margin: 4px 0 0; font-size: 13px; opacity: 0.85; }
+  .tagline { color: #c9a84c; font-style: italic; font-size: 15px; margin-top: 8px; }
+  .section { padding: 30px 40px; }
+  .booking-box { background: #f8f5f0; border-left: 4px solid #c9a84c; padding: 20px; margin-bottom: 30px; }
+  .booking-box table { width: 100%; border-collapse: collapse; }
+  .booking-box td { padding: 6px 12px; font-size: 13px; }
+  .booking-box td:first-child { font-weight: bold; color: #555; width: 160px; }
+  h2 { color: #0d6e6e; font-size: 18px; border-bottom: 2px solid #c9a84c; padding-bottom: 6px; }
+  .day { margin-bottom: 24px; }
+  .day-header { background: #0d6e6e; color: white; padding: 10px 16px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+  .day-body { padding: 14px 16px; border: 1px solid #e0d8cc; border-top: none; font-size: 13px; line-height: 1.7; }
+  .day-meta { display: flex; gap: 20px; margin-top: 10px; font-size: 12px; color: #666; }
+  .pill { background: #f0ebe0; padding: 3px 10px; border-radius: 12px; }
+  .inclusions { columns: 2; font-size: 13px; }
+  .inclusions li { margin-bottom: 4px; }
+  .footer { background: #1a1a1a; color: #aaa; padding: 20px 40px; font-size: 11px; text-align: center; }
+  .footer strong { color: #c9a84c; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🦁 ENGAI SAFARIS</h1>
+  <p>Where the Sky Meets the Wild</p>
+  <div class="tagline">{{ safari.name }}</div>
+</div>
+
+<div class="section">
+  <div class="booking-box">
+    <table>
+      <tr><td>Booking Ref</td><td><strong>{{ booking.reference }}</strong></td></tr>
+      <tr><td>Guest</td><td>{{ booking.customer_name }}</td></tr>
+      <tr><td>Travel Date</td><td>{{ booking.travel_date }}</td></tr>
+      <tr><td>Guests</td><td>{{ booking.pax }} person(s)</td></tr>
+      <tr><td>Duration</td><td>{{ safari.duration_days }} days</td></tr>
+      <tr><td>Total (KES)</td><td><strong>KES {{ "{:,.0f}".format(booking.total_kes) }}</strong></td></tr>
+      <tr><td>Deposit Paid</td><td>KES {{ "{:,.0f}".format(booking.deposit_kes) }}</td></tr>
+      <tr><td>Balance Due</td><td>KES {{ "{:,.0f}".format(booking.balance_kes) }}</td></tr>
+    </table>
+  </div>
+
+  <h2>Your Itinerary</h2>
+  {% for day in days %}
+  <div class="day">
+    <div class="day-header">Day {{ day.day_number }} — {{ day.title }}</div>
+    <div class="day-body">
+      <p>{{ day.description }}</p>
+      {% if day.accommodation %}
+      <div class="day-meta">
+        <span class="pill">🏕 {{ day.accommodation }}</span>
+        {% if day.meals %}
+        <span class="pill">🍽 {{ day.meals | join(", ") }}</span>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+
+  {% if safari.inclusions %}
+  <h2>What's Included</h2>
+  <ul class="inclusions">
+    {% for item in safari.inclusions %}<li>✓ {{ item }}</li>{% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if safari.exclusions %}
+  <h2>Not Included</h2>
+  <ul class="inclusions">
+    {% for item in safari.exclusions %}<li>✗ {{ item }}</li>{% endfor %}
+  </ul>
+  {% endif %}
+</div>
+
+<div class="footer">
+  <strong>Engai Safaris</strong> · hello@engaisafaris.com · +254 XXX XXX XXX · engaisafaris.com<br>
+  En-KAI · Supreme Sky God of the Maasai · Giver of all Life
+</div>
+
+</body>
+</html>

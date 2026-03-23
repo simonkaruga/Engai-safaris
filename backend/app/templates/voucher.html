@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font-family: Georgia, serif; color: #1a1a1a; margin: 0; padding: 0; }
+  .header { background: #0d6e6e; color: white; padding: 40px; text-align: center; }
+  .header h1 { margin: 0; font-size: 32px; letter-spacing: 3px; }
+  .header p { margin: 6px 0 0; font-size: 14px; opacity: 0.85; }
+  .voucher { margin: 40px; border: 3px solid #c9a84c; border-radius: 8px; padding: 40px; text-align: center; }
+  .voucher h2 { color: #0d6e6e; font-size: 22px; margin-bottom: 6px; }
+  .ref { font-size: 36px; font-weight: bold; color: #c9a84c; letter-spacing: 4px; margin: 20px 0; }
+  .details { margin: 30px auto; max-width: 400px; text-align: left; }
+  .details table { width: 100%; border-collapse: collapse; }
+  .details td { padding: 10px 12px; font-size: 14px; border-bottom: 1px solid #f0ebe0; }
+  .details td:first-child { font-weight: bold; color: #555; width: 140px; }
+  .stamp { margin-top: 30px; color: #0d6e6e; font-size: 13px; font-style: italic; }
+  .footer { background: #1a1a1a; color: #aaa; padding: 20px 40px; font-size: 11px; text-align: center; margin-top: 40px; }
+  .footer strong { color: #c9a84c; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🦁 ENGAI SAFARIS</h1>
+  <p>Where the Sky Meets the Wild</p>
+</div>
+
+<div class="voucher">
+  <h2>Safari Booking Voucher</h2>
+  <p>Please present this voucher to your guide on departure day</p>
+
+  <div class="ref">{{ booking.reference }}</div>
+
+  <div class="details">
+    <table>
+      <tr><td>Guest Name</td><td>{{ booking.customer_name }}</td></tr>
+      <tr><td>Safari</td><td>{{ safari.name }}</td></tr>
+      <tr><td>Travel Date</td><td>{{ booking.travel_date }}</td></tr>
+      <tr><td>Guests</td><td>{{ booking.pax }} person(s)</td></tr>
+      <tr><td>Duration</td><td>{{ safari.duration_days }} days</td></tr>
+      <tr><td>Status</td><td><strong style="color:#0d6e6e">CONFIRMED ✓</strong></td></tr>
+      <tr><td>Total Paid</td><td>KES {{ "{:,.0f}".format(booking.deposit_kes) }} (deposit)</td></tr>
+      <tr><td>Balance Due</td><td>KES {{ "{:,.0f}".format(booking.balance_kes) }} (on arrival)</td></tr>
+    </table>
+  </div>
+
+  <div class="stamp">
+    Issued by Engai Safaris · engaisafaris.com · hello@engaisafaris.com
+  </div>
+</div>
+
+<div class="footer">
+  <strong>Engai Safaris</strong> · hello@engaisafaris.com · +254 XXX XXX XXX · engaisafaris.com<br>
+  En-KAI · Supreme Sky God of the Maasai · Giver of all Life
+</div>
+
+</body>
+</html>

@@ -3,8 +3,10 @@ from app.config import settings
 from app.models.safari import Safari
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from typing import AsyncIterator
 
-_client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
+_client       = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
+_async_client = anthropic.AsyncAnthropic(api_key=settings.ANTHROPIC_API_KEY)
 
 SYSTEM_PROMPT = """You are Engai — the AI safari planner for Engai Safaris Kenya.
 You are warm, knowledgeable, and deeply passionate about Kenya's wildlife.
@@ -18,7 +20,7 @@ YOUR PERSONALITY:
 
 YOUR JOB:
 1. Ask the tourist 2–3 questions to understand their needs (dates, group size, budget, interests)
-2. Recommend the BEST matching package from the catalogue below
+2. Recommend the BEST matching package from the catalogue below — always use the exact package name
 3. Always mention: price range, duration, best season match
 4. After your second response, end with:
    "Would you like me to send this recommendation to the Engai team? They will reply with a personalised quote within 4 hours."
@@ -44,30 +46,68 @@ HONESTY RULES:
 - Never invent packages not in the catalogue below
 - Never discuss competitors by name
 
-AVAILABLE PACKAGES:
+AVAILABLE PACKAGES (use exact names when recommending):
 {safari_catalogue}"""
 
 
-async def get_safari_catalogue(db: AsyncSession) -> str:
-    result = await db.execute(
-        select(Safari).where(Safari.is_active == True)
-    )
+async def get_safari_catalogue(db: AsyncSession) -> tuple[str, dict[str, str]]:
+    """Returns (formatted catalogue string, slug_map {name_lower: slug})."""
+    result = await db.execute(select(Safari).where(Safari.is_active == True))
     safaris = result.scalars().all()
-    lines = []
+    lines: list[str] = []
+    slug_map: dict[str, str] = {}
     for s in safaris:
         price = f"${s.price_usd_2pax:.0f}" if s.price_usd_2pax else "POA"
         lines.append(
             f"- **{s.name}** ({s.duration_days} days, from {price}/pp): {s.tagline}"
         )
-    return "\n".join(lines)
+        slug_map[s.name.lower()] = s.slug
+        slug_map[s.slug.replace("-", " ")] = s.slug
+    return "\n".join(lines), slug_map
+
+
+def find_safari_slugs(text: str, slug_map: dict[str, str]) -> list[str]:
+    """Return up to 3 safari slugs mentioned in the AI response."""
+    found: set[str] = set()
+    text_lower = text.lower()
+    for key, slug in slug_map.items():
+        if key in text_lower:
+            found.add(slug)
+        if len(found) >= 3:
+            break
+    return list(found)
+
+
+async def stream_chat(conversation: list[dict], db: AsyncSession) -> AsyncIterator[str]:
+    """Yield text chunks from Claude as they arrive, then yield a sentinel with safari slugs."""
+    catalogue, slug_map = await get_safari_catalogue(db)
+    system = SYSTEM_PROMPT.format(safari_catalogue=catalogue)
+
+    full_text = ""
+    async with _async_client.messages.stream(
+        model="claude-sonnet-4-6",
+        max_tokens=700,
+        system=system,
+        messages=conversation,
+    ) as stream:
+        async for chunk in stream.text_stream:
+            full_text += chunk
+            yield chunk
+
+    # Signal completion with matched safari slugs
+    slugs = find_safari_slugs(full_text, slug_map)
+    # Yield a JSON-tagged sentinel line the router will intercept
+    import json
+    yield "\x00" + json.dumps({"safari_slugs": slugs})
 
 
 async def chat(conversation: list[dict], db: AsyncSession) -> str:
-    catalogue = await get_safari_catalogue(db)
+    """Non-streaming fallback — returns full response string."""
+    catalogue, _ = await get_safari_catalogue(db)
     system = SYSTEM_PROMPT.format(safari_catalogue=catalogue)
     response = _client.messages.create(
-        model="claude-sonnet-4-5",
-        max_tokens=600,
+        model="claude-sonnet-4-6",
+        max_tokens=700,
         system=system,
         messages=conversation,
     )
@@ -82,8 +122,8 @@ async def get_safari_recommendation(conversation: list, safaris_catalogue: list)
     )
     system = SYSTEM_PROMPT.format(safari_catalogue=catalogue_str)
     response = _client.messages.create(
-        model="claude-sonnet-4-5",
-        max_tokens=600,
+        model="claude-sonnet-4-6",
+        max_tokens=700,
         system=system,
         messages=conversation,
     )

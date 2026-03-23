@@ -1,13 +1,22 @@
-from jinja2 import Environment, FileSystemLoader
+import logging
+from jinja2 import Environment, FileSystemLoader, TemplateError
 from weasyprint import HTML
 import os
 
+logger = logging.getLogger(__name__)
 _env = Environment(loader=FileSystemLoader(os.path.join(os.path.dirname(__file__), "../templates")))
 
 
 def _render(template_name: str, context: dict) -> bytes:
-    html = _env.get_template(template_name).render(**context)
-    return HTML(string=html).write_pdf()
+    try:
+        html = _env.get_template(template_name).render(**context)
+        return HTML(string=html).write_pdf()
+    except TemplateError as exc:
+        logger.exception("Template error rendering %s", template_name)
+        raise RuntimeError(f"PDF template error: {exc}") from exc
+    except Exception as exc:
+        logger.exception("PDF generation failed for %s", template_name)
+        raise RuntimeError("PDF generation failed") from exc
 
 
 def generate_itinerary_pdf(booking: dict, safari: dict, days: list) -> bytes:

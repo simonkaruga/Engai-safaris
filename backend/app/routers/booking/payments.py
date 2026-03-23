@@ -1,11 +1,18 @@
+import logging
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.database import get_db
 from app.models.booking import Booking
 from app.models.payment import Payment
+from app.models.safari import Safari
 from app.schemas import PaymentInitiate
 from app.services.pesapal import pesapal
+from app.services.email import send_booking_confirmation
+from app.services import sms as sms_svc
+from app.config import settings
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/payments", tags=["payments"])
 
@@ -47,7 +54,32 @@ async def pesapal_ipn(payload: dict, db: AsyncSession = Depends(get_db)):
             booking = booking_result.scalar_one_or_none()
             if booking:
                 booking.status = "confirmed"
-        await db.commit()
+                await db.commit()
+                # Fire email + SMS confirmations
+                try:
+                    await send_booking_confirmation(
+                        to=booking.customer_email,
+                        name=booking.customer_name,
+                        reference=booking.reference,
+                        itinerary_pdf_url=f"{settings.FRONTEND_URL}/bookings/{booking.reference}/itinerary",
+                    )
+                except Exception:
+                    logger.exception("Failed to send booking confirmation email for %s", booking.reference)
+                try:
+                    await sms_svc.send_sms(
+                        phone=booking.customer_phone,
+                        template="confirmation",
+                        ref=booking.reference,
+                        safari="Your safari",
+                        date=str(booking.travel_date),
+                        pax=booking.pax,
+                        deposit=int(booking.deposit_kes),
+                        balance=int(booking.balance_kes),
+                    )
+                except Exception:
+                    logger.exception("Failed to send booking confirmation SMS for %s", booking.reference)
+        else:
+            await db.commit()
     return {"status": "ok"}
 
 

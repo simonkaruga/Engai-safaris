@@ -1,9 +1,17 @@
-import type { Destination, Guide, SafariList, SafariDetail, Review, BlogPost, EnquiryCreate, EnquiryOut } from "@/types/api";
+import type { Destination, Guide, SafariList, SafariDetail, Review, ReviewCreate, BlogPost, EnquiryCreate, EnquiryOut } from "@/types/api";
 
-const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const BASE = process.env.NEXT_PUBLIC_API_URL ?? (
+  process.env.NODE_ENV === "production"
+    ? (() => { throw new Error("NEXT_PUBLIC_API_URL is not set") })()
+    : "http://localhost:8000"
+);
 
-async function get<T>(path: string, revalidate = 3600): Promise<T> {
-  const res = await fetch(`${BASE}/api${path}`, { next: { revalidate } });
+async function get<T>(path: string, revalidate: number | "no-store" = 3600): Promise<T> {
+  const opts: RequestInit =
+    revalidate === "no-store"
+      ? { cache: "no-store" }
+      : { next: { revalidate } };
+  const res = await fetch(`${BASE}/api${path}`, opts);
   if (!res.ok) throw new Error(`API error ${res.status}: ${path}`);
   return res.json();
 }
@@ -38,11 +46,27 @@ export const getGuide = (slug: string) => get<Guide>(`/guides/${slug}`);
 export const getReviews = (featured = false) =>
   get<Review[]>(`/reviews${featured ? "?featured=1" : ""}`);
 
+export const submitReview = (data: ReviewCreate) => post<Review>("/reviews", data);
+
 // Blog
 export const getBlogPosts = (category?: string, page = 1) =>
-  get<BlogPost[]>(`/blog?page=${page}${category ? `&category=${category}` : ""}`);
+  get<BlogPost[]>(`/blog?page=${page}${category ? `&category=${category}` : ""}`, "no-store");
 
-export const getBlogPost = (slug: string) => get<BlogPost>(`/blog/${slug}`, 86400);
+export const getBlogPost = (slug: string) => get<BlogPost>(`/blog/${slug}`, "no-store");
+
+// Bookings
+export const previewPrice = (safari_slug: string, travel_date: string, pax: number) =>
+  post<{
+    safari_name: string; duration_days: number; pax: number; season: string;
+    multiplier: number; base_usd_pp: number; total_usd: number; total_kes: number;
+    deposit_kes: number; balance_kes: number; deposit_pct: number; installments_ok: boolean;
+  }>("/bookings/preview", { safari_slug, travel_date, pax });
+
+export const createBooking = (data: {
+  safari_slug: string; travel_date: string; pax: number;
+  customer_name: string; customer_email: string; customer_phone: string;
+  customer_country?: string; celebration?: string; special_requests?: string; promo_code?: string;
+}) => post<{ reference: string; redirect_url: string; order_tracking_id: string; deposit_kes: number; total_kes: number; }>("/bookings", data);
 
 // Availability
 export const getSafariAvailability = (slug: string, month: string) =>
@@ -54,3 +78,7 @@ export const createEnquiry = (data: EnquiryCreate) => post<EnquiryOut>("/enquiri
 // AI Planner
 export const askAIPlanner = (conversation: Array<{ role: string; content: string }>) =>
   post<{ reply: string }>("/ai-planner", { conversation });
+
+// Currency — server-side cached rates (12h TTL)
+export const getExchangeRates = () =>
+  get<{ base: string; currencies: string[]; rates: Record<string, number> }>("/currency/rates", 0);

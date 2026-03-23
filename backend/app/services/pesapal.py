@@ -31,7 +31,7 @@ class PesapalService:
                     "currency": "KES",
                     "amount": float(booking.deposit_kes),
                     "description": f"Deposit — {booking.reference}",
-                    "callback_url": f"{settings.FRONTEND_URL}/enquire/confirmation?ref={booking.reference}",
+                    "callback_url": f"{settings.FRONTEND_URL}/booking/confirmation?ref={booking.reference}",
                     "notification_id": settings.PESAPAL_IPN_ID,
                     "billing_address": {
                         "email_address": booking.customer_email,

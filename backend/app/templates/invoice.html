@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font-family: Arial, sans-serif; color: #1a1a1a; margin: 0; padding: 0; }
+  .header { background: #0d6e6e; color: white; padding: 30px 40px; display: flex; justify-content: space-between; }
+  .header h1 { margin: 0; font-size: 24px; }
+  .header p { margin: 4px 0 0; font-size: 12px; opacity: 0.85; }
+  .invoice-meta { text-align: right; }
+  .invoice-meta h2 { margin: 0; font-size: 20px; color: #c9a84c; }
+  .section { padding: 30px 40px; }
+  .to-box { background: #f8f5f0; padding: 16px 20px; border-left: 4px solid #c9a84c; margin-bottom: 30px; font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: #0d6e6e; color: white; }
+  thead td { padding: 10px 12px; font-weight: bold; }
+  tbody tr:nth-child(even) { background: #f8f5f0; }
+  tbody td { padding: 10px 12px; border-bottom: 1px solid #e8e0d0; }
+  .total-row td { font-weight: bold; font-size: 15px; background: #1a1a1a; color: white; padding: 12px; }
+  .footer { background: #1a1a1a; color: #aaa; padding: 20px 40px; font-size: 11px; text-align: center; margin-top: 40px; }
+  .footer strong { color: #c9a84c; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>🦁 ENGAI SAFARIS</h1>
+    <p>Where the Sky Meets the Wild</p>
+    <p>hello@engaisafaris.com · engaisafaris.com</p>
+  </div>
+  <div class="invoice-meta">
+    <h2>AGENT INVOICE</h2>
+    <p>{{ agent.company_name }}</p>
+    <p>{{ agent.contact_name }}</p>
+    <p>{{ agent.email }}</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="to-box">
+    <strong>Bill To:</strong> {{ agent.company_name }} · {{ agent.contact_name }} · {{ agent.email }}
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <td>Reference</td>
+        <td>Travel Date</td>
+        <td>Guests</td>
+        <td style="text-align:right">Amount (KES)</td>
+      </tr>
+    </thead>
+    <tbody>
+      {% for b in bookings %}
+      <tr>
+        <td>{{ b.reference }}</td>
+        <td>{{ b.travel_date }}</td>
+        <td>{{ b.pax }}</td>
+        <td style="text-align:right">{{ "{:,.0f}".format(b.total_kes) }}</td>
+      </tr>
+      {% endfor %}
+      <tr class="total-row">
+        <td colspan="3">TOTAL</td>
+        <td style="text-align:right">KES {{ "{:,.0f}".format(total_kes) }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">
+  <strong>Engai Safaris</strong> · hello@engaisafaris.com · +254 XXX XXX XXX · engaisafaris.com<br>
+  En-KAI · Supreme Sky God of the Maasai · Giver of all Life
+</div>
+
+</body>
+</html>

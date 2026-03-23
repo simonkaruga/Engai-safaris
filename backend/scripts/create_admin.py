@@ -14,7 +14,12 @@ NAME = os.getenv("ADMIN_NAME", "Engai Admin")
 
 
 async def create():
+    from sqlalchemy import select
     async with SessionLocal() as db:
+        existing = (await db.execute(select(Admin).where(Admin.email == EMAIL))).scalar_one_or_none()
+        if existing:
+            print(f"ℹ️  Admin already exists: {EMAIL}")
+            return
         admin = Admin(email=EMAIL, password_hash=hash_password(PASSWORD), name=NAME)
         db.add(admin)
         await db.commit()

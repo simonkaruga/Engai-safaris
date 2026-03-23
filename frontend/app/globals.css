@@ -2,19 +2,112 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --font-inter: "Inter", system-ui, sans-serif;
-  --font-playfair: "Playfair Display", Georgia, serif;
-}
+/* Font variables are injected by next/font — no manual :root needed */
 
 @layer base {
   html {
     scroll-behavior: smooth;
   }
+
   body {
     @apply bg-white text-gray-900 antialiased;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
+
   h1, h2, h3 {
     @apply font-display;
+  }
+
+  ::selection {
+    background-color: rgba(27, 122, 96, 0.18);
+    color: inherit;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(27, 122, 96, 0.3);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(27, 122, 96, 0.65);
+  }
+}
+
+@layer utilities {
+  /* Text gradient */
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #F5A623 0%, #FBD97A 50%, #F5A623 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-teal {
+    background: linear-gradient(135deg, #1B7A60 0%, #22C896 50%, #1B7A60 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Acacia shimmer — for premium CTA buttons */
+  .bg-malachite-shimmer {
+    background: linear-gradient(110deg, #1B7A60 0%, #22C896 40%, #1B7A60 60%, #1B7A60 100%);
+    background-size: 250% 100%;
+  }
+  .bg-malachite-shimmer:hover {
+    background-position: 100% 0;
+    transition: background-position 0.6s ease;
+  }
+
+  /* Glass card */
+  .glass {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Eyebrow text */
+  .eyebrow {
+    @apply text-xs font-semibold tracking-[0.2em] uppercase;
+  }
+
+  /* Noise texture overlay */
+  .noise::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.4;
+  }
+
+  /* Smooth hover lift */
+  .hover-lift {
+    @apply transition-all duration-300;
+  }
+  .hover-lift:hover {
+    @apply -translate-y-1;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+  }
+
+  /* Section spacing */
+  .section {
+    @apply py-24 px-4 md:px-6;
   }
 }

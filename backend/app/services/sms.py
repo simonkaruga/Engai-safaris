@@ -3,6 +3,7 @@ from app.config import settings
 
 africastalking.initialize(settings.AT_USERNAME, settings.AT_API_KEY)
 _sms = africastalking.SMS
+_WA = settings.WHATSAPP_NUMBER
 
 TEMPLATES = {
     "confirmation": (
@@ -10,7 +11,7 @@ TEMPLATES = {
         "{safari} · {date} · {pax} guests\n"
         "Deposit paid: KES {deposit}\n"
         "Balance on arrival: KES {balance}\n"
-        "WhatsApp: +254XXXXXXXXX"
+        f"WhatsApp: {_WA}"
     ),
     "reminder": (
         "Your safari is TOMORROW!\n"
@@ -27,7 +28,7 @@ TEMPLATES = {
     "ai_confirm": (
         "Hi {name}! Your safari enquiry is received (Ref: {ref}).\n"
         "Our team will send your personalised quote within 4 hours.\n"
-        "Questions? WhatsApp: +254XXXXXXXXX\n"
+        f"Questions? WhatsApp: {_WA}\n"
         "- Engai Safaris"
     ),
 }

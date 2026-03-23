@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Privacy Policy | Engai Safaris Kenya",
   description: "How Engai Safaris collects, uses, and protects your personal data. Compliant with the Kenya Data Protection Act 2019 and EU GDPR.",
+  alternates: { canonical: "https://www.engaisafaris.com/privacy-policy" },
 };
 
 export default function PrivacyPolicyPage() {

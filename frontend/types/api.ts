@@ -86,11 +86,23 @@ export interface SafariDetail extends SafariList {
   meta_title: string | null;
   meta_desc: string | null;
   itinerary_days: ItineraryDay[];
+  difficulty: string | null;
   has_beach_extension: boolean;
   beach_extension_days: number | null;
   beach_extension_price_usd: number | null;
   beach_extension_price_kes: number | null;
   beach_extension_desc: string | null;
+}
+
+export interface ReviewCreate {
+  author_name: string;
+  author_country?: string;
+  rating: number;
+  guide_rating?: number;
+  value_rating?: number;
+  title?: string;
+  body: string;
+  trip_month?: string;
 }
 
 export interface Review {

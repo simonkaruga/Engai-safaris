@@ -7,9 +7,175 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from app.database import SessionLocal
 from app.models.safari import Safari
 from app.models.itinerary_day import ItineraryDay
-from sqlalchemy import select
+from sqlalchemy import select, delete
 
 SAFARIS = [
+    # ── Luxury ────────────────────────────────────────────────────────────────
+    {
+        "slug": "luxury-mara-private-camp",
+        "name": "Luxury Masai Mara — Private Camp",
+        "tagline": "Exclusive tented camp, private game drives, champagne sundowners",
+        "category": "luxury",
+        "duration_days": 4,
+        "price_usd_solo": 3200, "price_usd_2pax": 2600, "price_usd_4pax": 2200, "price_usd_6pax": 1950,
+        "price_kes_solo": 416000, "price_kes_2pax": 338000, "price_kes_4pax": 286000, "price_kes_6pax": 253500,
+        "wholesale_usd": 1900,
+        "is_featured": True,
+        "sort_order": 10,
+        "highlights": ["Private tented camp", "Exclusive game drives", "Bush breakfast", "Champagne sundowners", "Maasai warrior experience"],
+        "inclusions": ["Private 4x4 Land Cruiser", "Expert guide", "3 nights luxury tented camp", "All meals & drinks", "Park fees", "Helicopter transfer option"],
+        "exclusions": ["Flights to Nairobi", "Travel insurance", "Tips"],
+        "days": [
+            {"day_number": 1, "title": "Nairobi → Private Mara Camp",
+             "description": "Fly or drive to the Mara. Private camp check-in. Afternoon game drive in exclusive conservancy. Champagne sundowner on the plains.",
+             "meals": {"lunch": "En route", "dinner": "Camp"}, "accommodation": "Angama Mara / Mahali Mzuri", "accommodation_type": "luxury_camp",
+             "activities": ["Private game drive", "Sundowner"]},
+            {"day_number": 2, "title": "Full Day Private Conservancy",
+             "description": "6am game drive. Bush breakfast in the wild. Afternoon drive. Optional hot air balloon (extra cost). Maasai warrior experience at sunset.",
+             "meals": {"breakfast": "Bush", "lunch": "Camp", "dinner": "Camp"}, "accommodation": "Angama Mara / Mahali Mzuri", "accommodation_type": "luxury_camp",
+             "activities": ["Sunrise game drive", "Bush breakfast", "Hot air balloon (optional)", "Maasai experience"]},
+            {"day_number": 3, "title": "Mara River & Big Five",
+             "description": "Full day tracking the Big Five. Mara River crossing (seasonal). Private picnic lunch by the river.",
+             "meals": {"breakfast": "Camp", "lunch": "River picnic", "dinner": "Camp"}, "accommodation": "Angama Mara / Mahali Mzuri", "accommodation_type": "luxury_camp",
+             "activities": ["Big Five tracking", "River crossing", "Private picnic"]},
+            {"day_number": 4, "title": "Final Drive → Nairobi",
+             "description": "Sunrise game drive. Gourmet bush breakfast. Transfer to airstrip or drive back to Nairobi.",
+             "meals": {"breakfast": "Bush"}, "activities": ["Sunrise game drive", "Bush breakfast"]},
+        ],
+    },
+    # ── Adventures ────────────────────────────────────────────────────────────
+    {
+        "slug": "mount-kenya-trekking",
+        "name": "Mount Kenya Trekking — Sirimon Route",
+        "tagline": "Summit Point Lenana at 4,985m — Africa's second highest peak",
+        "category": "adventures",
+        "duration_days": 5,
+        "price_usd_solo": 1100, "price_usd_2pax": 850, "price_usd_4pax": 720, "price_usd_6pax": 650,
+        "price_kes_solo": 143000, "price_kes_2pax": 110500, "price_kes_4pax": 93600, "price_kes_6pax": 84500,
+        "wholesale_usd": 620,
+        "is_featured": True,
+        "sort_order": 11,
+        "highlights": ["Point Lenana summit (4,985m)", "Afro-alpine moorland", "Glaciers & tarns", "Wildlife on the mountain"],
+        "inclusions": ["Certified mountain guide", "Porters", "4 nights mountain huts/camping", "All meals on mountain", "Park fees", "Transfer from Nairobi"],
+        "exclusions": ["Personal gear", "Travel insurance", "Tips", "Sleeping bag (hire available)"],
+        "days": [
+            {"day_number": 1, "title": "Nairobi → Sirimon Gate (2,650m)",
+             "description": "Drive to Sirimon Gate. Register. Trek to Old Moses Camp (3,300m). 3–4 hours hiking through montane forest.",
+             "meals": {"lunch": "En route", "dinner": "Camp"}, "accommodation": "Old Moses Hut", "accommodation_type": "mountain_hut",
+             "activities": ["Forest trek"], "distance_km": 9, "drive_hours": 4},
+            {"day_number": 2, "title": "Old Moses → Shipton's Camp (4,200m)",
+             "description": "Trek through moorland and giant heather. Arrive Shipton's Camp. Acclimatisation walk to Hausberg Col.",
+             "meals": {"breakfast": "Camp", "lunch": "Trail", "dinner": "Camp"}, "accommodation": "Shipton's Camp", "accommodation_type": "mountain_hut",
+             "activities": ["Moorland trek", "Acclimatisation walk"], "distance_km": 14},
+            {"day_number": 3, "title": "Acclimatisation Day at Shipton's",
+             "description": "Rest and acclimatise. Optional hike to Kami Hut or Hausberg Tarn. Early dinner and sleep by 7pm for summit push.",
+             "meals": {"breakfast": "Camp", "lunch": "Camp", "dinner": "Camp"}, "accommodation": "Shipton's Camp", "accommodation_type": "mountain_hut",
+             "activities": ["Acclimatisation hike", "Rest"]},
+            {"day_number": 4, "title": "Summit Day — Point Lenana (4,985m)",
+             "description": "2am start. Summit Point Lenana at sunrise. Descend to Mintos Hut or Mackinder's Camp. Celebrate with hot drinks.",
+             "meals": {"breakfast": "Camp", "lunch": "Trail", "dinner": "Camp"}, "accommodation": "Mackinder's Camp", "accommodation_type": "mountain_hut",
+             "activities": ["Summit push", "Sunrise at 4,985m"]},
+            {"day_number": 5, "title": "Descent → Nairobi",
+             "description": "Descend via Chogoria or Sirimon. Exit park. Drive back to Nairobi. Arrive evening.",
+             "meals": {"breakfast": "Camp", "lunch": "En route"}, "activities": ["Descent"], "distance_km": 20, "drive_hours": 4},
+        ],
+    },
+    # ── Cultural ──────────────────────────────────────────────────────────────
+    {
+        "slug": "maasai-cultural-immersion",
+        "name": "Maasai Cultural Immersion — 3 Days",
+        "tagline": "Live with the Maasai. Learn the warrior way.",
+        "category": "cultural",
+        "duration_days": 3,
+        "price_usd_solo": 780, "price_usd_2pax": 620, "price_usd_4pax": 520, "price_usd_6pax": 460,
+        "price_kes_solo": 101400, "price_kes_2pax": 80600, "price_kes_4pax": 67600, "price_kes_6pax": 59800,
+        "wholesale_usd": 420,
+        "is_featured": True,
+        "sort_order": 12,
+        "highlights": ["Stay in authentic Maasai manyatta", "Warrior training & spear throwing", "Beadwork with Maasai women", "Cattle herding at dawn", "Traditional food & storytelling"],
+        "inclusions": ["Cultural guide", "2 nights manyatta stay", "All meals (traditional)", "Beadwork workshop", "Warrior experience", "Transfer from Nairobi"],
+        "exclusions": ["Personal items", "Tips", "Souvenirs"],
+        "days": [
+            {"day_number": 1, "title": "Nairobi → Maasai Manyatta",
+             "description": "Drive to Kajiado or Narok region. Meet your Maasai host family. Afternoon cattle herding. Evening storytelling around the fire.",
+             "meals": {"lunch": "En route", "dinner": "Traditional"}, "accommodation": "Maasai Manyatta", "accommodation_type": "cultural",
+             "activities": ["Cattle herding", "Storytelling", "Fire making"]},
+            {"day_number": 2, "title": "Full Cultural Immersion",
+             "description": "Dawn cattle walk. Warrior training — spear throwing, jumping. Beadwork with women's cooperative. Traditional lunch. Afternoon visit to local market.",
+             "meals": {"breakfast": "Traditional", "lunch": "Traditional", "dinner": "Traditional"}, "accommodation": "Maasai Manyatta", "accommodation_type": "cultural",
+             "activities": ["Warrior training", "Spear throwing", "Beadwork", "Market visit"]},
+            {"day_number": 3, "title": "Morning Rituals → Nairobi",
+             "description": "Sunrise blessing ceremony. Farewell breakfast. Drive back to Nairobi with your handmade beadwork.",
+             "meals": {"breakfast": "Traditional", "lunch": "En route"}, "activities": ["Blessing ceremony", "Farewell"]},
+        ],
+    },
+    # ── Photography ───────────────────────────────────────────────────────────
+    {
+        "slug": "photography-safari-mara",
+        "name": "Photography Safari — Masai Mara",
+        "tagline": "Golden hour game drives. Expert photography guide. Unforgettable shots.",
+        "category": "photography",
+        "duration_days": 5,
+        "price_usd_solo": 2100, "price_usd_2pax": 1750, "price_usd_4pax": 1500, "price_usd_6pax": 1350,
+        "price_kes_solo": 273000, "price_kes_2pax": 227500, "price_kes_4pax": 195000, "price_kes_6pax": 175500,
+        "wholesale_usd": 1300,
+        "is_featured": True,
+        "sort_order": 13,
+        "highlights": ["Expert wildlife photographer guide", "Pop-up roof for 360° shooting", "Golden hour & blue hour drives", "Small group max 4", "Post-processing workshop"],
+        "inclusions": ["Photography guide", "Modified pop-up roof 4x4", "4 nights lodge", "All meals", "Park fees", "Evening editing workshop"],
+        "exclusions": ["Camera equipment", "Flights", "Travel insurance", "Tips"],
+        "days": [
+            {"day_number": 1, "title": "Nairobi → Mara — Gear Check",
+             "description": "Drive to Mara. Afternoon gear check and briefing with your photography guide. Sunset drive — golden hour on the plains.",
+             "meals": {"lunch": "En route", "dinner": "Lodge"}, "accommodation": "Mara Intrepids", "accommodation_type": "lodge",
+             "activities": ["Gear briefing", "Sunset drive"]},
+            {"day_number": 2, "title": "Predator Focus Day",
+             "description": "5:30am drive — lions at dawn. Track cheetah. Afternoon drive for elephant and buffalo. Evening editing workshop.",
+             "meals": {"breakfast": "Lodge", "lunch": "Bush", "dinner": "Lodge"}, "accommodation": "Mara Intrepids", "accommodation_type": "lodge",
+             "activities": ["Dawn predator drive", "Cheetah tracking", "Editing workshop"]},
+            {"day_number": 3, "title": "Mara River — Migration Action",
+             "description": "Full day at Mara River (Jul–Oct: wildebeest crossings). Dramatic action shots. Blue hour drive back.",
+             "meals": {"breakfast": "Lodge", "lunch": "River picnic", "dinner": "Lodge"}, "accommodation": "Mara Intrepids", "accommodation_type": "lodge",
+             "activities": ["River crossing photography", "Blue hour drive"]},
+            {"day_number": 4, "title": "Birds & Landscape Day",
+             "description": "Lilac-breasted rollers, secretary birds, crowned cranes. Landscape compositions at Oloololo Escarpment.",
+             "meals": {"breakfast": "Lodge", "lunch": "Bush", "dinner": "Lodge"}, "accommodation": "Mara Intrepids", "accommodation_type": "lodge",
+             "activities": ["Bird photography", "Landscape compositions", "Editing workshop"]},
+            {"day_number": 5, "title": "Final Golden Hour → Nairobi",
+             "description": "Sunrise drive. Final shots. Drive back to Nairobi. Arrive 4pm.",
+             "meals": {"breakfast": "Lodge", "lunch": "En route"}, "activities": ["Sunrise drive"]},
+        ],
+    },
+    # ── Corporate ─────────────────────────────────────────────────────────────
+    {
+        "slug": "corporate-team-safari",
+        "name": "Corporate Team Safari — Mara & Naivasha",
+        "tagline": "Team building in the wild. Reward your team with Africa.",
+        "category": "corporate",
+        "duration_days": 3,
+        "price_usd_solo": 950, "price_usd_2pax": 780, "price_usd_4pax": 650, "price_usd_6pax": 580,
+        "price_kes_solo": 123500, "price_kes_2pax": 101400, "price_kes_4pax": 84500, "price_kes_6pax": 75400,
+        "wholesale_usd": 520,
+        "is_featured": False,
+        "sort_order": 14,
+        "highlights": ["Private game drives", "Bush boardroom session", "Team building activities", "Gala dinner under the stars", "Custom branding available"],
+        "inclusions": ["Dedicated corporate coordinator", "Private 4x4 fleet", "2 nights lodge", "All meals", "Park fees", "Team building facilitation", "Branded materials"],
+        "exclusions": ["Flights", "Travel insurance", "AV equipment", "Tips"],
+        "days": [
+            {"day_number": 1, "title": "Nairobi → Naivasha — Team Arrival",
+             "description": "Drive to Lake Naivasha. Team check-in. Boat safari — hippos and fish eagles. Evening team building: Maasai fire challenge. Gala dinner.",
+             "meals": {"lunch": "En route", "dinner": "Gala"}, "accommodation": "Enashipai Resort", "accommodation_type": "resort",
+             "activities": ["Boat safari", "Team building", "Gala dinner"]},
+            {"day_number": 2, "title": "Masai Mara — Bush Boardroom",
+             "description": "Drive to Mara. Morning game drive. Bush boardroom session (2 hours). Afternoon game drive. Sundowner with team awards ceremony.",
+             "meals": {"breakfast": "Resort", "lunch": "Bush", "dinner": "Lodge"}, "accommodation": "Mara Sopa Lodge", "accommodation_type": "lodge",
+             "activities": ["Game drive", "Bush boardroom", "Awards ceremony"]},
+            {"day_number": 3, "title": "Final Drive → Nairobi",
+             "description": "Sunrise game drive. Breakfast. Drive back to Nairobi. Arrive 3pm.",
+             "meals": {"breakfast": "Lodge", "lunch": "En route"}, "activities": ["Sunrise game drive"]},
+        ],
+    },
+    # ── Classic ───────────────────────────────────────────────────────────────
     {
         "slug": "naivasha-day-trip",
         "name": "Lake Naivasha Day Trip",
@@ -58,6 +224,183 @@ SAFARIS = [
              "meals": {"breakfast": "Lodge", "lunch": "En route"}, "activities": ["Sunrise game drive"], "distance_km": 270, "drive_hours": 5.5},
         ],
     },
+    # ── 6 Core Packages (masterplan) ──────────────────────────────────────────
+    {
+        "slug": "big-three-safari",
+        "name": "Big Three Safari — 6 Days",
+        "tagline": "Masai Mara · Lake Nakuru · Amboseli — Kenya's greatest trio",
+        "category": "classic",
+        "duration_days": 6,
+        "price_usd_solo": 1100, "price_usd_2pax": 850, "price_usd_4pax": 700, "price_usd_6pax": 580,
+        "price_kes_solo": 143000, "price_kes_2pax": 110500, "price_kes_4pax": 91000, "price_kes_6pax": 75400,
+        "wholesale_usd": 530,
+        "is_featured": True,
+        "sort_order": 20,
+        "highlights": ["Big Five", "Rhinos & flamingos at Nakuru", "Elephants under Kilimanjaro", "Great Migration Jul–Oct", "Boat safari at Naivasha"],
+        "inclusions": ["4x4 Land Cruiser", "Professional guide", "5 nights lodges", "All meals", "All park fees", "Airport transfers"],
+        "exclusions": ["International flights", "Travel insurance", "Tips", "Personal items"],
+        "days": [
+            {"day_number": 1, "title": "Nairobi → Masai Mara",
+             "description": "Depart Nairobi at 7:30am via the Great Rift Valley escarpment. Arrive Mara 1pm. Afternoon game drive — your first lions.",
+             "meals": {"lunch": "En route", "dinner": "Lodge"}, "accommodation": "Mara Sopa Lodge", "accommodation_type": "lodge",
+             "activities": ["Afternoon game drive", "Sundowner"], "distance_km": 270, "drive_hours": 5.5},
+            {"day_number": 2, "title": "Full Day Masai Mara",
+             "description": "6am sunrise game drive. Big Five tracking. Optional Maasai village visit KES 1,000pp. Afternoon drive to Mara River — possible crossing Jul–Oct.",
+             "meals": {"breakfast": "Lodge", "lunch": "Bush picnic", "dinner": "Lodge"}, "accommodation": "Mara Sopa Lodge", "accommodation_type": "lodge",
+             "activities": ["Sunrise game drive", "Bush picnic", "Maasai village", "Mara River"]},
+            {"day_number": 3, "title": "Mara → Lake Nakuru",
+             "description": "8:30am depart Mara via Narok. Arrive Lake Nakuru NP at 1:30pm. Afternoon drive — black and white rhinos, flamingos, Rothschild giraffe.",
+             "meals": {"breakfast": "Lodge", "lunch": "En route", "dinner": "Lodge"}, "accommodation": "Sarova Lion Hill Lodge", "accommodation_type": "lodge",
+             "activities": ["Rhino tracking", "Flamingo viewing", "Giraffe walk"], "distance_km": 250, "drive_hours": 5},
+            {"day_number": 4, "title": "Nakuru → Lake Naivasha",
+             "description": "6:30am drive to Lake Naivasha (45 min). Morning boat safari — hippos at 3 metres, fish eagles, pelicans. Crescent Island walking safari with giraffe and zebra. Afternoon drive to Amboseli.",
+             "meals": {"breakfast": "Lodge", "lunch": "Fisherman's Camp", "dinner": "Lodge"}, "accommodation": "Amboseli Serena", "accommodation_type": "lodge",
+             "activities": ["Boat safari", "Crescent Island walk", "Hippo watching"], "distance_km": 350, "drive_hours": 6},
+            {"day_number": 5, "title": "Full Day Amboseli",
+             "description": "Sunrise game drive — elephant herds with Kilimanjaro behind them. The iconic shot. Afternoon swamp drive — more elephants, buffalo herds, birds.",
+             "meals": {"breakfast": "Lodge", "lunch": "Lodge", "dinner": "Lodge"}, "accommodation": "Amboseli Serena", "accommodation_type": "lodge",
+             "activities": ["Sunrise Kilimanjaro drive", "Elephant herds", "Swamp drive"]},
+            {"day_number": 6, "title": "Amboseli → Nairobi",
+             "description": "6am final sunrise drive — last chance for elephants under Kilimanjaro. Drive back to Nairobi. Arrive 2pm. Drop at JKIA or hotel.",
+             "meals": {"breakfast": "Lodge", "lunch": "En route"}, "activities": ["Sunrise game drive"], "distance_km": 240, "drive_hours": 4},
+        ],
+    },
+    {
+        "slug": "naivasha-weekend",
+        "name": "Naivasha Weekend Escape — 2 Days",
+        "tagline": "Hell's Gate cycling · Crescent Island · Sunset boat safari",
+        "category": "classic",
+        "duration_days": 2,
+        "price_usd_solo": 130, "price_usd_2pax": 100, "price_usd_4pax": 85, "price_usd_6pax": 75,
+        "price_kes_solo": 16900, "price_kes_2pax": 13000, "price_kes_4pax": 11050, "price_kes_6pax": 9750,
+        "wholesale_usd": 70,
+        "is_featured": True,
+        "sort_order": 21,
+        "highlights": ["Hell's Gate cycling safari", "Crescent Island walking safari", "Sunset boat safari with hippos", "Hot springs at Ol Njorowa gorge", "Naivasha is our HOME — we know every hippo"],
+        "inclusions": ["4x4 Land Cruiser", "Professional guide", "1 night lodge", "All meals", "Boat hire", "Cycling", "Park fees"],
+        "exclusions": ["Personal items", "Tips", "Drinks at lodge"],
+        "days": [
+            {"day_number": 1, "title": "Nairobi → Hell's Gate → Sunset Boat",
+             "description": "Depart Nairobi 8am. Arrive Naivasha 9:30am. Hell's Gate cycling (2 hrs) — the only cycling safari park in Kenya. Walk Ol Njorowa gorge. Late lunch at Fisherman's Camp. Sunset boat safari — hippos surface 3 metres away, fish eagles call across the water.",
+             "meals": {"lunch": "Fisherman's Camp", "dinner": "Lodge"}, "accommodation": "Lake Naivasha Sopa Lodge", "accommodation_type": "lodge",
+             "activities": ["Hell's Gate cycling", "Gorge walk", "Sunset boat safari"], "distance_km": 90, "drive_hours": 1.5},
+            {"day_number": 2, "title": "Sunrise Boat → Crescent Island → Nairobi",
+             "description": "6:30am sunrise boat — the lake at dawn, Kilimanjaro visible on clear days. Crescent Island walking safari — giraffe, zebra, wildebeest with no fence and no vehicle. Drive back to Nairobi. Arrive 1pm.",
+             "meals": {"breakfast": "Lodge", "lunch": "En route"}, "activities": ["Sunrise boat safari", "Crescent Island walk"], "distance_km": 90, "drive_hours": 1.5},
+        ],
+    },
+    {
+        "slug": "mara-nakuru-4-day",
+        "name": "Masai Mara & Lake Nakuru — 4 Days",
+        "tagline": "Big cats in the Mara · Rhinos and flamingos at Nakuru",
+        "category": "classic",
+        "duration_days": 4,
+        "price_usd_solo": 720, "price_usd_2pax": 560, "price_usd_4pax": 460, "price_usd_6pax": 380,
+        "price_kes_solo": 93600, "price_kes_2pax": 72800, "price_kes_4pax": 59800, "price_kes_6pax": 49400,
+        "wholesale_usd": 350,
+        "is_featured": True,
+        "sort_order": 22,
+        "highlights": ["Big Five in Masai Mara", "Black & white rhinos at Nakuru", "Flamingo lake", "Rothschild giraffe", "Great Migration Jul–Oct"],
+        "inclusions": ["4x4 Land Cruiser", "Professional guide", "3 nights lodges", "All meals", "All park fees"],
+        "exclusions": ["Flights", "Travel insurance", "Tips"],
+        "days": [
+            {"day_number": 1, "title": "Nairobi → Masai Mara",
+             "description": "7am depart Nairobi. Drive the Great Rift Valley. Arrive 1pm. Check in. Afternoon game drive — first lion sighting.",
+             "meals": {"lunch": "En route", "dinner": "Lodge"}, "accommodation": "Mara Sopa Lodge", "accommodation_type": "lodge",
+             "activities": ["Afternoon game drive", "Sundowner"], "distance_km": 270, "drive_hours": 5.5},
+            {"day_number": 2, "title": "Full Day Masai Mara",
+             "description": "6am sunrise drive. Big Five tracking. Mara River (Jul–Oct: wildebeest crossing). Bush picnic lunch. Afternoon drive.",
+             "meals": {"breakfast": "Lodge", "lunch": "Bush picnic", "dinner": "Lodge"}, "accommodation": "Mara Sopa Lodge", "accommodation_type": "lodge",
+             "activities": ["Sunrise game drive", "Big Five tracking", "Mara River"]},
+            {"day_number": 3, "title": "Mara → Lake Nakuru",
+             "description": "8:30am depart. Arrive Nakuru 2pm. Afternoon drive — rhinos, flamingos, baboons, Rothschild giraffe. Sunset at the lake.",
+             "meals": {"breakfast": "Lodge", "lunch": "En route", "dinner": "Lodge"}, "accommodation": "Sarova Lion Hill Lodge", "accommodation_type": "lodge",
+             "activities": ["Rhino tracking", "Flamingo viewing"], "distance_km": 250, "drive_hours": 5},
+            {"day_number": 4, "title": "Nakuru → Nairobi",
+             "description": "6:30am morning drive — early rhinos in the golden light. Drive back to Nairobi. Arrive 11am.",
+             "meals": {"breakfast": "Lodge", "lunch": "En route"}, "activities": ["Morning game drive"], "distance_km": 175, "drive_hours": 2.5},
+        ],
+    },
+    {
+        "slug": "rift-valley-circuit",
+        "name": "Rift Valley Circuit — 5 Days",
+        "tagline": "Naivasha · Nakuru · Masai Mara — Starting from our home lake",
+        "category": "classic",
+        "duration_days": 5,
+        "price_usd_solo": 950, "price_usd_2pax": 740, "price_usd_4pax": 600, "price_usd_6pax": 480,
+        "price_kes_solo": 123500, "price_kes_2pax": 96200, "price_kes_4pax": 78000, "price_kes_6pax": 62400,
+        "wholesale_usd": 440,
+        "is_featured": True,
+        "sort_order": 23,
+        "highlights": ["Lake Naivasha — our home advantage", "Rhinos & flamingos at Nakuru", "Big Five in Masai Mara", "Only major circuit starting at Naivasha", "Hell's Gate + Crescent Island bonus"],
+        "inclusions": ["4x4 Land Cruiser", "Professional guide", "4 nights lodges", "All meals", "All park fees", "Boat safari at Naivasha"],
+        "exclusions": ["Flights", "Travel insurance", "Tips"],
+        "days": [
+            {"day_number": 1, "title": "Nairobi → Lake Naivasha",
+             "description": "Depart Nairobi 8am. 1.5 hrs to Lake Naivasha. Hell's Gate cycling. Crescent Island walking safari. Sunset boat safari — hippos at 3m, fish eagles. Our home lake. We know every hippo by name.",
+             "meals": {"lunch": "Fisherman's Camp", "dinner": "Lodge"}, "accommodation": "Lake Naivasha Sopa Lodge", "accommodation_type": "lodge",
+             "activities": ["Hell's Gate cycling", "Crescent Island walk", "Sunset boat safari"], "distance_km": 90, "drive_hours": 1.5},
+            {"day_number": 2, "title": "Naivasha → Lake Nakuru",
+             "description": "6:30am sunrise boat on Naivasha. Drive 45 min to Lake Nakuru NP. Full day — black & white rhinos, 1–2 million flamingos (seasonal), Rothschild giraffe, leopards in the trees.",
+             "meals": {"breakfast": "Lodge", "lunch": "En route", "dinner": "Lodge"}, "accommodation": "Sarova Lion Hill Lodge", "accommodation_type": "lodge",
+             "activities": ["Sunrise boat", "Rhino tracking", "Flamingo viewing"], "distance_km": 60, "drive_hours": 1.5},
+            {"day_number": 3, "title": "Nakuru → Masai Mara",
+             "description": "8:30am depart Nakuru via Narok. 5.5 hours through the Rift Valley. Arrive Mara 2pm. Afternoon first game drive — your first lion encounter.",
+             "meals": {"breakfast": "Lodge", "lunch": "En route", "dinner": "Lodge"}, "accommodation": "Mara Sopa Lodge", "accommodation_type": "lodge",
+             "activities": ["Afternoon game drive", "Sundowner"], "distance_km": 290, "drive_hours": 5.5},
+            {"day_number": 4, "title": "Full Day Masai Mara",
+             "description": "6am sunrise game drive. Big Five focus — lions, leopards, cheetah. Mara River (Jul–Oct: greatest wildlife spectacle on earth). Bush picnic lunch in the wild.",
+             "meals": {"breakfast": "Lodge", "lunch": "Bush picnic", "dinner": "Lodge"}, "accommodation": "Mara Sopa Lodge", "accommodation_type": "lodge",
+             "activities": ["Sunrise game drive", "Big Five tracking", "Mara River crossing"]},
+            {"day_number": 5, "title": "Masai Mara → Nairobi",
+             "description": "6am final sunrise game drive. Breakfast. Drive back to Nairobi. Arrive 3pm. Drop at JKIA or CBD.",
+             "meals": {"breakfast": "Lodge", "lunch": "En route"}, "activities": ["Final sunrise drive"], "distance_km": 270, "drive_hours": 5},
+        ],
+    },
+    {
+        "slug": "classic-kenya-7-day",
+        "name": "Classic Kenya — 7 Days",
+        "tagline": "The complete Kenya bucket list · Mara · Nakuru · Naivasha · Amboseli",
+        "category": "classic",
+        "duration_days": 7,
+        "price_usd_solo": 1500, "price_usd_2pax": 1150, "price_usd_4pax": 950, "price_usd_6pax": 780,
+        "price_kes_solo": 195000, "price_kes_2pax": 149500, "price_kes_4pax": 123500, "price_kes_6pax": 101400,
+        "wholesale_usd": 720,
+        "is_featured": True,
+        "sort_order": 24,
+        "highlights": ["The full Kenya experience", "Big Five guaranteed", "Elephants under Kilimanjaro", "Rhinos at Nakuru", "Hippos at Naivasha", "Great Migration possible Jul–Oct"],
+        "inclusions": ["4x4 Land Cruiser", "Professional guide", "6 nights lodges", "All meals", "All park fees", "Boat safari", "Airport transfers"],
+        "exclusions": ["International flights", "Travel insurance", "Tips"],
+        "days": [
+            {"day_number": 1, "title": "Nairobi → Masai Mara",
+             "description": "7:30am depart. Great Rift Valley views. Arrive Mara 1pm. Afternoon game drive. The greatest wildlife reserve on earth — your first hour.",
+             "meals": {"lunch": "En route", "dinner": "Lodge"}, "accommodation": "Mara Sopa Lodge", "accommodation_type": "lodge",
+             "activities": ["Afternoon game drive"], "distance_km": 270, "drive_hours": 5.5},
+            {"day_number": 2, "title": "Full Day Masai Mara — Big Cats",
+             "description": "6am sunrise drive. Pride of lions. Cheetah family. Leopard in a tree. Bush picnic lunch. Afternoon Mara River drive.",
+             "meals": {"breakfast": "Lodge", "lunch": "Bush picnic", "dinner": "Lodge"}, "accommodation": "Mara Sopa Lodge", "accommodation_type": "lodge",
+             "activities": ["Sunrise game drive", "Big cat tracking", "Bush picnic", "Mara River"]},
+            {"day_number": 3, "title": "Masai Mara — Big Five Day",
+             "description": "Full second day in Mara. Buffalo herds, rhino, elephant. Optional Maasai village. Afternoon hot air balloon safari (extra cost). Sundowner on the plains.",
+             "meals": {"breakfast": "Lodge", "lunch": "Bush picnic", "dinner": "Lodge"}, "accommodation": "Mara Sopa Lodge", "accommodation_type": "lodge",
+             "activities": ["Big Five tracking", "Maasai village", "Sundowner"]},
+            {"day_number": 4, "title": "Mara → Lake Nakuru",
+             "description": "8:30am depart. Arrive Nakuru 2pm. Afternoon drive — rhino! flamingos! Rothschild giraffe! Every big species in 3 hours.",
+             "meals": {"breakfast": "Lodge", "lunch": "En route", "dinner": "Lodge"}, "accommodation": "Sarova Lion Hill Lodge", "accommodation_type": "lodge",
+             "activities": ["Rhino tracking", "Flamingo viewing", "Giraffe"], "distance_km": 250, "drive_hours": 5},
+            {"day_number": 5, "title": "Nakuru → Lake Naivasha",
+             "description": "Morning game drive at Nakuru. 45 min drive to Naivasha. Boat safari — hippos, fish eagles, pelicans. Crescent Island walking safari. Afternoon rest by the lake.",
+             "meals": {"breakfast": "Lodge", "lunch": "Fisherman's Camp", "dinner": "Lodge"}, "accommodation": "Lake Naivasha Sopa Lodge", "accommodation_type": "lodge",
+             "activities": ["Morning game drive", "Boat safari", "Crescent Island walk"]},
+            {"day_number": 6, "title": "Naivasha → Amboseli",
+             "description": "7am depart Naivasha. Drive to Amboseli via Nairobi bypass (4 hrs). Arrive 11am. Rest. Afternoon sunset elephant drive — hundreds of elephants silhouetted against Kilimanjaro.",
+             "meals": {"breakfast": "Lodge", "lunch": "En route", "dinner": "Lodge"}, "accommodation": "Amboseli Serena", "accommodation_type": "lodge",
+             "activities": ["Elephant sunset drive", "Kilimanjaro views"], "distance_km": 280, "drive_hours": 4},
+            {"day_number": 7, "title": "Amboseli — Final Morning → Nairobi",
+             "description": "6am sunrise drive — the iconic elephants under Kilimanjaro at dawn. This is the photo you came for. Breakfast. Drive back to Nairobi. Arrive 2pm.",
+             "meals": {"breakfast": "Lodge", "lunch": "En route"}, "activities": ["Sunrise elephant drive", "Kilimanjaro at dawn"], "distance_km": 240, "drive_hours": 4},
+        ],
+    },
     {
         "slug": "5-day-mara-amboseli",
         "name": "5-Day Mara & Amboseli",
@@ -85,22 +428,37 @@ SAFARIS = [
 
 async def seed():
     async with SessionLocal() as db:
-        for s in SAFARIS:
-            days = s.pop("days")
-            result = await db.execute(select(Safari).where(Safari.slug == s["slug"]))
-            safari = result.scalar_one_or_none()
-            if safari:
-                for k, v in s.items():
-                    setattr(safari, k, v)
-                print(f"✅ Updated safari: {safari.slug}")
-            else:
-                safari = Safari(**s)
-                db.add(safari)
-                await db.flush()
-                for day in days:
-                    db.add(ItineraryDay(safari_id=safari.id, **day))
-                print(f"✅ Created safari: {safari.slug}")
+        ok = 0
+        for entry in SAFARIS:
+            # Work on a copy so the module-level list is never mutated
+            s = {k: v for k, v in entry.items() if k != "days"}
+            days = entry["days"]
+            try:
+                result = await db.execute(select(Safari).where(Safari.slug == s["slug"]))
+                safari = result.scalar_one_or_none()
+                if safari:
+                    for k, v in s.items():
+                        setattr(safari, k, v)
+                    # Delete and re-insert itinerary days so updates are reflected
+                    await db.execute(delete(ItineraryDay).where(ItineraryDay.safari_id == safari.id))
+                    await db.flush()
+                    for day in days:
+                        db.add(ItineraryDay(safari_id=safari.id, **day))
+                    print(f"✅ Updated: {safari.slug}")
+                else:
+                    safari = Safari(**s)
+                    db.add(safari)
+                    await db.flush()
+                    for day in days:
+                        db.add(ItineraryDay(safari_id=safari.id, **day))
+                    print(f"✅ Created: {safari.slug}")
+                ok += 1
+            except Exception as exc:
+                await db.rollback()
+                print(f"❌ Failed [{s.get('slug', '?')}]: {exc}")
+                continue
         await db.commit()
+        print(f"\nDone — {ok}/{len(SAFARIS)} safaris seeded.")
 
 
 asyncio.run(seed())

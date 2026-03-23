@@ -14,6 +14,15 @@ async def list_enquiries(db: AsyncSession = Depends(get_db), _=Depends(require_a
     return result.scalars().all()
 
 
+@router.get("/{enquiry_id}")
+async def get_enquiry(enquiry_id: str, db: AsyncSession = Depends(get_db), _=Depends(require_admin)):
+    result = await db.execute(select(Enquiry).where(Enquiry.id == enquiry_id))
+    enquiry = result.scalar_one_or_none()
+    if not enquiry:
+        raise HTTPException(status_code=404)
+    return enquiry
+
+
 @router.patch("/{enquiry_id}")
 async def update_enquiry(enquiry_id: str, data: dict, db: AsyncSession = Depends(get_db), _=Depends(require_admin)):
     result = await db.execute(select(Enquiry).where(Enquiry.id == enquiry_id))

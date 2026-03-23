@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
@@ -19,7 +19,7 @@ def verify_password(plain: str, hashed: str) -> bool:
 
 def create_token(subject: str, role: str) -> str:
     return jwt.encode(
-        {"sub": subject, "role": role, "exp": datetime.utcnow() + timedelta(hours=settings.JWT_EXPIRES_HOURS)},
+        {"sub": subject, "role": role, "exp": datetime.now(timezone.utc) + timedelta(hours=settings.JWT_EXPIRES_HOURS)},
         settings.JWT_SECRET,
         algorithm="HS256",
     )

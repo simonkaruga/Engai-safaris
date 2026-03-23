@@ -1,180 +1,190 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createEnquiry } from "@/lib/api";
-import { useRouter } from "next/navigation";
 
-const schema = z.object({
-  customer_name: z.string().min(2, "Name required"),
-  customer_email: z.string().email("Valid email required"),
-  customer_phone: z.string().optional(),
-  customer_country: z.string().optional(),
-  travel_date_from: z.string().optional(),
-  group_size: z.coerce.number().min(1).max(20).optional(),
-  budget_usd: z.string().optional(),
-  interests: z.array(z.string()).optional(),
-  special_requests: z.string().optional(),
-  celebration: z.string().optional(),
-});
-
-type FormData = z.infer<typeof schema>;
-
-const INTERESTS = ["Big Five", "Great Migration", "Photography", "Culture", "Adventure", "Honeymoon", "Family", "Birding"];
-const BUDGETS = ["Under $500", "$500–$1,000", "$1,000–$2,000", "$2,000–$5,000", "$5,000+"];
-const CELEBRATIONS = ["", "Honeymoon", "Anniversary", "Birthday", "Graduation", "Retirement"];
-
-export default function EnquirePage({ searchParams }: { searchParams: { safari?: string } }) {
+function EnquirePageInner() {
   const router = useRouter();
-  const [step, setStep] = useState(1);
-  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
-  const [submitting, setSubmitting] = useState(false);
+  const searchParams = useSearchParams();
+  const prefillDate = searchParams.get("date") ?? "";
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
-    resolver: zodResolver(schema),
+  const [form, setForm] = useState({
+    customer_name: "",
+    customer_email: "",
+    customer_phone: "",
+    travel_date_from: prefillDate,
+    group_size: "2",
+    message: "",
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  const toggleInterest = (i: string) =>
-    setSelectedInterests((prev) => prev.includes(i) ? prev.filter((x) => x !== i) : [...prev, i]);
+  const set = (k: string, v: string) => setForm((p) => ({ ...p, [k]: v }));
 
-  const onSubmit = async (data: FormData) => {
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.customer_name || !form.customer_email) return;
     setSubmitting(true);
+    setError("");
     try {
       const enquiry = await createEnquiry({
-        ...data,
-        interests: selectedInterests,
-        safari_id: searchParams.safari ? undefined : undefined,
+        customer_name: form.customer_name,
+        customer_email: form.customer_email,
+        customer_phone: form.customer_phone || undefined,
+        travel_date_from: form.travel_date_from || undefined,
+        group_size: form.group_size ? Number(form.group_size) : undefined,
+        special_requests: form.message || undefined,
         source: "website",
       });
       router.push(`/enquire/confirmation?ref=${enquiry.reference}`);
     } catch {
-      alert("Something went wrong. Please try again or WhatsApp us.");
+      setError("Something went wrong. Please try again or WhatsApp us.");
     } finally {
       setSubmitting(false);
     }
   };
 
+  const inp = "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-DEFAULT focus:border-transparent bg-white";
+
   return (
-    <div className="max-w-2xl mx-auto px-4 py-16">
-      <div className="text-center mb-10">
-        <h1 className="font-display text-4xl font-bold mb-3">Plan Your Safari</h1>
-        <p className="text-gray-600">Tell us about your dream trip. We'll respond within 24 hours with a personalised quote.</p>
-      </div>
+    <div className="min-h-screen bg-stone-50">
+      <div className="max-w-2xl mx-auto px-4 py-16">
 
-      {/* Step indicator */}
-      <div className="flex items-center justify-center gap-2 mb-10">
-        {[1, 2, 3].map((s) => (
-          <div key={s} className="flex items-center gap-2">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
-              step >= s ? "bg-teal-DEFAULT text-white" : "bg-gray-200 text-gray-500"
-            }`}>{s}</div>
-            {s < 3 && <div className={`w-12 h-0.5 ${step > s ? "bg-teal-DEFAULT" : "bg-gray-200"}`} />}
-          </div>
-        ))}
-      </div>
+        <div className="text-center mb-10">
+          <p className="text-teal-DEFAULT text-xs font-semibold tracking-widest uppercase mb-3">Have a question?</p>
+          <h1 className="font-display text-4xl font-bold text-gray-900 mb-3">Get in touch</h1>
+          <p className="text-gray-500 text-base">
+            Tell us what you're looking for. We reply within 4 hours.
+          </p>
+        </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {step === 1 && (
-          <div className="space-y-4">
-            <h2 className="font-semibold text-lg">Your Details</h2>
-            <div>
-              <label className="block text-sm font-medium mb-1">Full Name *</label>
-              <input {...register("customer_name")} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-DEFAULT" placeholder="Jane Smith" />
-              {errors.customer_name && <p className="text-maasai-DEFAULT text-xs mt-1">{errors.customer_name.message}</p>}
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Email *</label>
-              <input {...register("customer_email")} type="email" className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-DEFAULT" placeholder="jane@example.com" />
-              {errors.customer_email && <p className="text-maasai-DEFAULT text-xs mt-1">{errors.customer_email.message}</p>}
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Phone / WhatsApp</label>
-              <input {...register("customer_phone")} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-DEFAULT" placeholder="+1 555 000 0000" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Country</label>
-              <input {...register("customer_country")} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-DEFAULT" placeholder="United States" />
-            </div>
-            <button type="button" onClick={() => setStep(2)} className="w-full bg-teal-DEFAULT text-white py-3 rounded-lg font-semibold hover:bg-teal-600 transition-colors">
-              Next →
-            </button>
-          </div>
-        )}
-
-        {step === 2 && (
-          <div className="space-y-4">
-            <h2 className="font-semibold text-lg">Trip Details</h2>
-            <div>
-              <label className="block text-sm font-medium mb-1">Travel Date</label>
-              <input {...register("travel_date_from")} type="date" className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-DEFAULT" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Group Size</label>
-              <input {...register("group_size")} type="number" min={1} max={20} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-DEFAULT" placeholder="2" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Budget per person</label>
-              <select {...register("budget_usd")} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-DEFAULT">
-                <option value="">Select budget</option>
-                {BUDGETS.map((b) => <option key={b} value={b}>{b}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Interests (select all that apply)</label>
-              <div className="flex flex-wrap gap-2">
-                {INTERESTS.map((i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => toggleInterest(i)}
-                    className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
-                      selectedInterests.includes(i)
-                        ? "bg-teal-DEFAULT text-white border-teal-DEFAULT"
-                        : "border-gray-300 text-gray-600 hover:border-teal-DEFAULT"
-                    }`}
-                  >
-                    {i}
-                  </button>
-                ))}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-8">
+          <form onSubmit={submit} className="space-y-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  Name <span className="text-red-400">*</span>
+                </label>
+                <input
+                  value={form.customer_name}
+                  onChange={(e) => set("customer_name", e.target.value)}
+                  required
+                  placeholder="Jane Smith"
+                  className={inp}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  Email <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="email"
+                  value={form.customer_email}
+                  onChange={(e) => set("customer_email", e.target.value)}
+                  required
+                  placeholder="jane@example.com"
+                  className={inp}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  WhatsApp / Phone
+                </label>
+                <input
+                  value={form.customer_phone}
+                  onChange={(e) => set("customer_phone", e.target.value)}
+                  placeholder="+1 555 000 0000"
+                  className={inp}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  Travel Date
+                </label>
+                <input
+                  type="date"
+                  value={form.travel_date_from}
+                  onChange={(e) => set("travel_date_from", e.target.value)}
+                  className={inp}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  Group Size
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  max={20}
+                  value={form.group_size}
+                  onChange={(e) => set("group_size", e.target.value)}
+                  className={inp}
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  Message
+                </label>
+                <textarea
+                  value={form.message}
+                  onChange={(e) => set("message", e.target.value)}
+                  rows={4}
+                  placeholder="Which safari interests you? Any questions, special requests or occasions..."
+                  className={inp + " resize-none"}
+                />
               </div>
             </div>
-            <div className="flex gap-3">
-              <button type="button" onClick={() => setStep(1)} className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
-                ← Back
-              </button>
-              <button type="button" onClick={() => setStep(3)} className="flex-1 bg-teal-DEFAULT text-white py-3 rounded-lg font-semibold hover:bg-teal-600 transition-colors">
-                Next →
-              </button>
-            </div>
-          </div>
-        )}
 
-        {step === 3 && (
-          <div className="space-y-4">
-            <h2 className="font-semibold text-lg">Final Details</h2>
-            <div>
-              <label className="block text-sm font-medium mb-1">Special Occasion?</label>
-              <select {...register("celebration")} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-DEFAULT">
-                {CELEBRATIONS.map((c) => <option key={c} value={c}>{c || "None"}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Special Requests / Questions</label>
-              <textarea {...register("special_requests")} rows={4} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-DEFAULT" placeholder="Dietary requirements, accessibility needs, specific wildlife you want to see..." />
-            </div>
-            <div className="flex gap-3">
-              <button type="button" onClick={() => setStep(2)} className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
-                ← Back
-              </button>
-              <button type="submit" disabled={submitting} className="flex-1 bg-teal-DEFAULT text-white py-3 rounded-lg font-semibold hover:bg-teal-600 transition-colors disabled:opacity-60">
-                {submitting ? "Sending..." : "Send Enquiry →"}
-              </button>
-            </div>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+
+            <button
+              type="submit"
+              disabled={submitting || !form.customer_name || !form.customer_email}
+              className="w-full bg-teal-DEFAULT hover:bg-teal-600 text-white py-4 rounded-xl font-semibold transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+            >
+              {submitting ? "Sending..." : "Send Enquiry — we reply within 4 hours"}
+              {!submitting && (
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              )}
+            </button>
+          </form>
+
+          <div className="mt-6 pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
+            <span>Prefer instant booking?</span>
+            <a
+              href="/safaris"
+              className="font-semibold text-teal-DEFAULT hover:underline"
+            >
+              Browse & book a safari →
+            </a>
           </div>
-        )}
-      </form>
+        </div>
+
+        <div className="mt-6 text-center">
+          <a
+            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-[#25D366] transition-colors"
+          >
+            <svg className="w-5 h-5 text-[#25D366]" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            Or WhatsApp us directly
+          </a>
+        </div>
+      </div>
     </div>
+  );
+}
+
+export default function EnquirePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-2 border-teal-DEFAULT border-t-transparent rounded-full animate-spin" /></div>}>
+      <EnquirePageInner />
+    </Suspense>
   );
 }

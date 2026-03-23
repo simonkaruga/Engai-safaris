@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     AT_API_KEY: str
     WHATSAPP_TOKEN: str = ""
     WHATSAPP_PHONE_ID: str = ""
+    WHATSAPP_NUMBER: str = "+254000000000"
 
     ANTHROPIC_API_KEY: str
 
@@ -33,6 +34,12 @@ class Settings(BaseSettings):
     MEILISEARCH_KEY: str = "masterKey"
 
     AFFILIATE_COOKIE_DAYS: int = 30
+
+    # FX rate — update monthly via env var. Source: CBK / XE interbank mid.
+    USD_TO_KES: float = 130.0
+
+    # Resend audience ID for newsletter subscribers
+    RESEND_AUDIENCE_ID: str = ""
 
     @property
     def origins(self) -> list[str]:

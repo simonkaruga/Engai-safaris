@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Terms & Conditions | Engai Safaris Kenya",
   description: "Booking terms, cancellation policy, and conditions for Engai Safaris Kenya. Governed by the laws of the Republic of Kenya.",
+  alternates: { canonical: "https://www.engaisafaris.com/terms-conditions" },
 };
 
 export default function TermsPage() {

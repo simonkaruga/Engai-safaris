@@ -1,0 +1,13 @@
+{
+  "name": "engai-safaris",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --names \"api,web\" --prefix-colors \"cyan,green\" \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "cd backend && ./venv/bin/uvicorn app.main:app --reload --port 8000",
+    "dev:web": "cd frontend && npm run dev",
+    "install:all": "cd frontend && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

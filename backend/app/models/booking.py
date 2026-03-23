@@ -1,4 +1,5 @@
 import uuid
+from decimal import Decimal
 from sqlalchemy import String, Text, Integer, Numeric, Date, DateTime, Boolean, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID, JSONB
@@ -22,16 +23,17 @@ class Booking(Base):
     customer_country: Mapped[str | None] = mapped_column(String(100))
     dietary_req: Mapped[dict | None] = mapped_column(JSONB)
     celebration: Mapped[str | None] = mapped_column(String(100))
+    promo_code: Mapped[str | None] = mapped_column(String(50))
     travel_date: Mapped[str] = mapped_column(Date, nullable=False)
     pax: Mapped[int] = mapped_column(Integer, nullable=False)
     season: Mapped[str | None] = mapped_column(String(20))
-    base_price_usd: Mapped[float | None] = mapped_column(Numeric(10, 2))
-    season_multiplier: Mapped[float | None] = mapped_column(Numeric(4, 2))
-    total_usd: Mapped[float | None] = mapped_column(Numeric(10, 2))
-    total_kes: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
-    deposit_kes: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
-    balance_kes: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
-    addons_total_kes: Mapped[float] = mapped_column(Numeric(10, 2), default=0)
+    base_price_usd: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))
+    season_multiplier: Mapped[Decimal | None] = mapped_column(Numeric(4, 2))
+    total_usd: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))
+    total_kes: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
+    deposit_kes: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
+    balance_kes: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
+    addons_total_kes: Mapped[Decimal] = mapped_column(Numeric(10, 2), default=Decimal("0"))
     currency: Mapped[str] = mapped_column(String(3), default="KES")
     booking_type: Mapped[str] = mapped_column(String(10), default="b2c")
     installments: Mapped[bool] = mapped_column(Boolean, default=False)

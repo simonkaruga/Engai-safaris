@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const STATUS_COLORS: Record<string, string> = {
   new: "bg-blue-100 text-blue-700",
@@ -96,7 +97,7 @@ export default function AdminEnquiriesPage() {
                       {e.status}
                     </span>
                   </td>
-                  <td className="px-5 py-3">
+                  <td className="px-5 py-3 flex items-center gap-3">
                     <select
                       value={e.status}
                       onChange={(ev) => updateStatus(e.id, ev.target.value)}
@@ -104,6 +105,7 @@ export default function AdminEnquiriesPage() {
                     >
                       {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
                     </select>
+                    <Link href={`/admin/enquiries/${e.id}`} className="text-xs text-teal-DEFAULT hover:underline font-semibold whitespace-nowrap">View →</Link>
                   </td>
                 </tr>
               ))}
