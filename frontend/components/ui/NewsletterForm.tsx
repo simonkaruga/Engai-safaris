@@ -11,12 +11,12 @@ export default function NewsletterForm() {
     if (!email) return;
     setStatus("loading");
     try {
-      await fetch("/api/newsletter", {
+      const res = await fetch("/api/newsletter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-      setStatus("done");
+      setStatus(res.ok ? "done" : "error");
     } catch {
       setStatus("error");
     }

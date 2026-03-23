@@ -7,7 +7,8 @@ from app.models.safari import Safari
 from app.models.agent import Agent
 from app.services.auth import require_agent
 from app.services.pdf import generate_invoice_pdf
-from app.routers.booking.bookings import BookingCreate, get_price_usd, get_season, USD_TO_KES
+from app.routers.booking.bookings import BookingCreate, get_price_usd, get_season
+from app.config import settings
 from fastapi.responses import Response
 import random, string, datetime
 
@@ -56,7 +57,7 @@ async def agent_create_booking(data: BookingCreate, db: AsyncSession = Depends(g
 
     discount = agent.discount_pct / 100
     total_usd = round(base_usd * multiplier * pax * (1 - discount), 2)
-    total_kes = round(total_usd * USD_TO_KES, 0)
+    total_kes = round(total_usd * settings.USD_TO_KES, 0)
     deposit_kes = round(total_kes * safari.deposit_pct / 100, 0)
 
     ref = "AGT-" + "".join(random.choices(string.digits, k=6))

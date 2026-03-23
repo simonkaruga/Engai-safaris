@@ -35,7 +35,9 @@
       "Bash(curl -sL \"https://fonts.gstatic.com/s/playfairdisplay/v40/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKeiunDXbtM.woff2\" -o playfair-700-italic.woff2)",
       "Bash(ls -lh *.woff2)",
       "Bash(python scripts/seed_reviews.py)",
-      "Bash(grep -n \"newsletter\\\\|contact\\\\|audience\" /home/simon/Engai-safaris/backend/app/routers/public/*.py)"
+      "Bash(grep -n \"newsletter\\\\|contact\\\\|audience\" /home/simon/Engai-safaris/backend/app/routers/public/*.py)",
+      "Bash(python -c \"from app.main import app; print\\(''OK''\\)\")",
+      "Bash(git add:*)"
     ],
     "additionalDirectories": [
       "/home/simon/Engai-safaris/frontend/app/(public)/guides/[slug]"
