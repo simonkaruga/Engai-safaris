@@ -45,6 +45,7 @@ class Safari(Base):
 
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_featured: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_shared: Mapped[bool] = mapped_column(Boolean, default=False)  # "Join a Group" departure
     meta_title: Mapped[str | None] = mapped_column(String(300))
     meta_desc: Mapped[str | None] = mapped_column(String(500))
     sort_order: Mapped[int] = mapped_column(Integer, default=0)

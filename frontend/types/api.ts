@@ -63,6 +63,7 @@ export interface SafariList {
   price_kes_2pax: number | null;
   cover_image: string | null;
   is_featured: boolean;
+  is_shared: boolean;
 }
 
 export interface SafariDetail extends SafariList {

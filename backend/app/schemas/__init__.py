@@ -81,6 +81,7 @@ class SafariListOut(BaseModel):
     price_kes_2pax: float | None
     cover_image: str | None
     is_featured: bool
+    is_shared: bool
 
     model_config = {"from_attributes": True}
 

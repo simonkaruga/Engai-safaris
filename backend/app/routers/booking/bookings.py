@@ -21,12 +21,22 @@ router = APIRouter(prefix="/bookings", tags=["bookings"])
 PEAK_MONTHS = {7, 8, 9, 10}   # Jul–Oct Great Migration
 LOW_MONTHS  = {4, 5}           # Apr–May long rains
 
+# Insurance levy (USD per person per day) — covers vehicle, passenger liability, public liability
+INSURANCE_LEVY_USD_PP_PD = 5.0
 
-def get_season(date: datetime.date) -> tuple[str, float]:
+
+def get_season(
+    date: datetime.date,
+    peak_multiplier: float = 1.60,
+    low_multiplier: float = 0.75,
+) -> tuple[str, float]:
+    # Christmas / New Year peak — Dec 20 through Jan 5
+    if (date.month == 12 and date.day >= 20) or (date.month == 1 and date.day <= 5):
+        return "holiday", 1.50
     if date.month in PEAK_MONTHS:
-        return "peak", 1.35
+        return "peak", peak_multiplier
     if date.month in LOW_MONTHS:
-        return "low", 0.75
+        return "low", low_multiplier
     return "standard", 1.0
 
 
@@ -135,14 +145,19 @@ async def price_preview(data: PricePreview, db: AsyncSession = Depends(get_db)):
         raise HTTPException(400, "Invalid date")
 
     pax = max(1, min(data.pax, safari.group_size_max))
-    season, multiplier = get_season(date)
+    season, multiplier = get_season(
+        date,
+        peak_multiplier=float(safari.peak_multiplier),
+        low_multiplier=float(safari.low_multiplier),
+    )
     group_usd, tier_pax = get_price_usd(safari, pax)
     if not group_usd:
         raise HTTPException(400, "No pricing available for this group size")
 
     # group_usd is the total for tier_pax people; derive per-person then scale to actual pax
     usd_pp = group_usd / tier_pax
-    total_usd = round(usd_pp * pax * multiplier, 2)
+    insurance_usd = round(INSURANCE_LEVY_USD_PP_PD * pax * safari.duration_days, 2)
+    total_usd = round(usd_pp * pax * multiplier + insurance_usd, 2)
     total_kes = round(total_usd * settings.USD_TO_KES, 0)
     deposit_kes = round(total_kes * safari.deposit_pct / 100, 0)
     balance_kes = total_kes - deposit_kes
@@ -155,12 +170,14 @@ async def price_preview(data: PricePreview, db: AsyncSession = Depends(get_db)):
         "season":        season,
         "multiplier":    multiplier,
         "base_usd_pp":   round(usd_pp, 2),
+        "insurance_usd": insurance_usd,
         "total_usd":     total_usd,
         "total_kes":     total_kes,
         "deposit_kes":   deposit_kes,
         "balance_kes":   balance_kes,
         "deposit_pct":   safari.deposit_pct,
         "installments_ok": safari.installments_ok,
+        "is_shared":     getattr(safari, "is_shared", False),
     }
 
 
@@ -188,13 +205,18 @@ async def create_booking(data: BookingCreate, db: AsyncSession = Depends(get_db)
         raise HTTPException(409, f"This date is {avail.status}. Please choose another date.")
 
     pax = max(1, min(data.pax, safari.group_size_max))
-    season, multiplier = get_season(date)
+    season, multiplier = get_season(
+        date,
+        peak_multiplier=float(safari.peak_multiplier),
+        low_multiplier=float(safari.low_multiplier),
+    )
     group_usd, tier_pax = get_price_usd(safari, pax)
     if not group_usd:
         raise HTTPException(400, "No pricing for this group size")
 
     usd_pp = group_usd / tier_pax
-    total_usd = round(usd_pp * pax * multiplier, 2)
+    insurance_usd = round(INSURANCE_LEVY_USD_PP_PD * pax * safari.duration_days, 2)
+    total_usd = round(usd_pp * pax * multiplier + insurance_usd, 2)
     total_kes = round(total_usd * settings.USD_TO_KES, 0)
 
     # Apply promo discount if code is valid

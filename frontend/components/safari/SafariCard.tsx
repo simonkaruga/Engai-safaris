@@ -31,8 +31,13 @@ export default function SafariCard({ safari }: Props) {
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-        <div className="absolute bottom-3 left-3 flex gap-1.5">
-          {safari.category && (
+        <div className="absolute bottom-3 left-3 flex gap-1.5 flex-wrap">
+          {safari.is_shared && (
+            <span className="bg-gold-DEFAULT text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+              Group Departure
+            </span>
+          )}
+          {!safari.is_shared && safari.category && (
             <span className="bg-teal-DEFAULT text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
               {safari.category}
             </span>
@@ -54,7 +59,9 @@ export default function SafariCard({ safari }: Props) {
 
         <div className="flex items-end justify-between pt-3 border-t border-gray-100">
           <div>
-            <p className="text-[10px] text-gray-400 mb-0.5 uppercase tracking-wide">From / person</p>
+            <p className="text-[10px] text-gray-400 mb-0.5 uppercase tracking-wide">
+              {safari.is_shared ? "Fixed / person" : "From / person"}
+            </p>
             {priceUSD ? (
               <p className="font-bold text-teal-DEFAULT text-lg leading-none">
                 {formatPrice(priceUSD, currency, rates)}
