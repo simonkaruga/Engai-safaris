@@ -3,18 +3,14 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { MPesaLogo, VisaLogo, MastercardLogo } from "@/components/ui/PaymentLogos";
+import { useCurrency } from "@/context/CurrencyContext";
+import { formatPrice, CURRENCIES } from "@/lib/currency";
 import type { SafariDetail } from "@/types/api";
 
 interface Props {
   safari: SafariDetail;
 }
 
-function formatKES(n: number) {
-  return `KES ${Math.round(n).toLocaleString("en-KE")}`;
-}
-function formatUSD(n: number) {
-  return `$${Math.round(n).toLocaleString("en-US")}`;
-}
 
 const SEASON_LABELS: Record<string, { label: string; color: string }> = {
   peak:     { label: "Peak season · Jul–Oct (Great Migration)", color: "text-amber-700 bg-amber-50 border-amber-200" },
@@ -40,6 +36,7 @@ type Preview = {
 };
 
 export default function BookingSidebar({ safari }: Props) {
+  const { currency, rates } = useCurrency();
   const today = new Date().toISOString().split("T")[0];
   const [date, setDate] = useState("");
   const [pax, setPax] = useState(2);
@@ -103,6 +100,12 @@ export default function BookingSidebar({ safari }: Props) {
   const displayDepositKES = preview ? Math.round(preview.deposit_kes * discountFactor) : null;
   const displayBalanceKES = displayTotalKES && displayDepositKES ? displayTotalKES - displayDepositKES : null;
 
+  // Convert to selected currency for display (always use USD as the base)
+  const displayTotalSelected = preview ? formatPrice(preview.total_usd * discountFactor, currency, rates) : null;
+  const displayDepositSelected = preview ? formatPrice((preview.deposit_kes * discountFactor / (rates["KES"] ?? 130)), currency, rates) : null;
+  const displayBalanceSelected = preview ? formatPrice(((preview.total_kes - preview.deposit_kes) * discountFactor / (rates["KES"] ?? 130)), currency, rates) : null;
+  const showKESAlso = currency !== "KES";
+
   const bookHref = date
     ? `/book?safari=${safari.slug}&date=${date}&pax=${pax}${promoCode ? `&promo=${promoCode.trim().toUpperCase()}` : ""}`
     : `/book?safari=${safari.slug}&pax=${pax}`;
@@ -120,7 +123,7 @@ export default function BookingSidebar({ safari }: Props) {
             {basePricePP ? (
               <>
                 <p className="text-white font-display font-bold text-3xl">
-                  {formatUSD(basePricePP)}
+                  {formatPrice(basePricePP, currency, rates)}
                   <span className="text-teal-200 text-sm font-normal">/pp</span>
                 </p>
                 <p className="text-teal-200 text-xs">from · 2 people · standard season</p>
@@ -193,13 +196,15 @@ export default function BookingSidebar({ safari }: Props) {
                 <div className="text-right">
                   {promoValid ? (
                     <>
-                      <span className="text-gray-500 line-through text-xs mr-1">{formatKES(preview.total_kes)}</span>
-                      <span className="text-white font-bold">{formatKES(displayTotalKES)}</span>
+                      <span className="text-gray-500 line-through text-xs mr-1">{formatPrice(preview.total_usd, currency, rates)}</span>
+                      <span className="text-white font-bold">{displayTotalSelected}</span>
                     </>
                   ) : (
-                    <span className="text-white font-bold">{formatKES(displayTotalKES)}</span>
+                    <span className="text-white font-bold">{displayTotalSelected}</span>
                   )}
-                  <span className="text-gray-500 text-xs ml-1">/ {formatUSD(preview.total_usd)}</span>
+                  {showKESAlso && displayTotalKES && (
+                    <p className="text-gray-500 text-[10px]">~KES {displayTotalKES.toLocaleString()}</p>
+                  )}
                 </div>
               </div>
               {promoValid && (
@@ -211,11 +216,11 @@ export default function BookingSidebar({ safari }: Props) {
               <div className="border-t border-white/10 pt-1.5 space-y-1">
                 <div className="flex justify-between text-sm">
                   <span className="text-teal-300 font-semibold">Pay now ({safari.deposit_pct}%)</span>
-                  <span className="text-white font-bold">{formatKES(displayDepositKES)}</span>
+                  <span className="text-white font-bold">{displayDepositSelected}</span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-500">Balance (30 days before)</span>
-                  <span className="text-gray-400">{formatKES(displayBalanceKES)}</span>
+                  <span className="text-gray-400">{displayBalanceSelected}</span>
                 </div>
               </div>
             </div>
@@ -266,7 +271,7 @@ export default function BookingSidebar({ safari }: Props) {
           href={bookHref}
           className="block w-full bg-teal-DEFAULT hover:bg-teal-600 text-white text-center py-4 rounded-xl font-bold text-lg transition-colors shadow-md hover:shadow-lg"
         >
-          {displayDepositKES ? `Book Now — Pay ${formatKES(displayDepositKES)}` : "Book This Safari →"}
+          {displayDepositSelected ? `Book Now — Pay ${displayDepositSelected}` : "Book This Safari →"}
         </Link>
 
         {/* Lipa Polepole */}
