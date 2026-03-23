@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { MPesaLogo, VisaLogo, MastercardLogo } from "@/components/ui/PaymentLogos";
 import type { SafariDetail } from "@/types/api";
@@ -16,40 +16,98 @@ function formatUSD(n: number) {
   return `$${Math.round(n).toLocaleString("en-US")}`;
 }
 
-const PEAK = new Set([7, 8, 9, 10]);
-const LOW  = new Set([4, 5]);
+const SEASON_LABELS: Record<string, { label: string; color: string }> = {
+  peak:     { label: "Peak season · Jul–Oct (Great Migration)", color: "text-amber-700 bg-amber-50 border-amber-200" },
+  holiday:  { label: "Holiday season · Dec 20–Jan 5", color: "text-red-700 bg-red-50 border-red-200" },
+  low:      { label: "Green season · Apr–May (lower rates)", color: "text-teal-700 bg-teal-50 border-teal-100" },
+  standard: { label: "Standard season", color: "text-gray-500 bg-gray-50 border-gray-200" },
+};
 
-function getSeason(dateStr: string): { label: string; multiplier: number; color: string } {
-  const m = new Date(dateStr).getMonth() + 1;
-  if (PEAK.has(m)) return { label: "Peak season +35%", multiplier: 1.35, color: "text-amber-600 bg-amber-50 border-amber-200" };
-  if (LOW.has(m))  return { label: "Green season −25%", multiplier: 0.75, color: "text-teal-600 bg-teal-50 border-teal-200" };
-  return { label: "Standard season", multiplier: 1.0, color: "text-gray-500 bg-gray-50 border-gray-200" };
-}
-
-function getBaseUSD(safari: SafariDetail, pax: number): number | null {
-  if (pax === 1) return safari.price_usd_solo ?? null;
-  if (pax <= 3)  return safari.price_usd_2pax ?? null;
-  if (pax <= 5)  return safari.price_usd_4pax ?? null;
-  return safari.price_usd_6pax ?? null;
-}
-
-const USD_TO_KES = 130;
+type Preview = {
+  safari_name: string;
+  duration_days: number;
+  pax: number;
+  season: string;
+  multiplier: number;
+  base_usd_pp: number;
+  insurance_usd: number;
+  total_usd: number;
+  total_kes: number;
+  deposit_kes: number;
+  balance_kes: number;
+  deposit_pct: number;
+  installments_ok: boolean;
+};
 
 export default function BookingSidebar({ safari }: Props) {
   const today = new Date().toISOString().split("T")[0];
   const [date, setDate] = useState("");
   const [pax, setPax] = useState(2);
+  const [preview, setPreview] = useState<Preview | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [showPromo, setShowPromo] = useState(false);
+  const [promoValid, setPromoValid] = useState<{ discount_pct: number; description: string } | null>(null);
+  const [promoError, setPromoError] = useState("");
+  const [checkingPromo, setCheckingPromo] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const base = getBaseUSD(safari, pax);
-  const season = date ? getSeason(date) : null;
-  const totalUSD = base && season ? Math.round(base * season.multiplier * pax) : null;
-  const totalKES = totalUSD ? Math.round(totalUSD * USD_TO_KES) : null;
-  const depositKES = totalKES ? Math.round(totalKES * safari.deposit_pct / 100) : null;
-  const balanceKES = totalKES && depositKES ? totalKES - depositKES : null;
+  // Fetch live price preview from the backend whenever date/pax changes
+  useEffect(() => {
+    if (!date) { setPreview(null); return; }
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/bookings/preview`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ safari_slug: safari.slug, travel_date: date, pax }),
+        });
+        if (res.ok) setPreview(await res.json());
+        else setPreview(null);
+      } catch {
+        setPreview(null);
+      } finally {
+        setLoading(false);
+      }
+    }, 400);
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+  }, [date, pax, safari.slug]);
+
+  const validatePromo = async () => {
+    if (!promoCode.trim()) return;
+    setCheckingPromo(true);
+    setPromoError("");
+    setPromoValid(null);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/bookings/validate-promo`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: promoCode.trim() }),
+      });
+      if (res.ok) setPromoValid(await res.json());
+      else setPromoError("Invalid or expired code");
+    } catch {
+      setPromoError("Could not check code — try again");
+    } finally {
+      setCheckingPromo(false);
+    }
+  };
+
+  const season = preview ? SEASON_LABELS[preview.season] ?? SEASON_LABELS.standard : null;
+
+  // Apply promo discount to displayed totals
+  const discountFactor = promoValid ? 1 - promoValid.discount_pct / 100 : 1;
+  const displayTotalKES = preview ? Math.round(preview.total_kes * discountFactor) : null;
+  const displayDepositKES = preview ? Math.round(preview.deposit_kes * discountFactor) : null;
+  const displayBalanceKES = displayTotalKES && displayDepositKES ? displayTotalKES - displayDepositKES : null;
 
   const bookHref = date
-    ? `/book?safari=${safari.slug}&date=${date}&pax=${pax}`
+    ? `/book?safari=${safari.slug}&date=${date}&pax=${pax}${promoCode ? `&promo=${promoCode.trim().toUpperCase()}` : ""}`
     : `/book?safari=${safari.slug}&pax=${pax}`;
+
+  const basePricePP = safari.price_usd_2pax ? Math.round(safari.price_usd_2pax / 2) : null;
 
   return (
     <div className="bg-white border-2 border-teal-DEFAULT rounded-2xl overflow-hidden shadow-lg sticky top-24">
@@ -59,10 +117,10 @@ export default function BookingSidebar({ safari }: Props) {
         <p className="text-teal-100 text-xs font-semibold uppercase tracking-widest mb-0.5">Instant Booking</p>
         <div className="flex items-end justify-between">
           <div>
-            {base ? (
+            {basePricePP ? (
               <>
                 <p className="text-white font-display font-bold text-3xl">
-                  {formatUSD(base)}
+                  {formatUSD(basePricePP)}
                   <span className="text-teal-200 text-sm font-normal">/pp</span>
                 </p>
                 <p className="text-teal-200 text-xs">from · 2 people · standard season</p>
@@ -118,43 +176,97 @@ export default function BookingSidebar({ safari }: Props) {
         </div>
 
         {/* Live price breakdown */}
-        {totalKES && season && depositKES && balanceKES ? (
+        {loading && (
+          <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 text-center">
+            <p className="text-gray-400 text-sm animate-pulse">Calculating price…</p>
+          </div>
+        )}
+
+        {!loading && preview && season && displayTotalKES && displayDepositKES && displayBalanceKES ? (
           <div className="bg-gray-950 rounded-xl p-4 space-y-2.5">
             <div className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border ${season.color}`}>
               {season.label}
             </div>
             <div className="space-y-1.5 pt-1">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Total ({pax} {pax === 1 ? "person" : "people"})</span>
+                <span className="text-gray-400">{pax} {pax === 1 ? "person" : "people"} · {preview.duration_days} days</span>
                 <div className="text-right">
-                  <span className="text-white font-bold">{formatKES(totalKES)}</span>
-                  <span className="text-gray-500 text-xs ml-1">/ {formatUSD(totalUSD!)}</span>
+                  {promoValid ? (
+                    <>
+                      <span className="text-gray-500 line-through text-xs mr-1">{formatKES(preview.total_kes)}</span>
+                      <span className="text-white font-bold">{formatKES(displayTotalKES)}</span>
+                    </>
+                  ) : (
+                    <span className="text-white font-bold">{formatKES(displayTotalKES)}</span>
+                  )}
+                  <span className="text-gray-500 text-xs ml-1">/ {formatUSD(preview.total_usd)}</span>
                 </div>
               </div>
+              {promoValid && (
+                <div className="flex justify-between text-xs">
+                  <span className="text-green-400 font-semibold">Promo: {promoValid.description}</span>
+                  <span className="text-green-400 font-semibold">−{promoValid.discount_pct}%</span>
+                </div>
+              )}
               <div className="border-t border-white/10 pt-1.5 space-y-1">
                 <div className="flex justify-between text-sm">
                   <span className="text-teal-300 font-semibold">Pay now ({safari.deposit_pct}%)</span>
-                  <span className="text-white font-bold">{formatKES(depositKES)}</span>
+                  <span className="text-white font-bold">{formatKES(displayDepositKES)}</span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-500">Balance (30 days before)</span>
-                  <span className="text-gray-400">{formatKES(balanceKES)}</span>
+                  <span className="text-gray-400">{formatKES(displayBalanceKES)}</span>
                 </div>
               </div>
             </div>
           </div>
-        ) : (
+        ) : !loading && !date ? (
           <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 text-center">
-            <p className="text-gray-400 text-sm">Select a date to see your price</p>
+            <p className="text-gray-400 text-sm">Select a date to see your exact price</p>
           </div>
-        )}
+        ) : null}
+
+        {/* Promo code */}
+        <div>
+          <button
+            type="button"
+            onClick={() => setShowPromo(!showPromo)}
+            className="text-xs text-teal-DEFAULT underline underline-offset-2"
+          >
+            {showPromo ? "Hide promo code" : "Have a promo code?"}
+          </button>
+          {showPromo && (
+            <div className="mt-2 flex gap-2">
+              <input
+                type="text"
+                placeholder="e.g. ENGAI10"
+                value={promoCode}
+                onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoValid(null); setPromoError(""); }}
+                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-teal-DEFAULT uppercase"
+              />
+              <button
+                onClick={validatePromo}
+                disabled={checkingPromo || !promoCode.trim()}
+                className="text-xs bg-teal-DEFAULT text-white rounded-lg px-3 py-2 disabled:opacity-50 font-semibold"
+              >
+                {checkingPromo ? "…" : "Apply"}
+              </button>
+            </div>
+          )}
+          {promoValid && (
+            <p className="text-xs text-green-600 font-semibold mt-1">✓ {promoValid.description} applied</p>
+          )}
+          {promoError && (
+            <p className="text-xs text-red-500 mt-1">{promoError}</p>
+          )}
+        </div>
 
         {/* CTA */}
         <Link
           href={bookHref}
           className="block w-full bg-teal-DEFAULT hover:bg-teal-600 text-white text-center py-4 rounded-xl font-bold text-lg transition-colors shadow-md hover:shadow-lg"
         >
-          {depositKES ? `Book Now — Pay ${formatKES(depositKES)}` : "Book This Safari →"}
+          {displayDepositKES ? `Book Now — Pay ${formatKES(displayDepositKES)}` : "Book This Safari →"}
         </Link>
 
         {/* Lipa Polepole */}

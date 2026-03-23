@@ -74,7 +74,9 @@
       "Bash(grep -n price_usd /home/simon/Engai-safaris/backend/scripts/seed*.py)",
       "Bash(python scripts/update_prices.py)",
       "Bash(python scripts/update_multipliers_and_group_safaris.py)",
-      "Bash(python -c \"from app.main import app; print\\(''''Backend OK''''\\)\")"
+      "Bash(python -c \"from app.main import app; print\\(''''Backend OK''''\\)\")",
+      "Bash(find /home/simon/Engai-safaris/frontend/app -name sitemap* -o -name robots*)",
+      "Bash(python -c \":*)"
     ],
     "additionalDirectories": [
       "/home/simon/Engai-safaris/frontend/app/(public)/guides/[slug]"
