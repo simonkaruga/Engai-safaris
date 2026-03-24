@@ -1,37 +1,39 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useLanguage } from "@/context/LanguageContext";
 
-const SAFARIS = [
-  ["Classic Safaris", "/safaris?category=classic"],
-  ["Luxury Safaris", "/safaris?category=luxury"],
-  ["Photography Safaris", "/safaris?category=photography"],
-  ["Cultural Safaris", "/safaris?category=cultural"],
-  ["Corporate Safaris", "/safaris?category=corporate"],
-  ["View All Packages", "/safaris"],
+const SAFARI_HREFS: [string, string][] = [
+  ["footer.classicSafaris",     "/safaris?category=classic"],
+  ["footer.luxurySafaris",      "/safaris?category=luxury"],
+  ["footer.photographySafaris", "/safaris?category=photography"],
+  ["footer.culturalSafaris",    "/safaris?category=cultural"],
+  ["footer.corporateSafaris",   "/safaris?category=corporate"],
+  ["footer.viewAllPackages",    "/safaris"],
 ];
 
-const DESTINATIONS = [
-  ["Masai Mara", "/destinations/masai-mara"],
-  ["Amboseli", "/destinations/amboseli"],
+const DESTINATION_HREFS: [string, string][] = [
+  ["Masai Mara",    "/destinations/masai-mara"],
+  ["Amboseli",      "/destinations/amboseli"],
   ["Lake Naivasha", "/destinations/lake-naivasha"],
-  ["Samburu", "/destinations/samburu"],
-  ["Lake Nakuru", "/destinations/lake-nakuru"],
-  ["All Destinations", "/destinations"],
+  ["Samburu",       "/destinations/samburu"],
+  ["Lake Nakuru",   "/destinations/lake-nakuru"],
 ];
 
-const COMPANY = [
-  ["About Us", "/about"],
-  ["Our Guides", "/guides"],
-  ["Guest Reviews", "/reviews"],
-  ["Blog", "/blog"],
-  ["FAQ", "/faq"],
-  ["Contact", "/contact"],
+const COMPANY_HREFS: [string, string][] = [
+  ["footer.aboutUs",      "/about"],
+  ["footer.ourGuides",    "/guides"],
+  ["footer.guestReviews", "/reviews"],
+  ["footer.blog",         "/blog"],
+  ["footer.faq",          "/faq"],
+  ["footer.contact",      "/contact"],
 ];
 
-const LEGAL = [
-  ["Terms & Conditions", "/terms"],
-  ["Privacy Policy", "/privacy"],
-  ["Cancellation Policy", "/cancellation-policy"],
+const LEGAL_HREFS: [string, string][] = [
+  ["footer.terms",             "/terms"],
+  ["footer.privacy",           "/privacy"],
+  ["footer.cancellationPolicy","/cancellation-policy"],
 ];
 
 const SOCIAL = [
@@ -65,49 +67,32 @@ const SOCIAL = [
 ];
 
 export default function Footer() {
+  const { t } = useLanguage();
+
   return (
     <footer className="bg-teal-900 text-gray-400">
-      {/* Top border accent */}
       <div className="h-px bg-gradient-to-r from-transparent via-teal-DEFAULT/40 to-transparent" />
 
-      {/* Main grid */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 pt-16 pb-10">
         <div className="grid grid-cols-2 md:grid-cols-6 gap-10 mb-14">
-          {/* Brand — spans 2 cols */}
+          {/* Brand */}
           <div className="col-span-2 md:col-span-2">
             <div className="mb-4">
-              <Image
-                src="/images/logo.png"
-                alt="Engai Safaris"
-                width={160}
-                height={48}
-                className="h-10 w-auto object-contain brightness-0 invert"
-              />
+              <Image src="/images/logo.png" alt="Engai Safaris" width={160} height={48} className="h-10 w-auto object-contain brightness-0 invert" />
             </div>
-            <p className="text-sm text-gray-500 leading-relaxed mb-2">
-              En-KAI · Supreme Sky God of the Maasai
-            </p>
-            <p className="text-sm text-gray-500 italic mb-5">
-              "Where the Sky Meets the Wild"
-            </p>
+            <p className="text-sm text-gray-500 leading-relaxed mb-2">{t("footer.tagline")}</p>
+            <p className="text-sm text-gray-500 italic mb-5">{t("footer.taglineQuote")}</p>
             <div className="flex flex-wrap gap-2 mb-6 text-xs">
-              {["Kenya-owned", "TRA Licensed", "GDPR Compliant"].map((badge) => (
-                <span key={badge} className="px-2.5 py-1 rounded-full border border-teal-800 text-gray-500">
-                  {badge}
+              {(["footer.badgeOwned", "footer.badgeLicensed", "footer.badgeGDPR"] as const).map((key) => (
+                <span key={key} className="px-2.5 py-1 rounded-full border border-teal-800 text-gray-500">
+                  {t(key)}
                 </span>
               ))}
             </div>
-            {/* Social */}
             <div className="flex gap-2">
               {SOCIAL.map((s) => (
-                <a
-                  key={s.name}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={s.name}
-                  className="w-9 h-9 rounded-lg border border-teal-800 flex items-center justify-center text-gray-500 hover:text-white hover:border-teal-DEFAULT hover:bg-teal-DEFAULT/10 transition-colors"
-                >
+                <a key={s.name} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.name}
+                  className="w-9 h-9 rounded-lg border border-teal-800 flex items-center justify-center text-gray-500 hover:text-white hover:border-teal-DEFAULT hover:bg-teal-DEFAULT/10 transition-colors">
                   {s.icon}
                 </a>
               ))}
@@ -116,12 +101,12 @@ export default function Footer() {
 
           {/* Safaris */}
           <div>
-            <p className="text-xs font-semibold tracking-widest uppercase text-gray-300 mb-5">Safaris</p>
+            <p className="text-xs font-semibold tracking-widest uppercase text-gray-300 mb-5">{t("footer.safaris")}</p>
             <ul className="space-y-2.5">
-              {SAFARIS.map(([label, href]) => (
+              {SAFARI_HREFS.map(([key, href]) => (
                 <li key={href}>
                   <Link href={href} className="text-sm text-gray-500 hover:text-white transition-colors">
-                    {label}
+                    {t(key as any)}
                   </Link>
                 </li>
               ))}
@@ -130,23 +115,9 @@ export default function Footer() {
 
           {/* Destinations */}
           <div>
-            <p className="text-xs font-semibold tracking-widest uppercase text-gray-300 mb-5">Destinations</p>
+            <p className="text-xs font-semibold tracking-widest uppercase text-gray-300 mb-5">{t("footer.destinations")}</p>
             <ul className="space-y-2.5">
-              {DESTINATIONS.map(([label, href]) => (
-                <li key={href}>
-                  <Link href={href} className="text-sm text-gray-500 hover:text-white transition-colors">
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <p className="text-xs font-semibold tracking-widest uppercase text-gray-300 mb-5">Company</p>
-            <ul className="space-y-2.5">
-              {COMPANY.map(([label, href]) => (
+              {DESTINATION_HREFS.map(([label, href]) => (
                 <li key={href}>
                   <Link href={href} className="text-sm text-gray-500 hover:text-white transition-colors">
                     {label}
@@ -154,8 +125,27 @@ export default function Footer() {
                 </li>
               ))}
               <li>
+                <Link href="/destinations" className="text-sm text-gray-500 hover:text-white transition-colors">
+                  {t("footer.allDestinations")}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Company */}
+          <div>
+            <p className="text-xs font-semibold tracking-widest uppercase text-gray-300 mb-5">{t("footer.company")}</p>
+            <ul className="space-y-2.5">
+              {COMPANY_HREFS.map(([key, href]) => (
+                <li key={href}>
+                  <Link href={href} className="text-sm text-gray-500 hover:text-white transition-colors">
+                    {t(key as any)}
+                  </Link>
+                </li>
+              ))}
+              <li>
                 <Link href="/agent/login" className="text-sm text-teal-500 hover:text-teal-400 transition-colors">
-                  Agent Portal →
+                  {t("footer.agentPortal")}
                 </Link>
               </li>
             </ul>
@@ -163,12 +153,12 @@ export default function Footer() {
 
           {/* Legal */}
           <div>
-            <p className="text-xs font-semibold tracking-widest uppercase text-gray-300 mb-5">Legal</p>
+            <p className="text-xs font-semibold tracking-widest uppercase text-gray-300 mb-5">{t("footer.legal")}</p>
             <ul className="space-y-2.5">
-              {LEGAL.map(([label, href]) => (
+              {LEGAL_HREFS.map(([key, href]) => (
                 <li key={href}>
                   <Link href={href} className="text-sm text-gray-500 hover:text-white transition-colors">
-                    {label}
+                    {t(key as any)}
                   </Link>
                 </li>
               ))}
@@ -176,7 +166,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Review platform badges */}
+        {/* Review badges */}
         <div className="border-t border-teal-800/60 pt-8 pb-6 flex flex-wrap items-center justify-center gap-4">
           <a href="https://g.page/r/engaisafaris/review" target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-2 text-xs text-gray-500 hover:text-white transition-colors">
@@ -202,10 +192,8 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-teal-800/60 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-teal-700">
-          <p>© {new Date().getFullYear()} Engai Safaris Ltd. All rights reserved.</p>
-          <p className="text-center sm:text-right">
-            Built with ❤ in Nairobi, Kenya
-          </p>
+          <p>© {new Date().getFullYear()} Engai Safaris Ltd. {t("footer.allRights")}</p>
+          <p className="text-center sm:text-right">{t("footer.builtIn")}</p>
         </div>
       </div>
     </footer>

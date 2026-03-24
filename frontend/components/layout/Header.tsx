@@ -5,21 +5,24 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import CurrencySwitcher from "@/components/currency/CurrencySwitcher";
+import LanguageSwitcher from "@/components/language/LanguageSwitcher";
+import { useLanguage } from "@/context/LanguageContext";
 
-const NAV = [
-  { label: "Home", href: "/" },
-  { label: "Safaris", href: "/safaris" },
-  { label: "Destinations", href: "/destinations" },
-  { label: "Guides", href: "/guides" },
-  { label: "Reviews", href: "/reviews" },
-  { label: "Blog", href: "/blog" },
-  { label: "About", href: "/about" },
+const NAV_HREFS = [
+  { key: "nav.home" as const,         href: "/" },
+  { key: "nav.safaris" as const,      href: "/safaris" },
+  { key: "nav.destinations" as const, href: "/destinations" },
+  { key: "nav.guides" as const,       href: "/guides" },
+  { key: "nav.reviews" as const,      href: "/reviews" },
+  { key: "nav.blog" as const,         href: "/blog" },
+  { key: "nav.about" as const,        href: "/about" },
 ];
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 60);
@@ -66,7 +69,7 @@ export default function Header() {
 
         {/* Desktop nav — visible from lg */}
         <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
-          {NAV.map((item) => {
+          {NAV_HREFS.map((item) => {
             const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
             return (
               <Link
@@ -82,7 +85,7 @@ export default function Header() {
                       : "text-gray-600 hover:text-teal-DEFAULT hover:bg-teal-50"
                 }`}
               >
-                {item.label}
+                {t(item.key)}
                 {isActive && !isTransparent && (
                   <span className="absolute bottom-0.5 left-2.5 right-2.5 h-0.5 rounded-full bg-teal-DEFAULT" />
                 )}
@@ -93,6 +96,7 @@ export default function Header() {
 
         {/* Right actions */}
         <div className="hidden md:flex items-center gap-1 flex-shrink-0">
+          <LanguageSwitcher />
           <CurrencySwitcher />
 
           {/* Wildlife ID — icon+text on xl, icon only on md/lg */}
@@ -109,7 +113,7 @@ export default function Header() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
             </svg>
-            <span className="hidden xl:inline text-sm font-medium">Wildlife ID</span>
+            <span className="hidden xl:inline text-sm font-medium">{t("header.wildlifeId")}</span>
           </Link>
 
           {/* AI Planner — icon+text on xl, icon only on md/lg */}
@@ -125,7 +129,7 @@ export default function Header() {
             <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
             </svg>
-            <span className="hidden xl:inline text-sm font-medium">AI Planner</span>
+            <span className="hidden xl:inline text-sm font-medium">{t("header.aiPlanner")}</span>
           </Link>
 
           <div className={`w-px h-4 mx-0.5 ${isTransparent ? "bg-white/20" : "bg-gray-200"}`} />
@@ -138,7 +142,7 @@ export default function Header() {
                 : "bg-teal-DEFAULT text-white hover:bg-teal-600"
             }`}
           >
-            Book Now
+            {t("header.bookNow")}
           </Link>
         </div>
 
@@ -147,7 +151,7 @@ export default function Header() {
           onClick={() => setOpen(!open)}
           aria-expanded={open}
           aria-controls="mobile-menu"
-          aria-label={open ? "Close menu" : "Open menu"}
+          aria-label={open ? t("header.closeMenu") : t("header.openMenu")}
           className={`md:hidden w-9 h-9 flex items-center justify-center rounded-lg transition-colors ${
             isTransparent ? "text-white hover:bg-white/10" : "text-gray-700 hover:bg-gray-100"
           }`}
@@ -168,18 +172,22 @@ export default function Header() {
       {open && (
         <div id="mobile-menu" role="dialog" aria-label="Navigation menu" className="md:hidden bg-white border-t border-gray-100 shadow-xl">
           <div className="px-4 py-3 space-y-0.5">
-            {NAV.map((item) => (
+            {NAV_HREFS.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
                 className="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-teal-DEFAULT hover:bg-teal-50 rounded-lg transition-colors"
               >
-                {item.label}
+                {t(item.key)}
               </Link>
             ))}
           </div>
           <div className="px-4 pb-4 pt-2 border-t border-gray-100 flex flex-col gap-2">
+            <div className="flex items-center gap-2 pb-1">
+              <LanguageSwitcher />
+              <CurrencySwitcher />
+            </div>
             <div className="grid grid-cols-2 gap-2">
               <Link
                 href="/wildlife-id"
@@ -190,7 +198,7 @@ export default function Header() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
                 </svg>
-                Wildlife ID
+                {t("header.wildlifeId")}
               </Link>
               <Link
                 href="/plan-my-safari"
@@ -200,7 +208,7 @@ export default function Header() {
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
                 </svg>
-                AI Planner
+                {t("header.aiPlanner")}
               </Link>
             </div>
             <Link
@@ -208,7 +216,7 @@ export default function Header() {
               onClick={() => setOpen(false)}
               className="flex items-center justify-center bg-teal-DEFAULT hover:bg-teal-600 text-white py-3 rounded-xl text-sm font-semibold transition-colors"
             >
-              Book a Safari
+              {t("header.bookSafari")}
             </Link>
           </div>
         </div>

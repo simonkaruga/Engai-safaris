@@ -9,6 +9,7 @@ import CookieBanner from "@/components/layout/CookieBanner";
 import CookieConsent from "@/components/ui/CookieConsent";
 import LiveChat from "@/components/layout/LiveChat";
 import { CurrencyProvider } from "@/context/CurrencyContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const playfair = localFont({
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body>
+        <LanguageProvider>
         <CurrencyProvider>
           {/* Skip to main content — WCAG 2.1 requirement */}
           <a
@@ -58,6 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <CookieConsent />
           <LiveChat />
         </CurrencyProvider>
+        </LanguageProvider>
       </body>
     </html>
   );
