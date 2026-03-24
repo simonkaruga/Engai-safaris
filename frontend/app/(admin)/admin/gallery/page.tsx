@@ -38,24 +38,18 @@ export default function AdminGalleryPage() {
       </div>
 
       {/* Notice banner */}
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8">
-        <div className="flex items-start gap-4">
-          <div className="text-3xl">🖼️</div>
-          <div>
-            <h2 className="font-semibold text-blue-800 text-lg mb-1">Cloudinary Integration Coming Soon</h2>
-            <p className="text-blue-700 text-sm mb-3">
-              Full image management via Cloudinary is being set up. Once live, you will be able to upload,
-              organize and tag photos directly from this page.
-            </p>
-            <p className="text-blue-600 text-sm font-medium">
-              To update safari images now, go to the{" "}
-              <Link href="/admin/safaris" className="underline hover:text-blue-800">
-                Safaris admin page
-              </Link>{" "}
-              and paste a Cloudinary URL into the cover image field.
-            </p>
-          </div>
-        </div>
+      <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8 flex items-start gap-3">
+        <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+        </svg>
+        <p className="text-sm text-amber-800">
+          To update safari cover photos, go to{" "}
+          <Link href="/admin/safaris" className="font-semibold underline hover:text-amber-900">
+            Safaris
+          </Link>{" "}
+          → select a safari → paste a photo URL into the cover image field.
+          Full Cloudinary upload coming soon.
+        </p>
       </div>
 
       {/* Existing cover images */}

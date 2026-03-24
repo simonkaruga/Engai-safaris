@@ -12,7 +12,8 @@ interface Props {
 
 export default function SafariCard({ safari }: Props) {
   const { currency, rates } = useCurrency();
-  const priceUSD = safari.price_usd_2pax;
+  const totalUSD = safari.price_usd_2pax;
+  const priceUSD = totalUSD ? totalUSD / 2 : null;
 
   return (
     <Link
@@ -20,7 +21,7 @@ export default function SafariCard({ safari }: Props) {
       className="group block bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-0.5 border border-gray-100/80"
     >
       {/* Image */}
-      <div className="relative h-52 bg-gray-100 overflow-hidden">
+      <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
         {safari.cover_image && (
           <Image
             src={safari.cover_image}
@@ -30,7 +31,16 @@ export default function SafariCard({ safari }: Props) {
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+
+        {/* Price badge — top right, always visible over photo */}
+        {priceUSD && (
+          <div className="absolute top-3 right-3 z-10 bg-gold-DEFAULT text-white font-bold text-sm px-3 py-1.5 rounded-xl shadow-gold leading-none">
+            {formatPrice(priceUSD, currency, rates)}
+            <span className="text-white/80 text-[10px] font-normal ml-0.5">/pp</span>
+          </div>
+        )}
+
         <div className="absolute bottom-3 left-3 flex gap-1.5 flex-wrap">
           {safari.is_shared && (
             <span className="bg-gold-DEFAULT text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
@@ -71,7 +81,7 @@ export default function SafariCard({ safari }: Props) {
             )}
             {currency !== "USD" && priceUSD ? (
               <p className="text-[10px] text-gray-400 mt-0.5">
-                ~${Math.round(priceUSD).toLocaleString()} USD
+                ~${Math.round(priceUSD).toLocaleString()} USD/pp
               </p>
             ) : null}
           </div>

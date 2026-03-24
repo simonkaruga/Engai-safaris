@@ -1,11 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.database import get_db
 from app.models.enquiry import Enquiry
 from app.services.auth import require_admin
+from app.services.email import send_enquiry_reply
+from app.config import settings
 
 router = APIRouter(prefix="/admin/enquiries", tags=["admin"])
+
+
+class ReplyBody(BaseModel):
+    message: str
 
 
 @router.get("")
@@ -35,3 +42,26 @@ async def update_enquiry(enquiry_id: str, data: dict, db: AsyncSession = Depends
             setattr(enquiry, k, v)
     await db.commit()
     return enquiry
+
+
+@router.post("/{enquiry_id}/reply")
+async def reply_to_enquiry(
+    enquiry_id: str,
+    body: ReplyBody,
+    db: AsyncSession = Depends(get_db),
+    _=Depends(require_admin),
+):
+    result = await db.execute(select(Enquiry).where(Enquiry.id == enquiry_id))
+    enquiry = result.scalar_one_or_none()
+    if not enquiry:
+        raise HTTPException(status_code=404)
+
+    await send_enquiry_reply(
+        to=enquiry.customer_email,
+        name=enquiry.customer_name,
+        message=body.message,
+    )
+
+    enquiry.status = "replied"
+    await db.commit()
+    return {"ok": True, "status": "replied"}

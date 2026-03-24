@@ -1,6 +1,9 @@
+import { Suspense } from "react";
 import { getSafaris } from "@/lib/api";
 import SafariCard from "@/components/safari/SafariCard";
 import SafariFeaturedCard from "@/components/safari/SafariFeaturedCard";
+import SafariCardSkeleton from "@/components/safari/SafariCardSkeleton";
+import SafariFeaturedCardSkeleton from "@/components/safari/SafariFeaturedCardSkeleton";
 import Image from "next/image";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
@@ -104,15 +107,74 @@ const CATEGORY_ACCENT: Record<string, string> = {
   corporate:     "bg-gray-700 text-white border-gray-700",
 };
 
+function SafarisGridSkeleton({ isFiltered }: { isFiltered: boolean }) {
+  if (isFiltered) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <SafariCardSkeleton key={i} />
+        ))}
+      </div>
+    );
+  }
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <SafariFeaturedCardSkeleton key={i} />
+      ))}
+    </div>
+  );
+}
+
+async function SafarisGrid({ category }: { category?: string }) {
+  const safaris = await getSafaris({ category });
+  const isFiltered = Boolean(category);
+
+  if (safaris.length === 0) {
+    return (
+      <div className="text-center py-24">
+        <p className="text-gray-400 text-lg mb-4">No safaris in this category yet.</p>
+        <a href="/safaris" className="text-teal-DEFAULT font-semibold hover:underline text-sm">
+          View all packages
+        </a>
+      </div>
+    );
+  }
+
+  if (isFiltered) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {safaris.map((safari) => (
+          <SafariCard key={safari.id} safari={safari} />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {safaris.map((safari) => (
+        <SafariFeaturedCard key={safari.id} safari={safari} />
+      ))}
+
+      {safaris.length === 1 && (
+        <div className="md:col-span-2 lg:col-span-2" />
+      )}
+    </div>
+  );
+}
+
 export default async function SafarisPage({
   searchParams,
 }: {
   searchParams: { category?: string };
 }) {
-  const safaris = await getSafaris({ category: searchParams.category });
   const activeCategory = searchParams.category ?? "";
   const isFiltered = Boolean(searchParams.category);
   const activeCat = CATEGORIES.find((c) => c.value === activeCategory);
+
+  // Pre-fetch for category count display — used only for the filter badge
+  const safaris = await getSafaris({ category: searchParams.category });
 
   return (
     <>
@@ -175,52 +237,9 @@ export default async function SafarisPage({
         </div>
 
         {/* Safari grid */}
-        {safaris.length === 0 ? (
-          <div className="text-center py-24">
-            <p className="text-gray-400 text-lg mb-4">No safaris in this category yet.</p>
-            <a href="/safaris" className="text-teal-DEFAULT font-semibold hover:underline text-sm">
-              View all packages
-            </a>
-          </div>
-        ) : isFiltered ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {safaris.map((safari) => (
-              <SafariCard key={safari.id} safari={safari} />
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {safaris.length >= 2 && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[420px]">
-                <div className="md:col-span-2 h-full">
-                  <SafariFeaturedCard safari={safaris[0]} fill />
-                </div>
-                <div className="h-full">
-                  <SafariFeaturedCard safari={safaris[1]} fill />
-                </div>
-              </div>
-            )}
-
-            {safaris.length > 2 && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {safaris.slice(2).map((safari, i) => {
-                  const isWide = i % 7 === 0;
-                  return (
-                    <div key={safari.id} className={isWide ? "md:col-span-2" : ""}>
-                      <SafariFeaturedCard safari={safari} fill={false} />
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {safaris.length === 1 && (
-              <div className="max-w-2xl mx-auto">
-                <SafariFeaturedCard safari={safaris[0]} fill={false} />
-              </div>
-            )}
-          </div>
-        )}
+        <Suspense fallback={<SafarisGridSkeleton isFiltered={isFiltered} />}>
+          <SafarisGrid category={searchParams.category} />
+        </Suspense>
       </div>
     </>
   );

@@ -1,0 +1,387 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
+import Link from "next/link";
+
+const CATEGORIES = [
+  { value: "travel-tips", label: "Travel Tips" },
+  { value: "wildlife", label: "Wildlife" },
+  { value: "destinations", label: "Destinations" },
+  { value: "culture", label: "Culture" },
+  { value: "guides", label: "Guides" },
+];
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+export default function EditBlogPostPage() {
+  const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
+
+  const token = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
+
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
+
+  const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
+  const [slugManual, setSlugManual] = useState(true);
+  const [category, setCategory] = useState("");
+  const [excerpt, setExcerpt] = useState("");
+  const [body, setBody] = useState("");
+  const [coverImage, setCoverImage] = useState("");
+  const [publishedAt, setPublishedAt] = useState("");
+  const [isPublished, setIsPublished] = useState(false);
+  const [originalSlug, setOriginalSlug] = useState("");
+
+  useEffect(() => {
+    if (!token) { router.push("/admin/login"); return; }
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/blog/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => {
+        if (r.status === 404) { setNotFound(true); return null; }
+        if (!r.ok) return Promise.reject();
+        return r.json();
+      })
+      .then((data) => {
+        if (!data) return;
+        setTitle(data.title ?? "");
+        setSlug(data.slug ?? "");
+        setOriginalSlug(data.slug ?? "");
+        setCategory(data.category ?? "");
+        setExcerpt(data.excerpt ?? "");
+        setBody(data.content ?? "");
+        setCoverImage(data.cover_image ?? "");
+        setIsPublished(!!data.is_published);
+        if (data.published_at) {
+          // Convert to datetime-local format
+          const d = new Date(data.published_at);
+          const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+            .toISOString()
+            .slice(0, 16);
+          setPublishedAt(local);
+        }
+      })
+      .catch(() => router.push("/admin/login"))
+      .finally(() => setLoading(false));
+  }, [id, router, token]);
+
+  const showToast = (msg: string, ok = true) => {
+    setToast({ msg, ok });
+    setTimeout(() => setToast(null), 3500);
+  };
+
+  const handleTitleChange = (val: string) => {
+    setTitle(val);
+    if (!slugManual || slug === originalSlug) {
+      // Only auto-update slug if it hasn't been manually changed from the original
+    }
+  };
+
+  const submit = async (publish: boolean) => {
+    if (!title.trim()) {
+      showToast("Title is required.", false);
+      return;
+    }
+    if (!token) { router.push("/admin/login"); return; }
+    setSaving(true);
+    try {
+      const payload: Record<string, any> = {
+        title: title.trim(),
+        slug: slug.trim() || slugify(title),
+        category: category || null,
+        excerpt: excerpt.trim() || null,
+        content: body.trim() || null,
+        cover_image: coverImage.trim() || null,
+        is_published: publish,
+      };
+      if (publish && publishedAt) {
+        payload.published_at = new Date(publishedAt).toISOString();
+      }
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/blog/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        const updated = await res.json();
+        setSlug(updated.slug ?? slug);
+        setOriginalSlug(updated.slug ?? slug);
+        setIsPublished(!!updated.is_published);
+        showToast(publish ? "Post saved and published!" : "Draft saved.");
+      } else {
+        const err = await res.json().catch(() => ({}));
+        showToast(err.detail || "Failed to save post.", false);
+      }
+    } catch {
+      showToast("Network error.", false);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const deletePost = async () => {
+    if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+    if (!token) { router.push("/admin/login"); return; }
+    setDeleting(true);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/blog/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok || res.status === 204) {
+        showToast("Post deleted.");
+        setTimeout(() => router.push("/admin/blog"), 800);
+      } else {
+        showToast("Failed to delete post.", false);
+        setDeleting(false);
+      }
+    } catch {
+      showToast("Network error.", false);
+      setDeleting(false);
+    }
+  };
+
+  if (loading) return <div className="flex items-center justify-center h-64 text-gray-500">Loading…</div>;
+  if (notFound) return (
+    <div className="flex flex-col items-center justify-center h-64 gap-4">
+      <p className="text-gray-500">Blog post not found.</p>
+      <Link href="/admin/blog" className="text-teal-DEFAULT hover:underline text-sm">← Back to Blog Posts</Link>
+    </div>
+  );
+
+  return (
+    <div className="max-w-3xl mx-auto px-4 py-10">
+      {toast && (
+        <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium text-white ${toast.ok ? "bg-teal-DEFAULT" : "bg-red-500"}`}>
+          {toast.msg}
+        </div>
+      )}
+
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <Link href="/admin/blog" className="text-sm text-teal-DEFAULT hover:underline">
+            ← Blog Posts
+          </Link>
+          <h1 className="font-display text-2xl font-bold mt-1">Edit Post</h1>
+          <p className="text-gray-400 text-sm font-mono">{originalSlug}</p>
+        </div>
+        <div className="flex gap-3">
+          <button
+            onClick={() => submit(false)}
+            disabled={saving || deleting}
+            className="px-4 py-2.5 rounded-xl text-sm font-semibold border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+          >
+            {saving ? "Saving…" : "Save Draft"}
+          </button>
+          <button
+            onClick={() => submit(true)}
+            disabled={saving || deleting}
+            className="bg-teal-DEFAULT text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-teal-600 disabled:opacity-50 transition-colors"
+          >
+            {saving ? "Saving…" : "Publish"}
+          </button>
+        </div>
+      </div>
+
+      <div className="space-y-6">
+        {/* Title */}
+        <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">
+            Title <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => handleTitleChange(e.target.value)}
+            placeholder="Post title"
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-DEFAULT"
+          />
+          {/* Slug */}
+          <div className="mt-3">
+            <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-1.5">
+              Slug (URL)
+            </label>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-400 shrink-0">/blog/</span>
+              <input
+                type="text"
+                value={slug}
+                onChange={(e) => { setSlug(e.target.value); setSlugManual(true); }}
+                placeholder="url-slug"
+                className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-teal-DEFAULT"
+              />
+            </div>
+            {slug !== originalSlug && (
+              <p className="text-xs text-amber-600 mt-1">
+                Warning: changing the slug will break existing links to this post.
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Category */}
+        <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">
+            Category
+          </label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-DEFAULT bg-white"
+          >
+            <option value="">— Select a category —</option>
+            {CATEGORIES.map((c) => (
+              <option key={c.value} value={c.value}>{c.label}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Excerpt */}
+        <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">
+            Excerpt
+            <span className="ml-2 text-gray-400 font-normal normal-case">
+              ({excerpt.length}/160 characters)
+            </span>
+          </label>
+          <textarea
+            value={excerpt}
+            onChange={(e) => setExcerpt(e.target.value.slice(0, 160))}
+            rows={3}
+            placeholder="A short summary shown in blog listings and SEO descriptions."
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-DEFAULT resize-none"
+          />
+          <p className="text-xs text-gray-400 mt-1">{160 - excerpt.length} characters remaining</p>
+        </div>
+
+        {/* Body */}
+        <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">
+            Body (Markdown / Plain Text)
+          </label>
+          <textarea
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            rows={18}
+            placeholder="Write your post content here. Markdown is supported."
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-teal-DEFAULT resize-y"
+          />
+        </div>
+
+        {/* Cover Image */}
+        <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">
+            Cover Image URL
+          </label>
+          <input
+            type="url"
+            value={coverImage}
+            onChange={(e) => setCoverImage(e.target.value)}
+            placeholder="https://res.cloudinary.com/..."
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-DEFAULT"
+          />
+          {coverImage ? (
+            <div className="mt-3 relative h-40 rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={coverImage}
+                alt="Cover preview"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = "none";
+                  showToast("Cover image URL could not be loaded.", false);
+                }}
+              />
+            </div>
+          ) : (
+            <div className="mt-3 h-24 rounded-xl bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center">
+              <p className="text-gray-400 text-xs">No cover image — paste a URL above</p>
+            </div>
+          )}
+        </div>
+
+        {/* Publish settings */}
+        <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <h2 className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-4">
+            Publish Settings
+          </h2>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-800">Published</p>
+                <p className="text-xs text-gray-500">Toggle to control visibility on the public site.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsPublished((v) => !v)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+                  isPublished ? "bg-teal-DEFAULT" : "bg-gray-200"
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+                    isPublished ? "translate-x-6" : "translate-x-1"
+                  }`}
+                />
+              </button>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-1.5">
+                Published Date
+              </label>
+              <input
+                type="datetime-local"
+                value={publishedAt}
+                onChange={(e) => setPublishedAt(e.target.value)}
+                className="border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-DEFAULT"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom actions */}
+        <div className="flex items-center justify-between pb-4">
+          <button
+            onClick={deletePost}
+            disabled={saving || deleting}
+            className="px-4 py-2.5 rounded-xl text-sm font-semibold bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 disabled:opacity-50 transition-colors"
+          >
+            {deleting ? "Deleting…" : "Delete Post"}
+          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => submit(false)}
+              disabled={saving || deleting}
+              className="px-5 py-2.5 rounded-xl text-sm font-semibold border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+            >
+              {saving ? "Saving…" : "Save Draft"}
+            </button>
+            <button
+              onClick={() => submit(true)}
+              disabled={saving || deleting}
+              className="bg-teal-DEFAULT text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-teal-600 disabled:opacity-50 transition-colors"
+            >
+              {saving ? "Saving…" : "Publish"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

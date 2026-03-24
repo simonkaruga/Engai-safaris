@@ -110,7 +110,7 @@ export default function AdminGuidesPage() {
         </div>
       </div>
 
-      {/* ── Add Guide Form ── */}
+      {/* Add Guide Form */}
       {showForm && (
         <form onSubmit={handleSave} className="bg-white border border-gray-200 rounded-xl p-6 mb-8 space-y-4">
           <h2 className="font-semibold text-gray-900 text-lg mb-2">New Guide Profile</h2>
@@ -194,7 +194,7 @@ export default function AdminGuidesPage() {
         </form>
       )}
 
-      {/* ── Guide List ── */}
+      {/* Guide List */}
       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
         {guides.length === 0 ? (
           <div className="text-center py-16">

@@ -13,47 +13,67 @@ function StarPicker({
   value,
   onChange,
   size = "lg",
+  inline = false,
 }: {
   label: string;
   value: number;
   onChange: (v: number) => void;
   size?: "sm" | "lg";
+  inline?: boolean;
 }) {
   const [hovered, setHovered] = useState(0);
-  const starSize = size === "lg" ? "w-9 h-9" : "w-6 h-6";
+  const starSize = size === "lg" ? "w-8 h-8" : "w-5 h-5";
 
-  return (
-    <div>
-      <p className="text-sm font-semibold text-gray-700 mb-2">{label}</p>
-      <div className="flex items-center gap-1">
-        {[1, 2, 3, 4, 5].map((star) => {
-          const filled = star <= (hovered || value);
-          return (
-            <button
-              key={star}
-              type="button"
-              onClick={() => onChange(star)}
-              onMouseEnter={() => setHovered(star)}
-              onMouseLeave={() => setHovered(0)}
-              className="transition-transform hover:scale-110 focus:outline-none"
-              aria-label={`${star} star${star !== 1 ? "s" : ""}`}
+  const stars = (
+    <div className="flex items-center gap-0.5">
+      {[1, 2, 3, 4, 5].map((star) => {
+        const filled = star <= (hovered || value);
+        return (
+          <button
+            key={star}
+            type="button"
+            onClick={() => onChange(star)}
+            onMouseEnter={() => setHovered(star)}
+            onMouseLeave={() => setHovered(0)}
+            className="transition-transform hover:scale-110 focus:outline-none"
+            aria-label={`${star} star${star !== 1 ? "s" : ""}`}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className={`${starSize} transition-colors ${filled ? "text-gold-DEFAULT" : "text-gray-200"}`}
+              fill="currentColor"
             >
-              <svg
-                viewBox="0 0 24 24"
-                className={`${starSize} transition-colors ${filled ? "text-gold-DEFAULT" : "text-gray-200"}`}
-                fill="currentColor"
-              >
-                <path d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005z" />
-              </svg>
-            </button>
-          );
-        })}
+              <path d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005z" />
+            </svg>
+          </button>
+        );
+      })}
+      {value > 0 && !inline && (
+        <span className="ml-1.5 text-sm font-semibold text-gold-DEFAULT">
+          {["", "Poor", "Fair", "Good", "Great", "Excellent"][value]}
+        </span>
+      )}
+    </div>
+  );
+
+  if (inline) {
+    return (
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-xs font-semibold text-gray-500 w-12 flex-shrink-0">{label}</span>
+        {stars}
         {value > 0 && (
-          <span className="ml-2 text-sm font-semibold text-gold-DEFAULT">
+          <span className="text-xs font-semibold text-gold-DEFAULT w-16 text-right flex-shrink-0">
             {["", "Poor", "Fair", "Good", "Great", "Excellent"][value]}
           </span>
         )}
       </div>
+    );
+  }
+
+  return (
+    <div>
+      <p className="text-sm font-semibold text-gray-700 mb-2">{label}</p>
+      {stars}
     </div>
   );
 }
@@ -131,10 +151,14 @@ export default function ReviewForm({ onSuccess }: { onSuccess?: () => void }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Star ratings */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 bg-gray-50 rounded-2xl p-5">
+      <div className="bg-gray-50 rounded-2xl p-5 space-y-4">
+        {/* Overall — prominent */}
         <StarPicker label="Overall experience" value={rating} onChange={setRating} />
-        <StarPicker label="Guide rating" value={guideRating} onChange={setGuideRating} size="sm" />
-        <StarPicker label="Value for money" value={valueRating} onChange={setValueRating} size="sm" />
+        {/* Sub-ratings — compact inline rows */}
+        <div className="border-t border-gray-200 pt-4 space-y-3">
+          <StarPicker label="Guide" value={guideRating} onChange={setGuideRating} size="sm" inline />
+          <StarPicker label="Value" value={valueRating} onChange={setValueRating} size="sm" inline />
+        </div>
       </div>
 
       {/* Personal details */}

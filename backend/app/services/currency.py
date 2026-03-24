@@ -6,6 +6,7 @@ import logging
 import time
 from typing import Optional
 import httpx
+from app.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ FALLBACK_RATES: dict[str, float] = {
     "USD": 1.0,
     "GBP": 0.79,
     "EUR": 0.92,
-    "KES": 130.0,
+    "KES": settings.USD_TO_KES,
     "AUD": 1.55,
     "CAD": 1.37,
     "CHF": 0.90,

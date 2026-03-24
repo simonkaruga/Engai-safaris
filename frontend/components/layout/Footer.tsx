@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const SAFARIS = [
   ["Classic Safaris", "/safaris?category=classic"],
@@ -25,8 +26,12 @@ const COMPANY = [
   ["Blog", "/blog"],
   ["FAQ", "/faq"],
   ["Contact", "/contact"],
-  ["Privacy Policy", "/privacy-policy"],
-  ["Terms & Conditions", "/terms-conditions"],
+];
+
+const LEGAL = [
+  ["Terms & Conditions", "/terms"],
+  ["Privacy Policy", "/privacy"],
+  ["Cancellation Policy", "/cancellation-policy"],
 ];
 
 const SOCIAL = [
@@ -67,19 +72,17 @@ export default function Footer() {
 
       {/* Main grid */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 pt-16 pb-10">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-14">
-          {/* Brand — spans 2 cols on md */}
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-10 mb-14">
+          {/* Brand — spans 2 cols */}
           <div className="col-span-2 md:col-span-2">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-teal-DEFAULT flex items-center justify-center flex-shrink-0">
-                <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="currentColor">
-                  <path d="M17 8C8 10 5.9 16.17 3.82 21c1.94-.81 4.35-1.27 6.18-1 3-.5 7-3 7-12zm0 0c0 7.73-2.45 10.5-5 12" stroke="currentColor" strokeWidth="0.5" strokeLinecap="round"/>
-                </svg>
-              </div>
-              <div>
-                <span className="font-display font-bold text-lg text-white block leading-none">Engai Safaris</span>
-                <span className="text-[9px] tracking-[0.15em] uppercase text-gray-500 leading-none">Kenya</span>
-              </div>
+            <div className="mb-4">
+              <Image
+                src="/images/logo.png"
+                alt="Engai Safaris"
+                width={160}
+                height={48}
+                className="h-10 w-auto object-contain brightness-0 invert"
+              />
             </div>
             <p className="text-sm text-gray-500 leading-relaxed mb-2">
               En-KAI · Supreme Sky God of the Maasai
@@ -155,6 +158,20 @@ export default function Footer() {
                   Agent Portal →
                 </Link>
               </li>
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <p className="text-xs font-semibold tracking-widest uppercase text-gray-300 mb-5">Legal</p>
+            <ul className="space-y-2.5">
+              {LEGAL.map(([label, href]) => (
+                <li key={href}>
+                  <Link href={href} className="text-sm text-gray-500 hover:text-white transition-colors">
+                    {label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

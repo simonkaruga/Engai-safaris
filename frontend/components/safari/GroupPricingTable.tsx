@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { SafariDetail } from "@/types/api";
 import { useCurrency } from "@/context/CurrencyContext";
 import { formatPrice, CURRENCIES } from "@/lib/currency";
@@ -53,6 +54,14 @@ export default function GroupPricingTable({ safari }: Props) {
       <p className="text-xs text-gray-400 mt-3">
         Group total for the vehicle. Peak season (Jul–Oct) +60%. Low season (Apr–May) −25%.
       </p>
+
+      {/* Solo advisory */}
+      {safari.price_usd_solo && (
+        <div className="mt-3 bg-amber-50 border border-amber-100 rounded-xl p-3 text-xs text-amber-800 leading-relaxed">
+          <p className="font-bold mb-0.5">Travelling solo?</p>
+          <p>Solo rate covers the full private vehicle. You&apos;ll save <strong>40–60%</strong> by joining a <Link href="/group-safaris" className="underline font-semibold hover:text-amber-900">group departure</Link> — same parks, same experience, shared cost.</p>
+        </div>
+      )}
     </div>
   );
 }

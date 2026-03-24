@@ -126,7 +126,7 @@ export default function BookingConfirmationPage({
           </Link>
         </div>
 
-        {/* ── Post-trip review nudge ────────────────────────────── */}
+        {/* Post-Trip Review Nudge */}
         <div className="mt-8 border-t border-gray-100 pt-8">
           <p className="text-center text-xs text-gray-400 uppercase tracking-widest mb-4">
             After your safari, please share your experience

@@ -29,20 +29,16 @@ function LiveViewers({ slug }: { slug: string }) {
 
 interface Props {
   safari: SafariList;
-  /** Fill height of parent — use when inside a fixed-height grid cell */
-  fill?: boolean;
 }
 
-export default function SafariFeaturedCard({ safari, fill = true }: Props) {
+export default function SafariFeaturedCard({ safari }: Props) {
   const { currency, rates } = useCurrency();
   const priceUSD = safari.price_usd_2pax;
 
   return (
     <Link
       href={`/safaris/${safari.slug}`}
-      className={`group relative flex flex-col justify-end overflow-hidden rounded-2xl bg-gray-900 ${
-        fill ? "h-full min-h-[320px]" : "h-[420px]"
-      }`}
+      className="group relative flex flex-col justify-end overflow-hidden rounded-2xl bg-gray-900 h-[420px]"
     >
       {/* Background image */}
       {safari.cover_image && (
@@ -57,7 +53,7 @@ export default function SafariFeaturedCard({ safari, fill = true }: Props) {
       )}
 
       {/* Gradient overlays — top for badges, bottom for text */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/40" />
 
       {/* Live viewer count */}
       <LiveViewers slug={safari.slug} />
@@ -88,11 +84,13 @@ export default function SafariFeaturedCard({ safari, fill = true }: Props) {
           <div>
             {priceUSD ? (
               <>
-                <p className="text-white/50 text-xs mb-0.5">From · 2 people</p>
-                <p className="text-gold-DEFAULT font-bold text-xl">
-                  {formatPrice(priceUSD / 2, currency, rates)}
-                  <span className="text-white/60 text-sm font-normal">/pp</span>
-                </p>
+                <p className="text-white/70 text-xs mb-1.5 font-medium">From · per person</p>
+                <div className="inline-flex items-baseline gap-1 bg-gold-DEFAULT px-3 py-1.5 rounded-xl shadow-gold">
+                  <span className="text-white font-bold text-2xl leading-none">
+                    {formatPrice(priceUSD / 2, currency, rates)}
+                  </span>
+                  <span className="text-white/80 text-xs font-medium">/pp</span>
+                </div>
               </>
             ) : null}
           </div>

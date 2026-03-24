@@ -1,3 +1,4 @@
+import re
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -11,8 +12,16 @@ from datetime import datetime
 router = APIRouter(prefix="/admin/blog", tags=["admin"])
 
 
+def slugify(text: str) -> str:
+    text = text.lower().strip()
+    text = re.sub(r"[^\w\s-]", "", text)
+    text = re.sub(r"[\s_]+", "-", text)
+    text = re.sub(r"-+", "-", text)
+    return text.strip("-")
+
+
 class BlogCreate(BaseModel):
-    slug: str
+    slug: str | None = None
     title: str
     excerpt: str | None = None
     content: str | None = None
@@ -22,6 +31,23 @@ class BlogCreate(BaseModel):
     author: str | None = None
     read_time_min: int | None = None
     is_published: bool = False
+    published_at: str | None = None
+    meta_title: str | None = None
+    meta_desc: str | None = None
+
+
+class BlogUpdate(BaseModel):
+    slug: str | None = None
+    title: str | None = None
+    excerpt: str | None = None
+    content: str | None = None
+    cover_image: str | None = None
+    category: str | None = None
+    tags: list[str] | None = None
+    author: str | None = None
+    read_time_min: int | None = None
+    is_published: bool | None = None
+    published_at: str | None = None
     meta_title: str | None = None
     meta_desc: str | None = None
 
@@ -34,16 +60,89 @@ async def list_posts(db: AsyncSession = Depends(get_db), _=Depends(require_admin
 
 @router.post("", status_code=201)
 async def create_post(data: BlogCreate, db: AsyncSession = Depends(get_db), _=Depends(require_admin)):
-    post = BlogPost(**data.model_dump())
+    slug = data.slug.strip() if data.slug and data.slug.strip() else slugify(data.title)
+
+    # Ensure slug is unique
+    existing = await db.execute(select(BlogPost).where(BlogPost.slug == slug))
+    if existing.scalar_one_or_none():
+        raise HTTPException(409, f"Slug '{slug}' already exists — choose a different slug.")
+
+    post_data = data.model_dump(exclude={"slug", "published_at"})
+    post = BlogPost(**post_data, slug=slug)
+
     if data.is_published:
-        post.published_at = datetime.utcnow()
+        if data.published_at:
+            try:
+                post.published_at = datetime.fromisoformat(data.published_at.replace("Z", "+00:00"))
+            except ValueError:
+                post.published_at = datetime.utcnow()
+        else:
+            post.published_at = datetime.utcnow()
+
     db.add(post)
     await db.commit()
+    await db.refresh(post)
+    return post
+
+
+@router.get("/{post_id}")
+async def get_post(post_id: str, db: AsyncSession = Depends(get_db), _=Depends(require_admin)):
+    result = await db.execute(select(BlogPost).where(BlogPost.id == post_id))
+    post = result.scalar_one_or_none()
+    if not post:
+        raise HTTPException(404, "Blog post not found")
+    return post
+
+
+@router.put("/{post_id}")
+async def update_post_full(post_id: str, data: BlogCreate, db: AsyncSession = Depends(get_db), _=Depends(require_admin)):
+    result = await db.execute(select(BlogPost).where(BlogPost.id == post_id))
+    post = result.scalar_one_or_none()
+    if not post:
+        raise HTTPException(404, "Blog post not found")
+
+    new_slug = data.slug.strip() if data.slug and data.slug.strip() else slugify(data.title)
+
+    # Check slug uniqueness (allow keeping same slug)
+    if new_slug != post.slug:
+        existing = await db.execute(select(BlogPost).where(BlogPost.slug == new_slug))
+        if existing.scalar_one_or_none():
+            raise HTTPException(409, f"Slug '{new_slug}' already exists — choose a different slug.")
+
+    post.slug = new_slug
+    post.title = data.title
+    post.excerpt = data.excerpt
+    post.content = data.content
+    post.cover_image = data.cover_image
+    post.category = data.category
+    post.tags = data.tags
+    post.author = data.author
+    post.read_time_min = data.read_time_min
+    post.meta_title = data.meta_title
+    post.meta_desc = data.meta_desc
+
+    # Handle publish state
+    if data.is_published and not post.is_published:
+        # Newly publishing
+        if data.published_at:
+            try:
+                post.published_at = datetime.fromisoformat(data.published_at.replace("Z", "+00:00"))
+            except ValueError:
+                post.published_at = datetime.utcnow()
+        else:
+            post.published_at = datetime.utcnow()
+    elif not data.is_published:
+        post.published_at = None
+
+    post.is_published = data.is_published
+
+    await db.commit()
+    await db.refresh(post)
     return post
 
 
 @router.patch("/{post_id}")
-async def update_post(post_id: str, data: BlogCreate, db: AsyncSession = Depends(get_db), _=Depends(require_admin)):
+async def update_post(post_id: str, data: BlogUpdate, db: AsyncSession = Depends(get_db), _=Depends(require_admin)):
     result = await db.execute(select(BlogPost).where(BlogPost.id == post_id))
     post = result.scalar_one_or_none()
     if not post:
@@ -51,9 +150,12 @@ async def update_post(post_id: str, data: BlogCreate, db: AsyncSession = Depends
     updates = data.model_dump(exclude_none=True)
     if updates.get("is_published") and not post.is_published:
         post.published_at = datetime.utcnow()
+    elif "is_published" in updates and not updates["is_published"]:
+        post.published_at = None
     for k, v in updates.items():
         setattr(post, k, v)
     await db.commit()
+    await db.refresh(post)
     return post
 
 

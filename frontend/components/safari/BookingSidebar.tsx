@@ -166,6 +166,24 @@ export default function BookingSidebar({ safari }: Props) {
           </div>
         </div>
 
+        {/* Solo advisory */}
+        {pax === 1 && (
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-3.5 text-xs leading-relaxed">
+            <p className="font-bold text-amber-800 mb-1 flex items-center gap-1.5">
+              <svg className="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z" />
+              </svg>
+              Solo traveller heads-up
+            </p>
+            <p className="text-amber-700">
+              As a solo traveller you hire the full private vehicle — great for flexibility but the highest per-person cost.
+            </p>
+            <p className="text-amber-700 mt-1.5">
+              <strong>Better value option:</strong> join one of our <Link href="/group-safaris" className="underline font-semibold hover:text-amber-900">group departures</Link> and split the vehicle with other travellers. Same parks, same guides — from <strong>40–60% less</strong>.
+            </p>
+          </div>
+        )}
+
         {/* Date picker */}
         <div>
           <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Departure Date</label>

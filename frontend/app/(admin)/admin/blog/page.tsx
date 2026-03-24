@@ -6,11 +6,22 @@ import Link from "next/link";
 
 const FILTER_TABS = ["all", "published", "drafts"];
 
+const CATEGORY_COLORS: Record<string, string> = {
+  "travel-tips": "bg-blue-100 text-blue-700",
+  wildlife: "bg-green-100 text-green-700",
+  destinations: "bg-teal-100 text-teal-700",
+  culture: "bg-purple-100 text-purple-700",
+  guides: "bg-orange-100 text-orange-700",
+};
+
 export default function AdminBlogPage() {
   const router = useRouter();
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
 
   const token = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
 
@@ -25,36 +36,60 @@ export default function AdminBlogPage() {
       .finally(() => setLoading(false));
   }, [router, token]);
 
-  const togglePublished = async (id: string, currentPublishedAt: string | null) => {
-    const body = currentPublishedAt
-      ? { published_at: null }
-      : { published_at: new Date().toISOString() };
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/blog/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify(body),
-    });
-    if (res.ok) {
-      setPosts((prev) =>
-        prev.map((p) =>
-          p.id === id ? { ...p, published_at: body.published_at } : p
-        )
-      );
+  const showToast = (msg: string, ok = true) => {
+    setToast({ msg, ok });
+    setTimeout(() => setToast(null), 3500);
+  };
+
+  const isPublished = (post: any) => !!post.is_published;
+
+  const togglePublished = async (id: string, current: boolean) => {
+    setTogglingId(id);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/blog/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ is_published: !current }),
+      });
+      if (res.ok) {
+        setPosts((prev) =>
+          prev.map((p) =>
+            p.id === id
+              ? { ...p, is_published: !current, published_at: !current ? new Date().toISOString() : null }
+              : p
+          )
+        );
+        showToast(!current ? "Post published." : "Post unpublished.");
+      } else {
+        showToast("Failed to update status.", false);
+      }
+    } catch {
+      showToast("Network error.", false);
+    } finally {
+      setTogglingId(null);
     }
   };
 
   const deletePost = async (id: string, title: string) => {
     if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/blog/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (res.ok) {
-      setPosts((prev) => prev.filter((p) => p.id !== id));
+    setDeletingId(id);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/blog/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok || res.status === 204) {
+        setPosts((prev) => prev.filter((p) => p.id !== id));
+        showToast("Post deleted.");
+      } else {
+        showToast("Failed to delete post.", false);
+      }
+    } catch {
+      showToast("Network error.", false);
+    } finally {
+      setDeletingId(null);
     }
   };
-
-  const isPublished = (post: any) => !!post.published_at;
 
   const filtered = (() => {
     if (filter === "published") return posts.filter(isPublished);
@@ -66,17 +101,37 @@ export default function AdminBlogPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
+      {/* Toast */}
+      {toast && (
+        <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium text-white transition-all ${toast.ok ? "bg-teal-DEFAULT" : "bg-red-500"}`}>
+          {toast.msg}
+        </div>
+      )}
+
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-display text-3xl font-bold">Blog Posts</h1>
-        <Link href="/admin/dashboard" className="text-sm text-teal-DEFAULT hover:underline">
-          ← Dashboard
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/admin/blog/new"
+            className="bg-teal-DEFAULT text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-teal-600 transition-colors"
+          >
+            + New Post
+          </Link>
+          <Link href="/admin/dashboard" className="text-sm text-teal-DEFAULT hover:underline">
+            ← Dashboard
+          </Link>
+        </div>
       </div>
 
       {/* Filter tabs */}
       <div className="flex flex-wrap gap-2 mb-6">
         {FILTER_TABS.map((tab) => {
-          const count = tab === "all" ? posts.length : tab === "published" ? posts.filter(isPublished).length : posts.filter((p) => !isPublished(p)).length;
+          const count =
+            tab === "all"
+              ? posts.length
+              : tab === "published"
+              ? posts.filter(isPublished).length
+              : posts.filter((p) => !isPublished(p)).length;
           return (
             <button
               key={tab}
@@ -93,48 +148,75 @@ export default function AdminBlogPage() {
 
       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
         {filtered.length === 0 ? (
-          <p className="text-center text-gray-500 py-12">No blog posts found.</p>
+          <div className="text-center text-gray-500 py-12">
+            <p className="mb-4">No blog posts found.</p>
+            <Link
+              href="/admin/blog/new"
+              className="bg-teal-DEFAULT text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-teal-600 transition-colors"
+            >
+              Create your first post
+            </Link>
+          </div>
         ) : (
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
               <tr>
                 <th className="px-5 py-3 text-left">Title</th>
                 <th className="px-5 py-3 text-left">Category</th>
-                <th className="px-5 py-3 text-left">Author</th>
-                <th className="px-5 py-3 text-left">Published At</th>
-                <th className="px-5 py-3 text-left">Status</th>
+                <th className="px-5 py-3 text-left">Published Date</th>
+                <th className="px-5 py-3 text-center">Status</th>
                 <th className="px-5 py-3 text-left">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filtered.map((p) => (
                 <tr key={p.id} className="hover:bg-gray-50">
-                  <td className="px-5 py-3 font-medium max-w-[240px] truncate">{p.title}</td>
-                  <td className="px-5 py-3 text-gray-500 capitalize">{p.category ?? "—"}</td>
-                  <td className="px-5 py-3 text-gray-600">{p.author ?? "—"}</td>
-                  <td className="px-5 py-3 text-gray-500">
-                    {p.published_at ? new Date(p.published_at).toLocaleDateString() : "—"}
+                  <td className="px-5 py-3 font-medium max-w-[260px]">
+                    <span className="truncate block">{p.title}</span>
+                    <span className="text-xs text-gray-400 font-mono truncate block">{p.slug}</span>
                   </td>
                   <td className="px-5 py-3">
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                      isPublished(p) ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"
-                    }`}>
-                      {isPublished(p) ? "published" : "draft"}
-                    </span>
+                    {p.category ? (
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${CATEGORY_COLORS[p.category] ?? "bg-gray-100 text-gray-600"}`}>
+                        {p.category.replace("-", " ")}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400">—</span>
+                    )}
                   </td>
-                  <td className="px-5 py-3 flex items-center gap-3">
+                  <td className="px-5 py-3 text-gray-500 text-xs">
+                    {p.published_at ? new Date(p.published_at).toLocaleDateString() : "—"}
+                  </td>
+                  <td className="px-5 py-3 text-center">
                     <button
-                      onClick={() => togglePublished(p.id, p.published_at)}
-                      className="text-xs text-teal-DEFAULT hover:underline font-semibold"
+                      onClick={() => togglePublished(p.id, !!p.is_published)}
+                      disabled={togglingId === p.id}
+                      title={isPublished(p) ? "Click to unpublish" : "Click to publish"}
+                      className={`px-2.5 py-0.5 rounded-full text-xs font-semibold transition-colors disabled:opacity-50 ${
+                        isPublished(p)
+                          ? "bg-green-100 text-green-700 hover:bg-green-200"
+                          : "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
+                      }`}
                     >
-                      {isPublished(p) ? "Unpublish" : "Publish"}
+                      {togglingId === p.id ? "..." : isPublished(p) ? "published" : "draft"}
                     </button>
-                    <button
-                      onClick={() => deletePost(p.id, p.title)}
-                      className="text-xs text-red-500 hover:text-red-700 font-semibold"
-                    >
-                      Delete
-                    </button>
+                  </td>
+                  <td className="px-5 py-3">
+                    <div className="flex items-center gap-3">
+                      <Link
+                        href={`/admin/blog/${p.id}/edit`}
+                        className="text-xs font-semibold text-teal-DEFAULT hover:underline"
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        onClick={() => deletePost(p.id, p.title)}
+                        disabled={deletingId === p.id}
+                        className="text-xs font-semibold text-red-500 hover:text-red-700 disabled:opacity-50"
+                      >
+                        {deletingId === p.id ? "Deleting..." : "Delete"}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

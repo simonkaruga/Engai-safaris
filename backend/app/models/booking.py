@@ -42,5 +42,6 @@ class Booking(Base):
     itinerary_pdf: Mapped[str | None] = mapped_column(String(500))
     voucher_pdf: Mapped[str | None] = mapped_column(String(500))
     memories_url: Mapped[str | None] = mapped_column(String(500))
+    vehicle_ref: Mapped[str | None] = mapped_column(String(20), nullable=True)
     created_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

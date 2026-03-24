@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /booking/receipt/
+Disallow: /api/
+
+Sitemap: https://www.engaisafaris.com/sitemap.xml

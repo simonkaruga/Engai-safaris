@@ -6,6 +6,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
 import CookieBanner from "@/components/layout/CookieBanner";
+import CookieConsent from "@/components/ui/CookieConsent";
 import LiveChat from "@/components/layout/LiveChat";
 import { CurrencyProvider } from "@/context/CurrencyContext";
 
@@ -54,6 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Footer />
           <WhatsAppButton />
           <CookieBanner />
+          <CookieConsent />
           <LiveChat />
         </CurrencyProvider>
       </body>

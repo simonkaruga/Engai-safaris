@@ -164,8 +164,8 @@ export default async function ReviewsPage() {
             )}
           </div>
 
-          {/* Write a review — 1/3 sticky */}
-          <div className="lg:sticky lg:top-24 lg:self-start">
+          {/* Write a review — 1/3 */}
+          <div>
             <div className="bg-white border border-gray-100 rounded-2xl p-7 shadow-card">
               <p className="eyebrow text-teal-DEFAULT mb-2">Share your experience</p>
               <h2 className="font-display text-2xl font-bold text-gray-900 mb-1">Write a review</h2>

@@ -1,6 +1,10 @@
+import csv
+import io
 import logging
 import urllib.parse
+from datetime import date, datetime
 from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.database import get_db
@@ -27,6 +31,78 @@ async def list_bookings(
         q = q.where(Booking.status == status)
     result = await db.execute(q)
     return result.scalars().all()
+
+
+@router.get("/export-csv")
+async def export_bookings_csv(
+    status: str | None = Query(None),
+    from_date: str | None = Query(None),
+    to_date: str | None = Query(None),
+    db: AsyncSession = Depends(get_db),
+    _=Depends(require_admin),
+):
+    """Export bookings as a CSV file. Optional filters: status, from_date (YYYY-MM-DD), to_date (YYYY-MM-DD)."""
+    q = (
+        select(Booking, Safari)
+        .join(Safari, Booking.safari_id == Safari.id, isouter=True)
+        .order_by(Booking.created_at.desc())
+    )
+    if status:
+        q = q.where(Booking.status == status)
+    if from_date:
+        try:
+            q = q.where(Booking.travel_date >= datetime.strptime(from_date, "%Y-%m-%d").date())
+        except ValueError:
+            pass
+    if to_date:
+        try:
+            q = q.where(Booking.travel_date <= datetime.strptime(to_date, "%Y-%m-%d").date())
+        except ValueError:
+            pass
+
+    result = await db.execute(q)
+    rows = result.all()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow([
+        "Reference", "Guest Name", "Email", "Phone",
+        "Safari", "Travel Date", "Pax", "Season",
+        "Total USD", "Total KES", "Deposit KES", "Balance KES",
+        "Status", "Vehicle Ref", "Promo Code", "Created At",
+    ])
+
+    for booking, safari in rows:
+        writer.writerow([
+            booking.reference or "",
+            booking.customer_name or "",
+            booking.customer_email or "",
+            booking.customer_phone or "",
+            safari.name if safari else "",
+            str(booking.travel_date) if booking.travel_date else "",
+            booking.pax or "",
+            booking.season or "",
+            str(booking.total_usd) if booking.total_usd is not None else "",
+            str(booking.total_kes) if booking.total_kes is not None else "",
+            str(booking.deposit_kes) if booking.deposit_kes is not None else "",
+            str(booking.balance_kes) if booking.balance_kes is not None else "",
+            booking.status or "",
+            booking.vehicle_ref or "",
+            booking.promo_code or "",
+            str(booking.created_at) if booking.created_at else "",
+        ])
+
+    csv_content = output.getvalue()
+    output.close()
+
+    today = date.today().isoformat()
+    filename = f"engai-bookings-{today}.csv"
+
+    return StreamingResponse(
+        iter([csv_content]),
+        media_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 @router.get("/{booking_id}")

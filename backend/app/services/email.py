@@ -345,6 +345,26 @@ async def send_balance_payment_email(
     })
 
 
+async def send_enquiry_reply(to: str, name: str, message: str) -> None:
+    """Admin-triggered reply to a customer enquiry."""
+    resend.Emails.send({
+        "from": FROM, "to": to,
+        "subject": "Re: Your Engai Safaris Enquiry",
+        "html": f"""
+        <div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;color:#1a1a1a">
+        <h2 style="color:#0D7A5F">Hi {name},</h2>
+        <div style="white-space:pre-line;line-height:1.7">{message}</div>
+        <hr style="border:none;border-top:1px solid #e5e7eb;margin:32px 0"/>
+        <p style="color:#888;font-size:13px">
+        Questions? WhatsApp us: <a href="https://wa.me/{_WA.replace('+','')}" style="color:#0D7A5F">{_WA}</a><br/>
+        Or browse our safaris: <a href="{_SITE}/safaris" style="color:#0D7A5F">engaisafaris.com/safaris</a>
+        </p>
+        <p style="margin-top:24px;color:#666">— The Engai Safaris Team</p>
+        </div>
+        """,
+    })
+
+
 async def send_return_offer(to: str, name: str, reference: str) -> None:
     """T+30 days — come back offer"""
     resend.Emails.send({
