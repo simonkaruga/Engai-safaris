@@ -5,6 +5,7 @@ import Image from "next/image";
 import type { SafariList } from "@/types/api";
 import { useCurrency } from "@/context/CurrencyContext";
 import { formatPrice } from "@/lib/currency";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface Props {
   safari: SafariList;
@@ -12,6 +13,7 @@ interface Props {
 
 export default function SafariCard({ safari }: Props) {
   const { currency, rates } = useCurrency();
+  const { t } = useLanguage();
   const totalUSD = safari.price_usd_2pax;
   const priceUSD = totalUSD ? totalUSD / 2 : null;
 
@@ -37,7 +39,7 @@ export default function SafariCard({ safari }: Props) {
         {priceUSD && (
           <div className="absolute top-3 right-3 z-10 bg-gold-DEFAULT text-white font-bold text-sm px-3 py-1.5 rounded-xl shadow-gold leading-none">
             {formatPrice(priceUSD, currency, rates)}
-            <span className="text-white/80 text-[10px] font-normal ml-0.5">/pp</span>
+            <span className="text-white/80 text-[10px] font-normal ml-0.5">{t("booking.perPersonShort")}</span>
           </div>
         )}
 
@@ -70,14 +72,14 @@ export default function SafariCard({ safari }: Props) {
         <div className="flex items-end justify-between pt-3 border-t border-gray-100">
           <div>
             <p className="text-[10px] text-gray-400 mb-0.5 uppercase tracking-wide">
-              {safari.is_shared ? "Fixed / person" : "From / person"}
+              {safari.is_shared ? `Fixed${t("booking.perPersonShort")}` : `${t("booking.from")}${t("booking.perPersonShort")}`}
             </p>
             {priceUSD ? (
               <p className="font-bold text-teal-DEFAULT text-lg leading-none">
                 {formatPrice(priceUSD, currency, rates)}
               </p>
             ) : (
-              <p className="text-gray-400 text-sm">Contact us</p>
+              <p className="text-gray-400 text-sm">{t("common.contactUs")}</p>
             )}
             {currency !== "USD" && priceUSD ? (
               <p className="text-[10px] text-gray-400 mt-0.5">
@@ -86,7 +88,7 @@ export default function SafariCard({ safari }: Props) {
             ) : null}
           </div>
           <span className="inline-flex items-center gap-1 text-teal-DEFAULT text-xs font-semibold group-hover:gap-2 transition-all">
-            View
+            {t("booking.viewDetails")}
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
             </svg>

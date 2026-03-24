@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { submitReview } from "@/lib/api";
+import { useLanguage } from "@/context/LanguageContext";
 
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
@@ -79,6 +80,7 @@ function StarPicker({
 }
 
 export default function ReviewForm({ onSuccess }: { onSuccess?: () => void }) {
+  const { t } = useLanguage();
   const [rating, setRating] = useState(0);
   const [guideRating, setGuideRating] = useState(0);
   const [valueRating, setValueRating] = useState(0);
@@ -137,9 +139,9 @@ export default function ReviewForm({ onSuccess }: { onSuccess?: () => void }) {
             </svg>
           </div>
         </div>
-        <h3 className="font-display text-2xl font-bold text-gray-900 mb-2">Thank you!</h3>
+        <h3 className="font-display text-2xl font-bold text-gray-900 mb-2">{t("review.thankYou")}</h3>
         <p className="text-gray-500 text-sm max-w-sm mx-auto leading-relaxed">
-          Your review has been submitted and will appear after our team approves it — usually within 24 hours.
+          {t("review.pending")}
         </p>
       </div>
     );
@@ -164,7 +166,7 @@ export default function ReviewForm({ onSuccess }: { onSuccess?: () => void }) {
       {/* Personal details */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
-          <label className={labelClass}>Your Name <span className="text-maasai-DEFAULT">*</span></label>
+          <label className={labelClass}>{t("review.name")} <span className="text-maasai-DEFAULT">*</span></label>
           <input
             name="author_name"
             value={form.author_name}
@@ -187,7 +189,7 @@ export default function ReviewForm({ onSuccess }: { onSuccess?: () => void }) {
 
       {/* Trip month */}
       <div>
-        <label className={labelClass}>When did you travel?</label>
+        <label className={labelClass}>{t("review.travelDate")}</label>
         <select name="trip_month" value={form.trip_month} onChange={handleChange} className={inputClass}>
           <option value="">Select month</option>
           {MONTHS.map((m) => <option key={m} value={m}>{m}</option>)}
@@ -208,7 +210,7 @@ export default function ReviewForm({ onSuccess }: { onSuccess?: () => void }) {
 
       {/* Body */}
       <div>
-        <label className={labelClass}>Your review <span className="text-maasai-DEFAULT">*</span></label>
+        <label className={labelClass}>{t("review.reviewText")} <span className="text-maasai-DEFAULT">*</span></label>
         <textarea
           name="body"
           value={form.body}
@@ -241,11 +243,11 @@ export default function ReviewForm({ onSuccess }: { onSuccess?: () => void }) {
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
-            Submitting...
+            {t("review.submitting")}
           </>
         ) : (
           <>
-            Submit Review
+            {t("review.submit")}
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
             </svg>

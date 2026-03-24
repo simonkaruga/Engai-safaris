@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import type { SafariList } from "@/types/api";
 import { useCurrency } from "@/context/CurrencyContext";
 import { formatPrice } from "@/lib/currency";
+import { useLanguage } from "@/context/LanguageContext";
 
 function LiveViewers({ slug }: { slug: string }) {
   const [count, setCount] = useState<number | null>(null);
@@ -33,6 +34,7 @@ interface Props {
 
 export default function SafariFeaturedCard({ safari }: Props) {
   const { currency, rates } = useCurrency();
+  const { t } = useLanguage();
   const priceUSD = safari.price_usd_2pax;
 
   return (
@@ -84,19 +86,19 @@ export default function SafariFeaturedCard({ safari }: Props) {
           <div>
             {priceUSD ? (
               <>
-                <p className="text-white/70 text-xs mb-1.5 font-medium">From · per person</p>
+                <p className="text-white/70 text-xs mb-1.5 font-medium">{t("booking.from")} · {t("booking.perPerson")}</p>
                 <div className="inline-flex items-baseline gap-1 bg-gold-DEFAULT px-3 py-1.5 rounded-xl shadow-gold">
                   <span className="text-white font-bold text-2xl leading-none">
                     {formatPrice(priceUSD / 2, currency, rates)}
                   </span>
-                  <span className="text-white/80 text-xs font-medium">/pp</span>
+                  <span className="text-white/80 text-xs font-medium">{t("booking.perPersonShort")}</span>
                 </div>
               </>
             ) : null}
           </div>
 
           <span className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm hover:bg-teal-DEFAULT text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors group-hover:bg-teal-DEFAULT">
-            View Safari
+            {t("booking.viewDetails")}
             <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useLanguage } from "@/context/LanguageContext";
 
 const CONSENT_KEY = "cookie_consent";
 
@@ -30,6 +31,7 @@ function loadAnalytics() {
 }
 
 export default function CookieBanner() {
+  const { t } = useLanguage();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -60,21 +62,21 @@ export default function CookieBanner() {
     <div role="dialog" aria-label="Cookie consent" className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900 text-white p-4 md:p-5 shadow-2xl">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <p className="text-sm text-gray-300 max-w-2xl leading-relaxed">
-          We use cookies to improve your experience and analyse site traffic. Your data is never sold.{" "}
-          <Link href="/privacy-policy" className="text-teal-DEFAULT hover:underline font-medium">Privacy Policy</Link>
+          {t("cookie.message")}{" "}
+          <Link href="/privacy-policy" className="text-teal-DEFAULT hover:underline font-medium">{t("cookie.learnMore")}</Link>
         </p>
         <div className="flex gap-3 flex-shrink-0">
           <button
             onClick={decline}
             className="text-sm text-gray-400 hover:text-white px-4 py-2 border border-gray-600 rounded-lg transition-colors"
           >
-            Decline
+            {t("cookie.decline")}
           </button>
           <button
             onClick={accept}
             className="text-sm bg-teal-DEFAULT hover:bg-teal-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
           >
-            Accept All
+            {t("cookie.accept")}
           </button>
         </div>
       </div>

@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function NewsletterForm() {
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
 
@@ -30,7 +32,7 @@ export default function NewsletterForm() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
           </svg>
         </div>
-        <p className="text-teal-DEFAULT font-semibold text-sm">Guide sent! Check your inbox.</p>
+        <p className="text-teal-DEFAULT font-semibold text-sm">{t("newsletter.success")}</p>
       </div>
     );
   }
@@ -42,7 +44,7 @@ export default function NewsletterForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
-        placeholder="your@email.com"
+        placeholder={t("newsletter.placeholder")}
         className="flex-1 border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-DEFAULT focus:border-transparent bg-white"
       />
       <button
@@ -50,7 +52,7 @@ export default function NewsletterForm() {
         disabled={status === "loading"}
         className="bg-teal-DEFAULT hover:bg-teal-600 text-white px-6 py-3.5 rounded-xl font-semibold text-sm transition-all hover:shadow-teal whitespace-nowrap disabled:opacity-60"
       >
-        {status === "loading" ? "Sending…" : "Send My Guide"}
+        {status === "loading" ? t("newsletter.subscribing") : t("newsletter.subscribe")}
       </button>
       {status === "error" && (
         <p className="text-red-500 text-xs mt-1 sm:col-span-2">Something went wrong. Please try again.</p>
