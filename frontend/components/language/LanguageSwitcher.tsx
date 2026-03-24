@@ -12,7 +12,7 @@ export default function LanguageSwitcher() {
   return (
     <div className="relative">
       <button
-        onClick={() => setOpen(!open)}
+        onMouseDown={(e) => { e.preventDefault(); setOpen((o) => !o); }}
         aria-label="Change language"
         className="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-teal-DEFAULT px-2 py-1.5 rounded-md hover:bg-gray-50 transition-colors"
       >
@@ -28,8 +28,8 @@ export default function LanguageSwitcher() {
 
       {open && (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full mt-1 z-50 w-44 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+          <div className="fixed inset-0 z-40" onMouseDown={() => setOpen(false)} />
+          <div className="absolute right-0 top-full mt-1 z-50 w-44 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden" onClick={(e) => e.stopPropagation()}>
             <div className="p-1.5">
               {(Object.keys(LOCALES) as Locale[]).map((code) => {
                 const l = LOCALES[code];
@@ -37,7 +37,7 @@ export default function LanguageSwitcher() {
                 return (
                   <button
                     key={code}
-                    onClick={() => { setLocale(code); setOpen(false); }}
+                    onClick={(e) => { e.stopPropagation(); setLocale(code); setOpen(false); }}
                     className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm rounded-lg transition-colors text-left ${
                       isActive
                         ? "bg-teal-DEFAULT/10 text-teal-DEFAULT font-semibold"
