@@ -61,7 +61,7 @@ export default function AboutContent() {
         </div>
         <div className="relative max-w-7xl mx-auto">
           <div className="max-w-3xl">
-            <p className="eyebrow text-teal-DEFAULT mb-4">{t("about.story")}</p>
+            <p className="eyebrow text-teal-DEFAULT mb-4">{t("about.ourStory")}</p>
             <h1 className="font-display text-5xl md:text-7xl font-bold text-gray-900 leading-[0.92] mb-6">
               {t("about.builtBy").split(".")[0]}.<br />
               <span className="italic text-gradient-gold">{t("about.builtBy").split(". ")[1]}</span>

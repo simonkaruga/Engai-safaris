@@ -217,153 +217,63 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Review Platforms */}
-      <section className="bg-white border-b border-gray-100 py-8">
-        <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
-            {/* Google Reviews */}
-            <a
-              href="https://g.page/r/engaisafaris/review"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-5 py-3 hover:border-gray-300 hover:shadow-card transition-all"
-            >
-              <svg viewBox="0 0 48 48" className="w-7 h-7 flex-shrink-0">
-                <path fill="#4285F4" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/>
-                <path fill="#34A853" d="M6.3 14.7l7 5.1C15.1 16.6 19.2 14 24 14c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 16.3 2 9.7 7.4 6.3 14.7z"/>
-                <path fill="#FBBC05" d="M24 46c5.5 0 10.6-1.8 14.5-5l-6.7-5.5C29.8 37 27 38 24 38c-6.1 0-11.2-4.1-13-9.7l-7.1 5.5C7.6 41.5 15.3 46 24 46z"/>
-                <path fill="#EA4335" d="M44.5 20H24v8.5h11.8c-.9 2.5-2.6 4.7-4.8 6.2l6.7 5.5C42.2 36.4 46 30.7 46 24c0-1.3-.2-2.7-.5-4z"/>
-              </svg>
-              <div>
-                <div className="flex items-center gap-1">
-                  {[1,2,3,4,5].map(i => (
-                    <svg key={i} className="w-3.5 h-3.5 text-[#FBBC05]" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-xs font-semibold text-gray-800 mt-0.5">4.9 on Google</p>
-              </div>
-            </a>
-
-            {/* TripAdvisor */}
-            <a
-              href="https://www.tripadvisor.com/engaisafaris"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-5 py-3 hover:border-gray-300 hover:shadow-card transition-all"
-            >
-              <svg viewBox="0 0 60 60" className="w-7 h-7 flex-shrink-0">
-                <circle cx="15" cy="35" r="10" fill="#34E0A1"/>
-                <circle cx="45" cy="35" r="10" fill="#34E0A1"/>
-                <circle cx="30" cy="20" r="8" fill="#fff" stroke="#34E0A1" strokeWidth="2"/>
-                <path d="M5 25 Q15 10 30 12 Q45 10 55 25" stroke="#34E0A1" strokeWidth="2" fill="none"/>
-                <circle cx="15" cy="35" r="4" fill="#fff"/>
-                <circle cx="45" cy="35" r="4" fill="#fff"/>
-              </svg>
-              <div>
-                <div className="flex items-center gap-0.5">
-                  {[1,2,3,4,5].map(i => (
-                    <div key={i} className="w-3 h-3 rounded-full bg-[#34E0A1]" />
-                  ))}
-                </div>
-                <p className="text-xs font-semibold text-gray-800 mt-0.5">5.0 on TripAdvisor</p>
-              </div>
-            </a>
-
-            {/* SafariBookings */}
-            <a
-              href="https://www.safaribookings.com/engaisafaris"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-5 py-3 hover:border-gray-300 hover:shadow-card transition-all"
-            >
-              <div className="w-7 h-7 rounded-full bg-[#E07B00] flex items-center justify-center flex-shrink-0">
-                <span className="text-white text-xs font-bold">SB</span>
-              </div>
-              <div>
-                <div className="flex items-center gap-1">
-                  {[1,2,3,4,5].map(i => (
-                    <svg key={i} className="w-3.5 h-3.5 text-[#E07B00]" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-xs font-semibold text-gray-800 mt-0.5">Top Operator 2025</p>
-              </div>
-            </a>
-          </div>
-        </div>
-      </section>
-
       {/* Trust Credentials */}
       <section className="bg-white border-b border-gray-100 py-10">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <p className="text-center text-xs font-semibold tracking-[0.25em] uppercase text-gray-400 mb-8">Why guests trust Engai</p>
-          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
+          <p className="text-center text-[11px] font-semibold tracking-[0.22em] uppercase text-gray-400 mb-7">Trusted by 300+ verified guests</p>
+          <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4">
             {/* TRA Licensed */}
-            <div className="flex items-center gap-3 px-5 py-3 border border-gray-100 rounded-xl">
-              <div className="w-8 h-8 rounded-full bg-teal-50 border border-teal-100 flex items-center justify-center flex-shrink-0">
-                <svg className="w-4 h-4 text-teal-DEFAULT" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.955 11.955 0 003 10c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-xs font-bold text-gray-800">TRA Class A Licensed</p>
-                <p className="text-[10px] text-gray-400">Tourism Regulatory Authority</p>
-              </div>
+            <div className="flex items-center gap-2.5 px-4 py-2.5 bg-teal-50 border border-teal-100 rounded-full">
+              <svg className="w-4 h-4 text-teal-DEFAULT flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.955 11.955 0 003 10c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286z" />
+              </svg>
+              <span className="text-xs font-semibold text-teal-800">TRA Class A Licensed</span>
             </div>
-            {/* Google 4.9 */}
+            {/* Google */}
             <a href="https://g.page/r/engaisafaris/review" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-3 px-5 py-3 border border-gray-100 rounded-xl hover:border-gray-200 hover:shadow-sm transition-all">
-              <svg viewBox="0 0 48 48" className="w-7 h-7 flex-shrink-0">
+              className="flex items-center gap-2.5 px-4 py-2.5 bg-white border border-gray-200 rounded-full hover:border-gray-300 hover:shadow-sm transition-all">
+              <svg viewBox="0 0 48 48" className="w-4 h-4 flex-shrink-0">
                 <path fill="#4285F4" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/>
                 <path fill="#34A853" d="M6.3 14.7l7 5.1C15.1 16.6 19.2 14 24 14c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 16.3 2 9.7 7.4 6.3 14.7z"/>
                 <path fill="#FBBC05" d="M24 46c5.5 0 10.6-1.8 14.5-5l-6.7-5.5C29.8 37 27 38 24 38c-6.1 0-11.2-4.1-13-9.7l-7.1 5.5C7.6 41.5 15.3 46 24 46z"/>
                 <path fill="#EA4335" d="M44.5 20H24v8.5h11.8c-.9 2.5-2.6 4.7-4.8 6.2l6.7 5.5C42.2 36.4 46 30.7 46 24c0-1.3-.2-2.7-.5-4z"/>
               </svg>
-              <div>
-                <p className="text-xs font-bold text-gray-800">4.9★ Google Reviews</p>
-                <p className="text-[10px] text-gray-400">Verified guest reviews</p>
-              </div>
+              <span className="text-xs font-semibold text-gray-700">4.9★ Google</span>
             </a>
-            {/* TripAdvisor 5.0 */}
+            {/* TripAdvisor */}
             <a href="https://www.tripadvisor.com/engaisafaris" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-3 px-5 py-3 border border-gray-100 rounded-xl hover:border-gray-200 hover:shadow-sm transition-all">
-              <svg viewBox="0 0 60 60" className="w-7 h-7 flex-shrink-0">
+              className="flex items-center gap-2.5 px-4 py-2.5 bg-white border border-gray-200 rounded-full hover:border-gray-300 hover:shadow-sm transition-all">
+              <svg viewBox="0 0 60 60" className="w-4 h-4 flex-shrink-0">
                 <circle cx="15" cy="35" r="10" fill="#34E0A1"/><circle cx="45" cy="35" r="10" fill="#34E0A1"/>
                 <circle cx="30" cy="20" r="8" fill="#fff" stroke="#34E0A1" strokeWidth="2"/>
                 <path d="M5 25 Q15 10 30 12 Q45 10 55 25" stroke="#34E0A1" strokeWidth="2" fill="none"/>
                 <circle cx="15" cy="35" r="4" fill="#fff"/><circle cx="45" cy="35" r="4" fill="#fff"/>
               </svg>
-              <div>
-                <p className="text-xs font-bold text-gray-800">5.0 TripAdvisor</p>
-                <p className="text-[10px] text-gray-400">Certificate of Excellence</p>
-              </div>
+              <span className="text-xs font-semibold text-gray-700">5.0 TripAdvisor</span>
             </a>
             {/* SafariBookings */}
             <a href="https://www.safaribookings.com/engaisafaris" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-3 px-5 py-3 border border-gray-100 rounded-xl hover:border-gray-200 hover:shadow-sm transition-all">
-              <div className="w-7 h-7 rounded-full bg-[#E07B00] flex items-center justify-center flex-shrink-0">
-                <span className="text-white text-[10px] font-bold">SB</span>
+              className="flex items-center gap-2.5 px-4 py-2.5 bg-white border border-gray-200 rounded-full hover:border-gray-300 hover:shadow-sm transition-all">
+              <div className="w-4 h-4 rounded-full bg-[#E07B00] flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-[8px] font-bold leading-none">SB</span>
               </div>
-              <div>
-                <p className="text-xs font-bold text-gray-800">SafariBookings</p>
-                <p className="text-[10px] text-gray-400">Top Operator 2025</p>
-              </div>
+              <span className="text-xs font-semibold text-gray-700">Top Operator 2025</span>
             </a>
             {/* Kenya-owned */}
-            <div className="flex items-center gap-3 px-5 py-3 border border-gray-100 rounded-xl">
-              <div className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0 border border-gray-200">
-                {/* Kenya flag colours */}
-                <div className="w-full h-1/3 bg-[#006600]" />
-                <div className="w-full h-1/3 bg-[#cc0000]" />
-                <div className="w-full h-1/3 bg-black" />
+            <div className="flex items-center gap-2.5 px-4 py-2.5 bg-white border border-gray-200 rounded-full">
+              <div className="w-4 h-4 rounded-full overflow-hidden flex-shrink-0 border border-gray-200 flex flex-col">
+                <div className="flex-1 bg-[#006600]" />
+                <div className="flex-1 bg-[#cc0000]" />
+                <div className="flex-1 bg-black" />
               </div>
-              <div>
-                <p className="text-xs font-bold text-gray-800">Kenya-Owned &amp; Operated</p>
-                <p className="text-[10px] text-gray-400">No international markup</p>
-              </div>
+              <span className="text-xs font-semibold text-gray-700">Kenya-Owned &amp; Operated</span>
+            </div>
+            {/* No hidden fees */}
+            <div className="flex items-center gap-2.5 px-4 py-2.5 bg-white border border-gray-200 rounded-full">
+              <svg className="w-4 h-4 text-gray-500 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185zM9.75 9h.008v.008H9.75V9zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 4.5h.008v.008h-.008V13.5zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+              </svg>
+              <span className="text-xs font-semibold text-gray-700">No hidden fees — ever</span>
             </div>
           </div>
         </div>
@@ -477,27 +387,32 @@ export default async function HomePage() {
             {reviews.slice(0, 3).map((review) => (
               <div
                 key={review.id}
-                className="bg-white border border-gray-100 rounded-2xl p-7 shadow-card hover:shadow-card-hover transition-shadow"
+                className="bg-white border border-gray-100 rounded-2xl p-6 shadow-card hover:shadow-card-hover transition-shadow flex flex-col"
               >
-                <div className="flex gap-0.5 mb-4">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <svg
-                      key={i}
-                      className={`w-4 h-4 ${i < review.rating ? "text-gold-DEFAULT" : "text-gray-200"}`}
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
+                {/* Stars + quote icon row */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex gap-0.5">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <svg
+                        key={i}
+                        className={`w-3.5 h-3.5 ${i < review.rating ? "text-gold-DEFAULT" : "text-gray-200"}`}
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <svg className="w-7 h-7 text-teal-100" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+                  </svg>
                 </div>
-                <p className="font-display text-6xl text-teal-100 leading-none -mb-4 -mt-2 select-none">"</p>
                 {review.title && (
-                  <h4 className="font-semibold text-gray-900 mb-2 text-base">{review.title}</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2 text-sm leading-snug">{review.title}</h4>
                 )}
-                <p className="text-gray-500 text-sm leading-relaxed line-clamp-4 mb-5">{review.body}</p>
+                <p className="text-gray-500 text-sm leading-relaxed line-clamp-4 flex-1 mb-5">{review.body}</p>
                 <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                  <div className="w-9 h-9 rounded-full bg-teal-DEFAULT flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                     {review.author_name.charAt(0)}
                   </div>
                   <div>

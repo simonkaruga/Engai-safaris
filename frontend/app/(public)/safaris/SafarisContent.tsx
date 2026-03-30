@@ -117,18 +117,20 @@ export default function SafarisContent({ safaris, initialCategory }: Props) {
   return (
     <>
       {/* Hero */}
-      <section className="bg-gradient-to-br from-teal-50 via-white to-stone-100 pt-20 pb-16 px-4 md:px-6 relative overflow-hidden border-b border-stone-100">
-        <div className="absolute inset-0 opacity-[0.05]">
-          <Image src="/images/safaris/3-day-masai-mara.png" alt="" fill className="object-cover" sizes="100vw" />
+      <section className="relative bg-gray-950 pt-36 pb-20 px-4 md:px-6 overflow-hidden border-b border-stone-800">
+        <div className="absolute inset-0">
+          <Image src="/images/safaris/3-day-masai-mara.png" alt="" fill className="object-cover opacity-30" sizes="100vw" />
         </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-950/90 via-gray-950/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-transparent to-gray-950/40" />
         <div className="relative max-w-7xl mx-auto">
           <div className="max-w-2xl">
-            <p className="eyebrow text-teal-DEFAULT mb-4">{t("safaris.subtitle")}</p>
-            <h1 className="font-display text-5xl md:text-6xl font-bold text-gray-900 leading-tight mb-5">
+            <p className="eyebrow text-teal-300 mb-4">{t("safaris.subtitle")}</p>
+            <h1 className="font-display text-5xl md:text-6xl font-bold text-white leading-tight mb-5">
               Kenya Safari<br />
               <span className="italic text-gradient-gold">Packages.</span>
             </h1>
-            <p className="text-gray-500 text-lg leading-relaxed">
+            <p className="text-white/65 text-lg leading-relaxed max-w-xl">
               {t("safaris.subtext")}
             </p>
           </div>

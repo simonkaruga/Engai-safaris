@@ -40,7 +40,7 @@ export default function SafariFeaturedCard({ safari }: Props) {
   return (
     <Link
       href={`/safaris/${safari.slug}`}
-      className="group relative flex flex-col justify-end overflow-hidden rounded-2xl bg-gray-900 h-[420px]"
+      className="group relative flex flex-col justify-end overflow-hidden rounded-2xl bg-gray-900 min-h-[380px]"
     >
       {/* Background image */}
       {safari.cover_image && (
@@ -55,7 +55,7 @@ export default function SafariFeaturedCard({ safari }: Props) {
       )}
 
       {/* Gradient overlays — top for badges, bottom for text */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/40" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-black/30" />
 
       {/* Live viewer count */}
       <LiveViewers slug={safari.slug} />
