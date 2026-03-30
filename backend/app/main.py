@@ -19,7 +19,7 @@ from app.routers.admin import (
     safaris as admin_safaris, guides as admin_guides, blog as admin_blog,
     destinations as admin_destinations, reviews as admin_reviews,
     bookings as admin_bookings, agents as admin_agents, affiliates as admin_affiliates,
-    vehicles as admin_vehicles,
+    vehicles as admin_vehicles, upload as admin_upload,
 )
 
 limiter = Limiter(key_func=get_remote_address)
@@ -77,6 +77,7 @@ app.include_router(admin_bookings.router, prefix="/api")
 app.include_router(admin_agents.router, prefix="/api")
 app.include_router(admin_affiliates.router, prefix="/api")
 app.include_router(admin_vehicles.router, prefix="/api")
+app.include_router(admin_upload.router, prefix="/api")
 
 
 @app.get("/health")

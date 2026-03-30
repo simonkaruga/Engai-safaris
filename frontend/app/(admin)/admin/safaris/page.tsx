@@ -111,6 +111,13 @@ export default function AdminSafarisPage() {
                     />
                   </td>
                   <td className="px-5 py-3">
+                    <div className="flex items-center gap-2">
+                    <Link
+                      href={`/admin/safaris/${s.id}/edit`}
+                      className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-teal-200 bg-teal-50 text-teal-DEFAULT hover:bg-teal-DEFAULT hover:text-white transition-colors"
+                    >
+                      Edit
+                    </Link>
                     <Link
                       href={`/admin/safaris/${s.id}/photos`}
                       className={`text-xs font-semibold px-2.5 py-1 rounded-lg border transition-colors ${
@@ -121,6 +128,7 @@ export default function AdminSafarisPage() {
                     >
                       {s.cover_image ? "Edit" : "⚠ Add Photos"}
                     </Link>
+                    </div>
                   </td>
                 </tr>
               ))}
