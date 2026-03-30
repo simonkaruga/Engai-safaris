@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -135,7 +135,8 @@ export default function AdminEnquiriesPage() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filtered.map((e) => (
-                <tr key={e.id} className="hover:bg-gray-50">
+                <React.Fragment key={e.id}>
+                <tr className="hover:bg-gray-50">
                     <td className="px-5 py-3 font-mono text-xs">{e.reference}</td>
                     <td className="px-5 py-3 font-medium">{e.customer_name}</td>
                     <td className="px-5 py-3 text-gray-500">{e.customer_email}</td>
@@ -206,6 +207,7 @@ export default function AdminEnquiriesPage() {
                       </td>
                     </tr>
                   )}
+                </React.Fragment>
               ))}
             </tbody>
           </table>

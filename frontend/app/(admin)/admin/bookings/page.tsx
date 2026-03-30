@@ -252,8 +252,7 @@ export default function AdminBookingsPage() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filtered.map((b) => (
-                <>
-                  <tr key={b.id} className="hover:bg-gray-50">
+                <tr key={b.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 font-mono text-xs text-teal-DEFAULT font-semibold">
                       {b.reference || b.id?.slice(0, 8)}
                     </td>
@@ -397,7 +396,8 @@ export default function AdminBookingsPage() {
                       </td>
                     </tr>
                   )}
-              ))}            </tbody>
+              ))}
+            </tbody>
           </table>
         )}
       </div>
