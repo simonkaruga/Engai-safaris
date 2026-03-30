@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/layout/Header";
@@ -11,7 +10,16 @@ import LiveChat from "@/components/layout/LiveChat";
 import { CurrencyProvider } from "@/context/CurrencyContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+const inter = localFont({
+  variable: "--font-inter",
+  display: "swap",
+  src: [
+    { path: "../public/fonts/inter-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/inter-500-normal.woff2", weight: "500", style: "normal" },
+    { path: "../public/fonts/inter-600-normal.woff2", weight: "600", style: "normal" },
+    { path: "../public/fonts/inter-700-normal.woff2", weight: "700", style: "normal" },
+  ],
+});
 const playfair = localFont({
   variable: "--font-playfair",
   display: "swap",

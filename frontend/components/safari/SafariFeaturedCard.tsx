@@ -2,31 +2,13 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { SafariList } from "@/types/api";
 import { useCurrency } from "@/context/CurrencyContext";
 import { formatPrice } from "@/lib/currency";
 import { useLanguage } from "@/context/LanguageContext";
 
-function LiveViewers({ slug }: { slug: string }) {
-  const [count, setCount] = useState<number | null>(null);
-  useEffect(() => {
-    const seed = slug.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
-    const base = 6 + (seed % 19);
-    const timeSlot = Math.floor(Date.now() / (8 * 60 * 1000));
-    setCount(base + ((timeSlot + seed) % 5));
-  }, [slug]);
-  if (!count) return null;
-  return (
-    <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 bg-black/40 backdrop-blur-sm border border-white/20 text-white text-[10px] font-semibold px-2.5 py-1.5 rounded-full">
-      <span className="relative flex h-1.5 w-1.5">
-        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-400" />
-      </span>
-      {count} viewing
-    </div>
-  );
-}
+
 
 interface Props {
   safari: SafariList;
@@ -57,8 +39,7 @@ export default function SafariFeaturedCard({ safari }: Props) {
       {/* Gradient overlays — top for badges, bottom for text */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-black/30" />
 
-      {/* Live viewer count */}
-      <LiveViewers slug={safari.slug} />
+
 
       {/* Top badges */}
       <div className="absolute top-4 left-4 flex gap-2 z-10">
