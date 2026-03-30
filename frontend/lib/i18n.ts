@@ -83,6 +83,7 @@ const en = {
 
   // Home — featured guide
   "home.guideEyebrow":   "Know who takes you",
+  "home.guideMeet":       "Meet",
   "home.guideTitle2":    "Your Guide",
   "home.guideYearsExp":  "Years exp.",
   "home.guideRating":    "Guest rating",
@@ -406,6 +407,7 @@ const de: typeof en = {
   "home.reviewsTitle":   "Was unsere Gäste sagen",
   "home.reviewsReadAll": "Alle {n}+ Bewertungen lesen →",
   "home.guideEyebrow":   "Wissen, wer Sie begleitet",
+  "home.guideMeet":       "Treffen Sie",
   "home.guideTitle2":    "Ihr Guide",
   "home.guideYearsExp":  "Jahre Erfahrung",
   "home.guideRating":    "Gästebewertung",
@@ -698,6 +700,7 @@ const fr: typeof en = {
   "home.reviewsTitle":   "Ce que disent nos clients",
   "home.reviewsReadAll": "Lire tous les {n}+ avis →",
   "home.guideEyebrow":   "Connaissez votre guide",
+  "home.guideMeet":       "Rencontrez",
   "home.guideTitle2":    "Votre guide",
   "home.guideYearsExp":  "Ans d'expérience",
   "home.guideRating":    "Note clients",
@@ -990,6 +993,7 @@ const it: typeof en = {
   "home.reviewsTitle":   "Cosa dicono i nostri ospiti",
   "home.reviewsReadAll": "Leggi tutte le {n}+ recensioni →",
   "home.guideEyebrow":   "Conosci chi ti guida",
+  "home.guideMeet":       "Incontra",
   "home.guideTitle2":    "La tua guida",
   "home.guideYearsExp":  "Anni di esperienza",
   "home.guideRating":    "Valutazione ospiti",

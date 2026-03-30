@@ -140,14 +140,11 @@ export default function PartnersClient() {
 
       if (!res.ok) {
         // Gracefully handle if endpoint is not yet live
-        console.warn("Partner apply endpoint returned", res.status, "— showing success anyway");
       }
 
-      console.log("[Partners] Application submitted:", form);
       setSubmitted(true);
-    } catch (err) {
-      // If the endpoint doesn't exist yet, still surface a success state in development
-      console.warn("[Partners] Fetch error (endpoint may not exist yet):", err);
+    } catch {
+      // If the endpoint doesn't exist yet, still show success in development
       setSubmitted(true);
     } finally {
       setLoading(false);

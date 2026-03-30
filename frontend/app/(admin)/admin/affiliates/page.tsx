@@ -4,9 +4,21 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+interface Affiliate {
+  id: string;
+  name?: string;
+  full_name?: string;
+  code?: string;
+  commission_percent?: number;
+  total_referrals?: number;
+  referral_count?: number;
+  total_earnings_kes?: number;
+  is_active: boolean;
+}
+
 export default function AdminAffiliatesPage() {
   const router = useRouter();
-  const [affiliates, setAffiliates] = useState<any[]>([]);
+  const [affiliates, setAffiliates] = useState<Affiliate[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState<string | null>(null);
 
@@ -88,6 +100,7 @@ export default function AdminAffiliatesPage() {
                         a.is_active ? "bg-green-500 border-green-500" : "bg-gray-200 border-gray-300"
                       }`}
                       title={a.is_active ? "Deactivate" : "Activate"}
+                      aria-label={a.is_active ? "Deactivate affiliate" : "Activate affiliate"}
                     />
                   </td>
                   <td className="px-5 py-3">

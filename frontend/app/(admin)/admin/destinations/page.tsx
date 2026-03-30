@@ -4,9 +4,18 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+interface Destination {
+  id: string;
+  name: string;
+  region?: string;
+  park_fee_usd?: number;
+  best_months?: string[] | string;
+  is_active: boolean;
+}
+
 export default function AdminDestinationsPage() {
   const router = useRouter();
-  const [destinations, setDestinations] = useState<any[]>([]);
+  const [destinations, setDestinations] = useState<Destination[]>([]);
   const [loading, setLoading] = useState(true);
 
   const token = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
@@ -76,6 +85,7 @@ export default function AdminDestinationsPage() {
                         d.is_active ? "bg-green-500 border-green-500" : "bg-gray-200 border-gray-300"
                       }`}
                       title={d.is_active ? "Deactivate" : "Activate"}
+                      aria-label={d.is_active ? "Deactivate destination" : "Activate destination"}
                     />
                   </td>
                 </tr>

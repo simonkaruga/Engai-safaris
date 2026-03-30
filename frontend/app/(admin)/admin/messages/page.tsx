@@ -4,6 +4,19 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+interface Message {
+  id: string;
+  customer_name?: string;
+  customer_email?: string;
+  customer_phone?: string;
+  message?: string;
+  notes?: string;
+  interests?: string | string[];
+  safari_interest?: string;
+  status: string;
+  created_at?: string;
+}
+
 const STATUS_COLORS: Record<string, string> = {
   new: "bg-blue-100 text-blue-700",
   contacted: "bg-green-100 text-green-700",
@@ -16,7 +29,7 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function AdminMessagesPage() {
   const router = useRouter();
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
 

@@ -236,7 +236,7 @@ export default function WildlifeCalendarPage() {
           Tell our AI planner when you want to go and it'll suggest the best parks and safaris for your dates.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href="/ai-planner" className="bg-white text-teal-700 font-semibold px-8 py-3.5 rounded-xl hover:bg-teal-50 transition-colors">
+          <Link href="/plan-my-safari" className="bg-white text-teal-700 font-semibold px-8 py-3.5 rounded-xl hover:bg-teal-50 transition-colors">
             Use the AI Planner
           </Link>
           <Link href="/safaris" className="border border-teal-500 text-white font-semibold px-8 py-3.5 rounded-xl hover:bg-teal-600 transition-colors">

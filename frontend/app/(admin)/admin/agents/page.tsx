@@ -4,6 +4,21 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+interface Agent {
+  id: string;
+  name?: string;
+  full_name?: string;
+  company?: string;
+  agency_name?: string;
+  email?: string;
+  phone?: string;
+  tier?: string;
+  commission_percent?: number;
+  total_bookings?: number;
+  is_active: boolean;
+  created_at?: string;
+}
+
 const TIER_COLORS: Record<string, string> = {
   standard: "bg-blue-100 text-blue-700",
   premium: "bg-yellow-100 text-yellow-800",
@@ -12,7 +27,7 @@ const TIER_COLORS: Record<string, string> = {
 
 export default function AdminAgentsPage() {
   const router = useRouter();
-  const [agents, setAgents] = useState<any[]>([]);
+  const [agents, setAgents] = useState<Agent[]>([]);
   const [loading, setLoading] = useState(true);
 
   const token = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
@@ -94,6 +109,7 @@ export default function AdminAgentsPage() {
                         a.is_active ? "bg-green-500 border-green-500" : "bg-gray-200 border-gray-300"
                       }`}
                       title={a.is_active ? "Deactivate" : "Activate"}
+                      aria-label={a.is_active ? "Deactivate agent" : "Activate agent"}
                     />
                   </td>
                 </tr>

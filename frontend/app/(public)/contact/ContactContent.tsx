@@ -22,7 +22,7 @@ export default function ContactContent() {
         {/* Contact cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
           <a
-            href="https://wa.me/254797033513"
+            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP ?? "254797033513"}`}
             target="_blank"
             rel="noopener noreferrer"
             className="group flex flex-col items-center bg-white border border-gray-200 hover:border-[#25D366] hover:shadow-md rounded-2xl p-8 text-center transition-all"

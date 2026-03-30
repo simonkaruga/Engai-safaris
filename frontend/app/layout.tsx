@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/layout/Header";
+import TopBar from "@/components/layout/TopBar";
 import Footer from "@/components/layout/Footer";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
 import CookieBanner from "@/components/layout/CookieBanner";
@@ -60,8 +61,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             Skip to main content
           </a>
+          <TopBar />
           <Header />
-          <main id="main-content" className="pt-16">{children}</main>
+          <main id="main-content" className="pt-[100px]">{children}</main>
           <Footer />
           <WhatsAppButton />
           <CookieBanner />

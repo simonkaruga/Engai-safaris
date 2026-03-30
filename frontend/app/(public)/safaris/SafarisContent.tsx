@@ -8,10 +8,12 @@ import Link from "next/link";
 import type { SafariList } from "@/types/api";
 import { useLanguage } from "@/context/LanguageContext";
 
+import type { TranslationKey } from "@/lib/i18n";
+
 interface Category {
   value: string;
-  labelKey: string;
-  descKey: string;
+  labelKey: TranslationKey;
+  descKey: TranslationKey;
   icon: ReactNode;
 }
 
@@ -157,7 +159,7 @@ export default function SafarisContent({ safaris, initialCategory }: Props) {
                   <span className={isActive ? "text-white" : "text-gray-400 group-hover:text-gray-600 transition-colors"}>
                     {cat.icon}
                   </span>
-                  {t(cat.labelKey as Parameters<typeof t>[0])}
+                  {t(cat.labelKey)}
                 </button>
               );
             })}
@@ -168,7 +170,7 @@ export default function SafarisContent({ safaris, initialCategory }: Props) {
             <div className="mt-5 flex items-center gap-3">
               <div className={`w-1 h-6 rounded-full ${CATEGORY_ACCENT[activeCat.value].split(" ")[0]}`} />
               <p className="text-gray-500 text-sm">
-                {t("safaris.showing")} <span className="font-semibold text-gray-800">{t(activeCat.labelKey as Parameters<typeof t>[0])}</span> safaris
+                {t("safaris.showing")} <span className="font-semibold text-gray-800">{t(activeCat.labelKey)}</span> safaris
                 {filteredSafaris.length > 0 && (
                   <> · <span className="text-teal-DEFAULT font-semibold">{filteredSafaris.length} {t("safaris.packages")}</span></>
                 )}

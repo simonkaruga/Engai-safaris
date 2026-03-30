@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
-interface Guide {
+import Image from "next/image";
   id: string;
   slug: string;
   name: string;
@@ -78,8 +77,8 @@ export default function AdminGuidesPage() {
       setGuides((prev) => [...prev, created]);
       setForm(EMPTY_FORM);
       setShowForm(false);
-    } catch (err: any) {
-      setError(err.message ?? "Something went wrong");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setSaving(false);
     }
@@ -221,8 +220,13 @@ export default function AdminGuidesPage() {
                 <tr key={g.id} className="hover:bg-gray-50">
                   <td className="px-5 py-3">
                     {g.photo_url ? (
-                      <img src={g.photo_url} alt={g.name}
-                        className="w-10 h-10 rounded-full object-cover border border-gray-200" />
+                      <Image
+                        src={g.photo_url}
+                        alt={g.name}
+                        width={40}
+                        height={40}
+                        className="w-10 h-10 rounded-full object-cover border border-gray-200"
+                      />
                     ) : (
                       <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-bold text-sm">
                         {g.name[0].toUpperCase()}

@@ -80,7 +80,7 @@ export default async function DestinationPage({ params }: { params: { slug: stri
       />
 
       {/* Cinematic hero — full bleed, bleeds under fixed header */}
-      <section className="-mt-16 min-h-[70vh] relative bg-gray-900 flex items-end overflow-hidden">
+      <section className="-mt-[100px] min-h-[70vh] relative bg-gray-900 flex items-end overflow-hidden">
         {dest.cover_image && (
           <Image src={dest.cover_image} alt={dest.name} fill priority className="object-cover" sizes="100vw" />
         )}
@@ -88,7 +88,7 @@ export default async function DestinationPage({ params }: { params: { slug: stri
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
 
         {/* Breadcrumb — top left */}
-        <div className="absolute top-20 left-0 right-0 px-4 md:px-8 max-w-7xl mx-auto">
+        <div className="absolute top-[116px] left-0 right-0 px-4 md:px-8 max-w-7xl mx-auto">
           <nav className="flex items-center gap-2 text-xs text-white/60">
             <Link href="/" className="hover:text-white/90 transition-colors">Home</Link>
             <span>/</span>
@@ -132,7 +132,7 @@ export default async function DestinationPage({ params }: { params: { slug: stri
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                 </svg>
                 <span className="text-white text-sm">
-                  Best: {(dest.best_months as string[]).slice(0, 3).join(", ")}
+                  Best: {dest.best_months.slice(0, 3).join(", ")}
                 </span>
               </div>
             )}
@@ -165,7 +165,7 @@ export default async function DestinationPage({ params }: { params: { slug: stri
                   What makes it special
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {(dest.highlights as string[]).map((h) => (
+                  {dest.highlights.map((h) => (
                     <div key={h} className="flex items-start gap-3 bg-teal-50 border border-teal-100 rounded-xl p-4">
                       <div className="w-5 h-5 rounded-full bg-teal-DEFAULT flex items-center justify-center flex-shrink-0 mt-0.5">
                         <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
@@ -187,7 +187,7 @@ export default async function DestinationPage({ params }: { params: { slug: stri
                   What you'll see
                 </h2>
                 <div className="flex flex-wrap gap-2">
-                  {(dest.wildlife_list as string[]).map((w) => (
+                  {dest.wildlife_list.map((w) => (
                     <span
                       key={w}
                       className="bg-white/10 border border-white/20 text-gray-200 text-sm px-3 py-1.5 rounded-full"
@@ -245,7 +245,7 @@ export default async function DestinationPage({ params }: { params: { slug: stri
                 <div className="text-sm">
                   <p className="text-gray-400 mb-2">Best months</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {(dest.best_months as string[]).map((m) => (
+                    {dest.best_months.map((m) => (
                       <span key={m} className="bg-teal-DEFAULT/20 border border-teal-DEFAULT/30 text-teal-200 text-xs font-semibold px-2.5 py-1 rounded-full">
                         {m}
                       </span>

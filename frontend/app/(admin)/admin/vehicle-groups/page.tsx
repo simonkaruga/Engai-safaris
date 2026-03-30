@@ -34,6 +34,17 @@ interface SuggestionGroup {
   total_pax: number;
 }
 
+interface UnassignedBooking {
+  id: string;
+  reference: string;
+  customer_name: string;
+  pax: number;
+  status: string;
+  travel_date?: string;
+  safari_name?: string;
+  vehicle_ref?: string | null;
+}
+
 const STATUS_COLORS: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-700",
   confirmed: "bg-green-100 text-green-700",
@@ -56,7 +67,7 @@ export default function VehicleGroupsPage() {
   const [showCreatePanel, setShowCreatePanel] = useState(false);
   const [newGroupRef, setNewGroupRef] = useState("");
   const [newGroupRefLoading, setNewGroupRefLoading] = useState(false);
-  const [allBookings, setAllBookings] = useState<any[]>([]);
+  const [allBookings, setAllBookings] = useState<UnassignedBooking[]>([]);
   const [allBookingsLoading, setAllBookingsLoading] = useState(false);
   const [selectedBookingIds, setSelectedBookingIds] = useState<Set<string>>(new Set());
   const [createLoading, setCreateLoading] = useState(false);
@@ -192,7 +203,7 @@ export default function VehicleGroupsPage() {
       });
       if (r.ok) {
         const data = await r.json();
-        setAllBookings(data.filter((b: any) => !b.vehicle_ref && ["pending", "confirmed"].includes(b.status)));
+        setAllBookings(data.filter((b: UnassignedBooking) => !b.vehicle_ref && ["pending", "confirmed"].includes(b.status)));
       }
     } catch {
       // ignore

@@ -33,6 +33,7 @@ export default function EditBlogPostPage() {
   const [notFound, setNotFound] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
 
   const [title, setTitle] = useState("");
@@ -99,7 +100,7 @@ export default function EditBlogPostPage() {
     if (!token) { router.push("/admin/login"); return; }
     setSaving(true);
     try {
-      const payload: Record<string, any> = {
+      const payload: Record<string, string | boolean | null | undefined> = {
         title: title.trim(),
         slug: slug.trim() || slugify(title),
         category: category || null,
@@ -136,7 +137,8 @@ export default function EditBlogPostPage() {
   };
 
   const deletePost = async () => {
-    if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+    if (!confirmDelete) { setConfirmDelete(true); return; }
+    setConfirmDelete(false);
     if (!token) { router.push("/admin/login"); return; }
     setDeleting(true);
     try {
@@ -298,6 +300,7 @@ export default function EditBlogPostPage() {
           />
           {coverImage ? (
             <div className="mt-3 relative h-40 rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
+              {/* Admin-only URL preview — domain unknown at build time, img is intentional */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={coverImage}
@@ -360,9 +363,13 @@ export default function EditBlogPostPage() {
           <button
             onClick={deletePost}
             disabled={saving || deleting}
-            className="px-4 py-2.5 rounded-xl text-sm font-semibold bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 disabled:opacity-50 transition-colors"
+            className={`px-4 py-2.5 rounded-xl text-sm font-semibold border disabled:opacity-50 transition-colors ${
+              confirmDelete
+                ? "bg-red-500 text-white border-red-500 hover:bg-red-600"
+                : "bg-red-50 text-red-600 border-red-200 hover:bg-red-100"
+            }`}
           >
-            {deleting ? "Deleting…" : "Delete Post"}
+            {deleting ? "Deleting…" : confirmDelete ? "Confirm delete?" : "Delete Post"}
           </button>
           <div className="flex gap-3">
             <button

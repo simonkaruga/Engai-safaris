@@ -5,8 +5,25 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
 
+interface BlogPostFull {
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  cover_image: string | null;
+  category: string | null;
+  read_time_min: number | null;
+  published_at: string | null;
+  updated_at: string | null;
+  is_published: boolean;
+  content: string | null;
+  author: string | null;
+  meta_title: string | null;
+  meta_desc: string | null;
+  tags: string[] | null;
+}
+
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const post = await getBlogPost(params.slug).catch(() => null) as any;
+  const post = await getBlogPost(params.slug).catch(() => null) as BlogPostFull | null;
   if (!post) return {};
   return {
     title: post.meta_title ?? post.title,
@@ -31,7 +48,7 @@ function formatDate(dateStr: string | null) {
 }
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = await getBlogPost(params.slug).catch(() => null) as any;
+  const post = await getBlogPost(params.slug).catch(() => null) as BlogPostFull | null;
   if (!post || !post.is_published) notFound();
 
   return (
@@ -169,6 +186,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
               prose-ul:text-gray-600 prose-li:marker:text-teal-DEFAULT
               prose-table:text-sm
             "
+            // Content is server-rendered from our own CMS — not user input
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         )}
@@ -176,7 +194,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         {/* Tags */}
         {post.tags && Array.isArray(post.tags) && post.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-12 pt-8 border-t border-gray-100">
-            {(post.tags as string[]).map((tag) => (
+            {post.tags.map((tag) => (
               <span key={tag} className="text-xs px-3 py-1 rounded-full border border-gray-200 text-gray-500">
                 #{tag}
               </span>

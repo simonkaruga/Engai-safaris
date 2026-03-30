@@ -32,6 +32,7 @@ export default function FAQPage() {
 
   return (
     <>
+      {/* JSON-LD schema — serialised from our own static data, not user input */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       <div className="max-w-3xl mx-auto px-4 py-16">
         <div className="text-center mb-12">

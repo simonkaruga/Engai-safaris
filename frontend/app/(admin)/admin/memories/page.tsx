@@ -4,10 +4,21 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+interface CompletedBooking {
+  id: string;
+  reference?: string;
+  customer_name?: string;
+  travel_date?: string;
+  memories_url?: string;
+  created_at?: string;
+}
+
 export default function AdminMemoriesPage() {
   const router = useRouter();
-  const [bookings, setBookings] = useState<any[]>([]);
+  const [bookings, setBookings] = useState<CompletedBooking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [albumInputId, setAlbumInputId] = useState<string | null>(null);
+  const [albumInputVal, setAlbumInputVal] = useState("");
 
   const token = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
 
@@ -22,16 +33,17 @@ export default function AdminMemoriesPage() {
       .finally(() => setLoading(false));
   }, [router, token]);
 
-  const setAlbumUrl = async (id: string) => {
-    const url = prompt("Enter the photo album URL for this booking:");
-    if (!url) return;
+  const setAlbumUrl = async (id: string, url: string) => {
+    if (!url.trim()) return;
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/bookings/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ memories_url: url }),
+      body: JSON.stringify({ memories_url: url.trim() }),
     });
     if (res.ok) {
-      setBookings((prev) => prev.map((b) => b.id === id ? { ...b, memories_url: url } : b));
+      setBookings((prev) => prev.map((b) => b.id === id ? { ...b, memories_url: url.trim() } : b));
+      setAlbumInputId(null);
+      setAlbumInputVal("");
     }
   };
 
@@ -93,12 +105,27 @@ export default function AdminMemoriesPage() {
                     {b.created_at ? new Date(b.created_at).toLocaleDateString() : "—"}
                   </td>
                   <td className="px-5 py-3">
-                    <button
-                      onClick={() => setAlbumUrl(b.id)}
-                      className="text-xs font-semibold px-3 py-1 rounded border border-gray-200 bg-gray-50 text-teal-DEFAULT hover:bg-teal-DEFAULT hover:text-white hover:border-teal-DEFAULT transition-colors"
-                    >
-                      {b.memories_url ? "Update Album" : "Set Album URL"}
-                    </button>
+                    {albumInputId === b.id ? (
+                      <div className="flex gap-1.5 items-center">
+                        <input
+                          type="url"
+                          value={albumInputVal}
+                          onChange={(e) => setAlbumInputVal(e.target.value)}
+                          placeholder="https://drive.google.com/..."
+                          className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-teal-DEFAULT w-48"
+                          autoFocus
+                        />
+                        <button onClick={() => setAlbumUrl(b.id, albumInputVal)} className="text-xs bg-teal-DEFAULT text-white rounded-lg px-2 py-1.5 font-semibold">Save</button>
+                        <button onClick={() => { setAlbumInputId(null); setAlbumInputVal(""); }} className="text-xs text-gray-400 hover:text-gray-600">Cancel</button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => { setAlbumInputId(b.id); setAlbumInputVal(b.memories_url ?? ""); }}
+                        className="text-xs font-semibold px-3 py-1 rounded border border-gray-200 bg-gray-50 text-teal-DEFAULT hover:bg-teal-DEFAULT hover:text-white hover:border-teal-DEFAULT transition-colors"
+                      >
+                        {b.memories_url ? "Update Album" : "Set Album URL"}
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

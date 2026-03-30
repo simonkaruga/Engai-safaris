@@ -3,11 +3,27 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 
+interface BookingDetail {
+  id: string;
+  reference: string;
+  customer_name: string;
+  customer_email?: string;
+  customer_phone?: string;
+  customer_country?: string;
+  travel_date?: string;
+  pax?: number;
+  total_kes?: number;
+  deposit_kes?: number;
+  balance_kes?: number;
+  status: string;
+  created_at: string;
+}
+
 export default function AgentBookingDetailPage() {
   const router = useRouter();
   const params = useParams();
   const id = params?.id as string;
-  const [booking, setBooking] = useState<any>(null);
+  const [booking, setBooking] = useState<BookingDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
 

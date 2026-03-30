@@ -4,6 +4,15 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  category?: string;
+  is_published: boolean;
+  published_at?: string;
+}
+
 const FILTER_TABS = ["all", "published", "drafts"];
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -16,11 +25,12 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 export default function AdminBlogPage() {
   const router = useRouter();
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [togglingId, setTogglingId] = useState<string | null>(null);
 
   const token = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
@@ -41,7 +51,7 @@ export default function AdminBlogPage() {
     setTimeout(() => setToast(null), 3500);
   };
 
-  const isPublished = (post: any) => !!post.is_published;
+  const isPublished = (post: BlogPost) => !!post.is_published;
 
   const togglePublished = async (id: string, current: boolean) => {
     setTogglingId(id);
@@ -71,7 +81,8 @@ export default function AdminBlogPage() {
   };
 
   const deletePost = async (id: string, title: string) => {
-    if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+    if (confirmDeleteId !== id) { setConfirmDeleteId(id); return; }
+    setConfirmDeleteId(null);
     setDeletingId(id);
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/blog/${id}`, {
@@ -192,6 +203,7 @@ export default function AdminBlogPage() {
                       onClick={() => togglePublished(p.id, !!p.is_published)}
                       disabled={togglingId === p.id}
                       title={isPublished(p) ? "Click to unpublish" : "Click to publish"}
+                      aria-label={isPublished(p) ? "Unpublish post" : "Publish post"}
                       className={`px-2.5 py-0.5 rounded-full text-xs font-semibold transition-colors disabled:opacity-50 ${
                         isPublished(p)
                           ? "bg-green-100 text-green-700 hover:bg-green-200"
@@ -212,9 +224,13 @@ export default function AdminBlogPage() {
                       <button
                         onClick={() => deletePost(p.id, p.title)}
                         disabled={deletingId === p.id}
-                        className="text-xs font-semibold text-red-500 hover:text-red-700 disabled:opacity-50"
+                        className={`text-xs font-semibold disabled:opacity-50 transition-colors ${
+                          confirmDeleteId === p.id
+                            ? "text-white bg-red-500 px-2 py-0.5 rounded"
+                            : "text-red-500 hover:text-red-700"
+                        }`}
                       >
-                        {deletingId === p.id ? "Deleting..." : "Delete"}
+                        {deletingId === p.id ? "Deleting..." : confirmDeleteId === p.id ? "Confirm?" : "Delete"}
                       </button>
                     </div>
                   </td>

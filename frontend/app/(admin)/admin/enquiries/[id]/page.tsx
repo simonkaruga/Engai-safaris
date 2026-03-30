@@ -4,6 +4,32 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 
+interface EnquiryDetail {
+  id: string;
+  reference: string;
+  customer_name: string;
+  customer_email: string;
+  customer_phone?: string;
+  customer_country?: string;
+  travel_date_from?: string;
+  travel_date_to?: string;
+  flexibility?: string;
+  group_size?: number;
+  group_type?: string;
+  budget_usd?: string;
+  celebration?: string;
+  interests?: string[];
+  dietary_req?: string[];
+  medical_notes?: string;
+  special_requests?: string;
+  source?: string;
+  status: string;
+  notes?: string;
+  quoted_amount_usd?: number;
+  follow_up_date?: string;
+  created_at?: string;
+}
+
 const STATUSES = ["new", "contacted", "quoted", "negotiating", "booked", "completed", "lost"];
 
 const STATUS_COLORS: Record<string, string> = {
@@ -19,7 +45,7 @@ const STATUS_COLORS: Record<string, string> = {
 export default function EnquiryDetailPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
-  const [enquiry, setEnquiry] = useState<any>(null);
+  const [enquiry, setEnquiry] = useState<EnquiryDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [notes, setNotes] = useState("");
@@ -43,7 +69,7 @@ export default function EnquiryDetailPage() {
       })
       .catch(() => router.push("/admin/enquiries"))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, token, BASE, router]);
 
   const save = async () => {
     setSaving(true);
@@ -57,14 +83,14 @@ export default function EnquiryDetailPage() {
         follow_up_date: followUp || null,
       }),
     });
-    if (res.ok) setEnquiry((prev: any) => ({ ...prev, status, notes, quoted_amount_usd: quote || null, follow_up_date: followUp || null }));
+    if (res.ok) setEnquiry((prev) => prev ? { ...prev, status, notes, quoted_amount_usd: quote ? Number(quote) : undefined, follow_up_date: followUp || undefined } : prev);
     setSaving(false);
   };
 
   if (loading) return <div className="flex items-center justify-center h-64 text-gray-500">Loading...</div>;
   if (!enquiry) return null;
 
-  const Row = ({ label, value }: { label: string; value: any }) =>
+  const Row = ({ label, value }: { label: string; value: string | number | null | undefined }) =>
     value != null && value !== "" ? (
       <div className="flex gap-2 py-2 border-b border-gray-100 last:border-0">
         <span className="text-gray-500 text-sm w-40 shrink-0">{label}</span>

@@ -12,7 +12,7 @@ export default function HeroSection({ avgRating, reviewCount }: Props) {
   const { t } = useLanguage();
 
   return (
-    <section className="relative -mt-16 min-h-screen flex items-center overflow-hidden bg-gray-950">
+    <section className="relative -mt-[100px] min-h-screen flex items-center overflow-hidden bg-gray-950">
       {/* Cinematic video background */}
       <video
         autoPlay

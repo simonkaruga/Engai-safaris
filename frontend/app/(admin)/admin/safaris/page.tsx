@@ -95,6 +95,7 @@ export default function AdminSafarisPage() {
                         s.is_featured ? "bg-gold-DEFAULT border-gold-DEFAULT text-white" : "bg-gray-100 border-gray-300 text-gray-400"
                       }`}
                       title={s.is_featured ? "Remove from featured" : "Mark as featured"}
+                      aria-label={s.is_featured ? "Remove from featured" : "Mark as featured"}
                     >
                       ★
                     </button>
@@ -106,6 +107,7 @@ export default function AdminSafarisPage() {
                         s.is_active ? "bg-green-500 border-green-500" : "bg-gray-200 border-gray-300"
                       }`}
                       title={s.is_active ? "Deactivate" : "Activate"}
+                      aria-label={s.is_active ? "Deactivate safari" : "Activate safari"}
                     />
                   </td>
                   <td className="px-5 py-3">

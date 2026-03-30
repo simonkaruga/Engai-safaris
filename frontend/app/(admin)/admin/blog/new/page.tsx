@@ -66,7 +66,7 @@ export default function NewBlogPostPage() {
     }
     setSaving(true);
     try {
-      const payload: Record<string, any> = {
+      const payload: Record<string, string | boolean | null | undefined> = {
         title: title.trim(),
         slug: slug.trim() || undefined,
         category: category || null,
@@ -236,6 +236,7 @@ export default function NewBlogPostPage() {
           />
           {coverImage && (
             <div className="mt-3 relative h-40 rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
+              {/* Admin-only URL preview — domain unknown at build time, img is intentional */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={coverImage}

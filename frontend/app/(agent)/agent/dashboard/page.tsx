@@ -4,9 +4,18 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+interface AgentBooking {
+  id: string;
+  reference: string;
+  customer_name: string;
+  travel_date?: string;
+  status: string;
+  total_kes?: number;
+}
+
 export default function AgentDashboardPage() {
   const router = useRouter();
-  const [bookings, setBookings] = useState<any[]>([]);
+  const [bookings, setBookings] = useState<AgentBooking[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

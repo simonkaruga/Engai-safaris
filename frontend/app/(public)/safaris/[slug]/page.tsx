@@ -79,14 +79,14 @@ export default async function SafariDetailPage({ params }: { params: { slug: str
       />
 
       {/* Cinematic hero */}
-      <section className="-mt-16 min-h-[75vh] relative bg-gray-900 flex items-end overflow-hidden">
+      <section className="-mt-[100px] min-h-[75vh] relative bg-gray-900 flex items-end overflow-hidden">
         {safari.cover_image && (
           <Image src={safari.cover_image} alt={safari.name} fill priority className="object-cover" sizes="100vw" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
 
         {/* Breadcrumb */}
-        <div className="absolute top-20 left-0 right-0 px-4 md:px-8 max-w-7xl mx-auto">
+        <div className="absolute top-[116px] left-0 right-0 px-4 md:px-8 max-w-7xl mx-auto">
           <nav className="flex items-center gap-2 text-xs text-white/60">
             <Link href="/" className="hover:text-white/90 transition-colors">Home</Link>
             <span>/</span>
@@ -122,7 +122,7 @@ export default async function SafariDetailPage({ params }: { params: { slug: str
 
           {/* Price pill */}
           {safari.price_usd_2pax && (
-            <div className="mt-6 inline-flex items-center gap-3 bg-black/30 backdrop-blur-sm border border-white/20 rounded-2xl px-5 py-3">
+            <div className="mt-6 inline-flex items-center gap-3 bg-black/65 backdrop-blur-sm border border-white/20 rounded-2xl px-5 py-3">
               <div>
                 <p className="text-gray-400 text-xs">From (per person, 2 pax)</p>
                 <p className="text-white font-display font-bold text-2xl">
@@ -168,7 +168,7 @@ export default async function SafariDetailPage({ params }: { params: { slug: str
                 <p className="eyebrow text-teal-DEFAULT mb-3">Highlights</p>
                 <h2 className="font-display text-3xl font-bold text-gray-900 mb-6">What's included</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {(safari.highlights as string[]).map((h) => (
+                  {safari.highlights.map((h) => (
                     <div key={h} className="flex items-start gap-3 bg-teal-50 border border-teal-100 rounded-xl p-4">
                       <div className="w-5 h-5 rounded-full bg-teal-DEFAULT flex items-center justify-center flex-shrink-0 mt-0.5">
                         <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
@@ -208,7 +208,7 @@ export default async function SafariDetailPage({ params }: { params: { slug: str
                         <h3 className="font-semibold text-teal-DEFAULT">Included</h3>
                       </div>
                       <ul className="space-y-2">
-                        {(safari.inclusions as string[]).map((i) => (
+                        {safari.inclusions.map((i) => (
                           <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
                             <span className="text-teal-DEFAULT mt-0.5 flex-shrink-0">•</span> {i}
                           </li>
@@ -227,7 +227,7 @@ export default async function SafariDetailPage({ params }: { params: { slug: str
                         <h3 className="font-semibold text-maasai-DEFAULT">Not included</h3>
                       </div>
                       <ul className="space-y-2">
-                        {(safari.exclusions as string[]).map((e) => (
+                        {safari.exclusions.map((e) => (
                           <li key={e} className="flex items-start gap-2 text-sm text-gray-600">
                             <span className="text-maasai-DEFAULT mt-0.5 flex-shrink-0">•</span> {e}
                           </li>

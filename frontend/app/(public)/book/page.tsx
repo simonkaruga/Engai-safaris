@@ -98,6 +98,20 @@ function BookPageInner() {
     setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
   };
 
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    if (name === "customer_name" && !value.trim()) {
+      setErrors((prev) => ({ ...prev, customer_name: "Name is required" }));
+    }
+    if (name === "customer_email") {
+      if (!value.trim()) setErrors((prev) => ({ ...prev, customer_email: "Email is required" }));
+      else if (!/\S+@\S+\.\S+/.test(value)) setErrors((prev) => ({ ...prev, customer_email: "Enter a valid email address" }));
+    }
+    if (name === "customer_phone" && !value.trim()) {
+      setErrors((prev) => ({ ...prev, customer_phone: "Phone number is required" }));
+    }
+  };
+
   // Abandoned booking recovery — fire intent when email is filled and user leaves
   const sendIntent = useCallback(() => {
     const email = form.customer_email.trim();
@@ -178,10 +192,14 @@ function BookPageInner() {
         special_requests: form.special_requests.trim() || undefined,
         promo_code: form.promo_code.trim().toUpperCase() || undefined,
       });
-      // Redirect to Pesapal payment page
-      window.location.href = result.redirect_url;
-    } catch (err: any) {
-      setErrors({ submit: err?.message ?? "Payment could not be initiated. Please try again or WhatsApp us." });
+      // Redirect to Pesapal payment page — validate URL is https before assigning
+      const redirectUrl = result.redirect_url;
+      if (typeof redirectUrl !== "string" || !redirectUrl.startsWith("https://")) {
+        throw new Error("Invalid payment redirect URL received from server.");
+      }
+      window.location.href = redirectUrl;
+    } catch (err) {
+      setErrors({ submit: err instanceof Error ? err.message : "Payment could not be initiated. Please try again or WhatsApp us." });
     } finally {
       setSubmitting(false);
     }
@@ -252,7 +270,40 @@ function BookPageInner() {
             <span>/</span>
             <span className="text-white/80">Book</span>
           </nav>
-          <p className="eyebrow text-teal-200 mb-3">Secure booking</p>
+          {/* Progress stepper */}
+          <div className="flex items-center gap-0 mb-8">
+            {[
+              { n: 1, label: "Trip details" },
+              { n: 2, label: "Your details" },
+              { n: 3, label: "Payment" },
+            ].map(({ n, label }, i) => {
+              const done = n < 2; // step 1 is complete once we're on this page with a safari
+              const active = n === 2;
+              return (
+                <div key={n} className="flex items-center">
+                  {i > 0 && (
+                    <div className={`h-px w-8 sm:w-16 mx-1 ${done || active ? "bg-teal-DEFAULT" : "bg-white/20"}`} />
+                  )}
+                  <div className="flex items-center gap-2">
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 transition-colors ${
+                      done ? "bg-teal-DEFAULT text-white" : active ? "bg-white text-gray-900" : "bg-white/15 text-white/50"
+                    }`}>
+                      {done ? (
+                        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                      ) : n}
+                    </div>
+                    <span className={`text-xs font-medium hidden sm:block ${active ? "text-white" : done ? "text-teal-300" : "text-white/40"}`}>
+                      {label}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <p className="eyebrow text-teal-200 mb-3">Secure booking · Step 2 of 3</p>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-white leading-tight mb-2">
             {preview ? preview.safari_name : "Complete Your Booking"}
           </h1>
@@ -316,17 +367,17 @@ function BookPageInner() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div className="sm:col-span-2">
                     <label className={labelClass}>Full Name <span className="text-maasai-DEFAULT">*</span></label>
-                    <input name="customer_name" value={form.customer_name} onChange={handleChange} className={inputClass + (errors.customer_name ? " border-maasai-DEFAULT" : "")} placeholder="Jane Smith" />
+                    <input name="customer_name" value={form.customer_name} onChange={handleChange} onBlur={handleBlur} className={inputClass + (errors.customer_name ? " border-maasai-DEFAULT" : "")} placeholder="Jane Smith" />
                     {errors.customer_name && <p className={errorClass}>{errors.customer_name}</p>}
                   </div>
                   <div>
                     <label className={labelClass}>Email <span className="text-maasai-DEFAULT">*</span></label>
-                    <input name="customer_email" type="email" value={form.customer_email} onChange={handleChange} className={inputClass + (errors.customer_email ? " border-maasai-DEFAULT" : "")} placeholder="jane@example.com" />
+                    <input name="customer_email" type="email" value={form.customer_email} onChange={handleChange} onBlur={handleBlur} className={inputClass + (errors.customer_email ? " border-maasai-DEFAULT" : "")} placeholder="jane@example.com" />
                     {errors.customer_email && <p className={errorClass}>{errors.customer_email}</p>}
                   </div>
                   <div>
                     <label className={labelClass}>Phone / WhatsApp <span className="text-maasai-DEFAULT">*</span></label>
-                    <input name="customer_phone" value={form.customer_phone} onChange={handleChange} className={inputClass + (errors.customer_phone ? " border-maasai-DEFAULT" : "")} placeholder="+254 700 000 000" />
+                    <input name="customer_phone" value={form.customer_phone} onChange={handleChange} onBlur={handleBlur} className={inputClass + (errors.customer_phone ? " border-maasai-DEFAULT" : "")} placeholder="+254 700 000 000" />
                     {errors.customer_phone && <p className={errorClass}>{errors.customer_phone}</p>}
                   </div>
                   <div>

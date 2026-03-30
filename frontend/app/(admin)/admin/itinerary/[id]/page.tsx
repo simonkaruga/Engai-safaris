@@ -4,15 +4,40 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 
+interface ItineraryBooking {
+  id: string;
+  reference: string;
+  customer_name?: string;
+  customer_email?: string;
+  customer_phone?: string;
+  travel_date?: string;
+  pax?: number;
+  total_kes?: number;
+  deposit_kes?: number;
+  balance_kes?: number;
+  status?: string;
+  celebration?: string;
+  dietary_req?: unknown;
+  guide_id?: string;
+  memories_url?: string;
+}
+
+interface GuideOption {
+  id: string;
+  name: string;
+}
+
 export default function ItineraryBuilderPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
-  const [booking, setBooking] = useState<any>(null);
-  const [guides, setGuides] = useState<any[]>([]);
+  const [booking, setBooking] = useState<ItineraryBooking | null>(null);
+  const [guides, setGuides] = useState<GuideOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [guideId, setGuideId] = useState("");
   const [saved, setSaved] = useState(false);
+  const [albumInput, setAlbumInput] = useState<string | null>(null);
+  const [albumVal, setAlbumVal] = useState("");
 
   const token = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
   const BASE = process.env.NEXT_PUBLIC_API_URL;
@@ -30,7 +55,7 @@ export default function ItineraryBuilderPage() {
       })
       .catch(() => router.push("/admin/bookings"))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, token, BASE, router]);
 
   const assignGuide = async () => {
     setSaving(true);
@@ -40,7 +65,7 @@ export default function ItineraryBuilderPage() {
       body: JSON.stringify({ guide_id: guideId || null }),
     });
     if (res.ok) {
-      setBooking((prev: any) => ({ ...prev, guide_id: guideId || null }));
+      setBooking((prev) => prev ? { ...prev, guide_id: guideId || undefined } : prev);
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     }
@@ -149,21 +174,38 @@ export default function ItineraryBuilderPage() {
             ) : (
               <p className="text-gray-400 text-sm italic">No album set yet.</p>
             )}
-            <button
-              onClick={async () => {
-                const url = prompt("Enter photo album URL:");
-                if (!url) return;
-                const res = await fetch(`${BASE}/api/admin/bookings/${id}`, {
-                  method: "PATCH",
-                  headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-                  body: JSON.stringify({ memories_url: url }),
-                });
-                if (res.ok) setBooking((prev: any) => ({ ...prev, memories_url: url }));
-              }}
-              className="mt-3 text-xs font-semibold px-3 py-1.5 rounded border border-gray-200 text-teal-DEFAULT hover:bg-teal-DEFAULT hover:text-white hover:border-teal-DEFAULT transition-colors"
-            >
-              {booking.memories_url ? "Update Album URL" : "Set Album URL"}
-            </button>
+            {albumInput === id ? (
+              <div className="mt-3 flex gap-2 items-center">
+                <input
+                  type="url"
+                  value={albumVal}
+                  onChange={(e) => setAlbumVal(e.target.value)}
+                  placeholder="https://drive.google.com/..."
+                  className="flex-1 text-xs border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-teal-DEFAULT"
+                  autoFocus
+                />
+                <button
+                  onClick={async () => {
+                    if (!albumVal.trim()) return;
+                    const res = await fetch(`${BASE}/api/admin/bookings/${id}`, {
+                      method: "PATCH",
+                      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                      body: JSON.stringify({ memories_url: albumVal.trim() }),
+                    });
+                    if (res.ok) { setBooking((prev) => prev ? { ...prev, memories_url: albumVal.trim() } : prev); setAlbumInput(null); setAlbumVal(""); }
+                  }}
+                  className="text-xs bg-teal-DEFAULT text-white rounded-lg px-3 py-2 font-semibold"
+                >Save</button>
+                <button onClick={() => { setAlbumInput(null); setAlbumVal(""); }} className="text-xs text-gray-400 hover:text-gray-600">Cancel</button>
+              </div>
+            ) : (
+              <button
+                onClick={() => { setAlbumInput(id); setAlbumVal(booking.memories_url ?? ""); }}
+                className="mt-3 text-xs font-semibold px-3 py-1.5 rounded border border-gray-200 text-teal-DEFAULT hover:bg-teal-DEFAULT hover:text-white hover:border-teal-DEFAULT transition-colors"
+              >
+                {booking.memories_url ? "Update Album URL" : "Set Album URL"}
+              </button>
+            )}
           </div>
         </div>
       </div>

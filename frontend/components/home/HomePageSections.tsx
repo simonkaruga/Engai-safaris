@@ -1,6 +1,5 @@
 "use client";
 
-import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
@@ -149,8 +148,8 @@ export default function HomePageSections({ reviews, safaris, featuredGuide, avgR
         </div>
         {safaris.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {safaris.map((safari) => (
-              <SafariFeaturedCard key={safari.id} safari={safari} />
+            {safaris.map((safari, i) => (
+              <SafariFeaturedCard key={safari.id} safari={safari} index={i} />
             ))}
           </div>
         ) : (
@@ -261,7 +260,7 @@ export default function HomePageSections({ reviews, safaris, featuredGuide, avgR
               <div>
                 <p className="eyebrow text-teal-DEFAULT mb-4">{t("home.guideEyebrow")}</p>
                 <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6">
-                  {t("home.reviewsEyebrow").startsWith("Guest") ? "Meet" : t("home.guideEyebrow").split(" ")[0]} {featuredGuide.name.split(" ")[0]},<br />
+                  {t("home.guideMeet")} {featuredGuide.name.split(" ")[0]},<br />
                   <span className="italic text-gradient-gold">{t("home.guideTitle2")}</span>
                 </h2>
                 {featuredGuide.title && <p className="text-teal-DEFAULT font-semibold text-sm mb-4">{featuredGuide.title}</p>}
@@ -293,8 +292,8 @@ export default function HomePageSections({ reviews, safaris, featuredGuide, avgR
                   <div className="absolute -bottom-4 -right-4 bg-white rounded-xl p-4 shadow-card border border-gray-100 max-w-[180px]">
                     <p className="font-bold text-gray-900 text-sm leading-tight">{featuredGuide.name}</p>
                     <p className="text-teal-DEFAULT text-xs mt-0.5">{featuredGuide.home_region ?? "Kenya"}</p>
-                    {featuredGuide.languages && (featuredGuide.languages as string[]).length > 0 && (
-                      <p className="text-gray-400 text-xs mt-1">{(featuredGuide.languages as string[]).slice(0, 2).join(" · ")}</p>
+                    {featuredGuide.languages && featuredGuide.languages.length > 0 && (
+                      <p className="text-gray-400 text-xs mt-1">{featuredGuide.languages.slice(0, 2).join(" · ")}</p>
                     )}
                   </div>
                 </div>

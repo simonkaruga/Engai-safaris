@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import CurrencySwitcher from "@/components/currency/CurrencySwitcher";
@@ -23,6 +23,8 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const { t } = useLanguage();
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 60);
@@ -31,11 +33,53 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
+  // Focus trap + Escape to close
+  useEffect(() => {
+    if (!open) return;
+
+    const drawer = drawerRef.current;
+    if (!drawer) return;
+
+    // Focus first focusable element when drawer opens
+    const focusable = drawer.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    focusable[0]?.focus();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        hamburgerRef.current?.focus();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [open]);
+
   const isTransparent = pathname === "/" && !scrolled;
 
   return (
     <header
-      className={`fixed top-0 inset-x-0 z-50 h-16 transition-all duration-300 ${
+      className={`fixed top-9 inset-x-0 z-50 h-16 transition-all duration-300 ${
         isTransparent
           ? "bg-transparent"
           : "bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm"
@@ -103,7 +147,8 @@ export default function Header() {
           <Link
             href="/wildlife-id"
             title="AI Wildlife Identifier"
-            className={`p-2 xl:px-3 rounded-lg transition-colors inline-flex items-center gap-1.5 ${
+            aria-label="AI Wildlife Identifier"
+            className={`p-2 lg:px-3 rounded-lg transition-colors inline-flex items-center gap-1.5 ${
               isTransparent
                 ? "text-white/85 hover:text-white hover:bg-white/10"
                 : "text-gray-500 hover:text-teal-DEFAULT hover:bg-teal-50"
@@ -113,14 +158,15 @@ export default function Header() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
             </svg>
-            <span className="hidden xl:inline text-sm font-medium">{t("header.wildlifeId")}</span>
+            <span className="hidden lg:inline text-sm font-medium">{t("header.wildlifeId")}</span>
           </Link>
 
           {/* AI Planner — icon+text on xl, icon only on md/lg */}
           <Link
             href="/plan-my-safari"
             title="AI Safari Planner"
-            className={`p-2 xl:px-3 rounded-lg transition-colors inline-flex items-center gap-1.5 ${
+            aria-label="AI Safari Planner"
+            className={`p-2 lg:px-3 rounded-lg transition-colors inline-flex items-center gap-1.5 ${
               isTransparent
                 ? "text-white/85 hover:text-white hover:bg-white/10"
                 : "text-gray-500 hover:text-teal-DEFAULT hover:bg-teal-50"
@@ -129,7 +175,7 @@ export default function Header() {
             <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
             </svg>
-            <span className="hidden xl:inline text-sm font-medium">{t("header.aiPlanner")}</span>
+            <span className="hidden lg:inline text-sm font-medium">{t("header.aiPlanner")}</span>
           </Link>
 
           <div className={`w-px h-4 mx-0.5 ${isTransparent ? "bg-white/20" : "bg-gray-200"}`} />
@@ -148,6 +194,7 @@ export default function Header() {
 
         {/* Mobile menu button */}
         <button
+          ref={hamburgerRef}
           onClick={() => setOpen(!open)}
           aria-expanded={open}
           aria-controls="mobile-menu"
@@ -170,7 +217,7 @@ export default function Header() {
 
       {/* Mobile drawer */}
       {open && (
-        <div id="mobile-menu" role="dialog" aria-label="Navigation menu" className="md:hidden bg-white border-t border-gray-100 shadow-xl">
+        <div ref={drawerRef} id="mobile-menu" role="dialog" aria-modal="true" aria-label="Navigation menu" className="md:hidden bg-white border-t border-gray-100 shadow-xl">
           <div className="px-4 py-3 space-y-0.5">
             {NAV_HREFS.map((item) => (
               <Link

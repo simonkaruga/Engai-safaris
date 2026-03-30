@@ -42,7 +42,7 @@ export default function AdminAvailabilityPage() {
       .then((r) => r.json())
       .then((data) => { setSafaris(data); if (data.length) setSlug(data[0].slug); })
       .catch(() => router.push("/admin/login"));
-  }, []);
+  }, [token, BASE, router]);
 
   useEffect(() => {
     if (!slug) return;
@@ -58,7 +58,7 @@ export default function AdminAvailabilityPage() {
       })
       .catch(() => setAvailability({}))
       .finally(() => setLoading(false));
-  }, [slug, month]);
+  }, [slug, month, token, BASE]);
 
   const daysInMonth = new Date(current.getFullYear(), current.getMonth() + 1, 0).getDate();
   const firstDow = new Date(current.getFullYear(), current.getMonth(), 1).getDay();

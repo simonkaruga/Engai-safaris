@@ -3,9 +3,19 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+interface Invoice {
+  id: string;
+  reference: string;
+  period: string;
+  booking_count: number;
+  total_kes: number;
+  due_date: string;
+  status: string;
+}
+
 export default function AgentInvoicesPage() {
   const router = useRouter();
-  const [invoices, setInvoices] = useState<any[]>([]);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -50,7 +60,7 @@ export default function AgentInvoicesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {invoices.map((inv: any) => (
+              {invoices.map((inv) => (
                 <tr key={inv.id} className="hover:bg-gray-50">
                   <td className="px-5 py-3 font-mono text-xs">{inv.reference}</td>
                   <td className="px-5 py-3">{inv.period}</td>

@@ -4,6 +4,15 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+interface Enquiry {
+  id: string;
+  reference: string;
+  customer_name: string;
+  customer_email: string;
+  status: string;
+  created_at: string;
+}
+
 const STATUS_COLORS: Record<string, string> = {
   new: "bg-blue-100 text-blue-700",
   contacted: "bg-yellow-100 text-yellow-700",
@@ -19,7 +28,7 @@ const STATUSES = ["new", "contacted", "quoted", "negotiating", "booked", "comple
 
 export default function AdminEnquiriesPage() {
   const router = useRouter();
-  const [enquiries, setEnquiries] = useState<any[]>([]);
+  const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("new");
   const [replyOpenId, setReplyOpenId] = useState<string | null>(null);
@@ -126,8 +135,7 @@ export default function AdminEnquiriesPage() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filtered.map((e) => (
-                <>
-                  <tr key={e.id} className="hover:bg-gray-50">
+                <tr key={e.id} className="hover:bg-gray-50">
                     <td className="px-5 py-3 font-mono text-xs">{e.reference}</td>
                     <td className="px-5 py-3 font-medium">{e.customer_name}</td>
                     <td className="px-5 py-3 text-gray-500">{e.customer_email}</td>
@@ -198,7 +206,6 @@ export default function AdminEnquiriesPage() {
                       </td>
                     </tr>
                   )}
-                </>
               ))}
             </tbody>
           </table>

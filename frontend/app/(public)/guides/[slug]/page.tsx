@@ -160,7 +160,7 @@ export default async function GuideDetailPage({ params }: { params: { slug: stri
               {/* Language pills */}
               {guide.languages && (
                 <div className="flex flex-wrap gap-2">
-                  {(guide.languages as string[]).map((l) => (
+                  {guide.languages.map((l) => (
                     <span key={l} className="glass text-white/90 text-xs px-3 py-1 rounded-full">
                       {l}
                     </span>
@@ -190,7 +190,7 @@ export default async function GuideDetailPage({ params }: { params: { slug: stri
               <div>
                 <p className="eyebrow text-teal-DEFAULT mb-4">Specialities</p>
                 <div className="flex flex-wrap gap-2">
-                  {(guide.specialities as string[]).map((s) => (
+                  {guide.specialities.map((s) => (
                     <span key={s} className="bg-teal-50 border border-teal-100 text-teal-DEFAULT text-sm px-4 py-2 rounded-xl font-medium">
                       {s}
                     </span>
@@ -224,7 +224,7 @@ export default async function GuideDetailPage({ params }: { params: { slug: stri
               <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-card">
                 <p className="eyebrow text-teal-DEFAULT mb-4">Certifications</p>
                 <ul className="space-y-3">
-                  {(guide.certifications as string[]).map((c) => (
+                  {guide.certifications.map((c) => (
                     <li key={c} className="flex items-start gap-3">
                       <div className="w-5 h-5 rounded-full bg-teal-DEFAULT flex items-center justify-center flex-shrink-0 mt-0.5">
                         <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>

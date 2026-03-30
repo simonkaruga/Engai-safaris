@@ -167,6 +167,7 @@ export default function WildlifeIDPage() {
         {preview && !result && (
           <div className="bg-teal-900/40 border border-teal-700 rounded-2xl overflow-hidden">
             <div className="relative h-64 sm:h-80 bg-gray-900">
+              {/* unoptimized: blob URL from user upload — domain unknown at build time */}
               <Image src={preview} alt="Selected animal photo" fill className="object-contain" unoptimized />
             </div>
             <div className="p-5 flex gap-3">
@@ -242,6 +243,7 @@ export default function WildlifeIDPage() {
             <div className="bg-white rounded-2xl overflow-hidden shadow-xl">
               {preview && (
                 <div className="relative h-56 sm:h-72 bg-gray-100">
+                  {/* unoptimized: blob URL from user upload — domain unknown at build time */}
                   <Image src={preview} alt={result.common_name} fill className="object-cover" unoptimized />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                   {/* Name overlay */}

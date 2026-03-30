@@ -5,6 +5,14 @@ import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
+interface SafariSummary {
+  id: string;
+  slug: string;
+  name: string;
+  cover_image?: string;
+  gallery?: string[];
+}
+
 export default function SafariPhotosPage() {
   const router = useRouter();
   const params = useParams();
@@ -12,7 +20,7 @@ export default function SafariPhotosPage() {
 
   const token = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
 
-  const [safari, setSafari] = useState<any>(null);
+  const [safari, setSafari] = useState<SafariSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
@@ -27,7 +35,7 @@ export default function SafariPhotosPage() {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => r.json())
-      .then((all: any[]) => {
+      .then((all: SafariSummary[]) => {
         const found = all.find((s) => s.id === id || s.slug === id);
         if (found) {
           setSafari(found);
@@ -201,6 +209,7 @@ export default function SafariPhotosPage() {
                     disabled={i === 0}
                     className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-gray-200 disabled:opacity-30 text-gray-500 text-xs"
                     title="Move up"
+                    aria-label="Move photo up"
                   >
                     ↑
                   </button>
@@ -209,6 +218,7 @@ export default function SafariPhotosPage() {
                     disabled={i === galleryUrls.length - 1}
                     className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-gray-200 disabled:opacity-30 text-gray-500 text-xs"
                     title="Move down"
+                    aria-label="Move photo down"
                   >
                     ↓
                   </button>
@@ -216,6 +226,7 @@ export default function SafariPhotosPage() {
                     onClick={() => removeGallery(url)}
                     className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-100 text-red-500 text-xs"
                     title="Remove"
+                    aria-label="Remove photo"
                   >
                     ✕
                   </button>

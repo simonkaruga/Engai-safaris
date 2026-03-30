@@ -3,9 +3,19 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+interface WholesaleSafari {
+  id: string;
+  name: string;
+  slug: string;
+  duration_days: number;
+  category?: string;
+  wholesale_usd?: number;
+  price_usd_2pax?: number;
+}
+
 export default function AgentSafarisPage() {
   const router = useRouter();
-  const [safaris, setSafaris] = useState<any[]>([]);
+  const [safaris, setSafaris] = useState<WholesaleSafari[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -59,6 +69,7 @@ export default function AgentSafarisPage() {
                   <Link
                     href={`/safaris/${s.slug}`}
                     target="_blank"
+                    rel="noopener noreferrer"
                     className="text-teal-DEFAULT text-xs font-semibold hover:underline"
                   >
                     View →

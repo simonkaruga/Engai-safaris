@@ -55,6 +55,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="px-5 py-4 border-t border-gray-700">
           <button
             onClick={() => { localStorage.removeItem("admin_token"); router.push("/admin/login"); }}
+            aria-label="Sign out"
             className="text-xs text-gray-400 hover:text-white transition-colors"
           >
             Sign out →

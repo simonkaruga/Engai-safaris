@@ -104,7 +104,7 @@ export default function AdminBookingsPage() {
     }
   };
 
-  const openVehiclePanel = async (booking: any) => {
+  const openVehiclePanel = async (booking: Booking) => {
     if (vehiclePanel === booking.id) {
       setVehiclePanel(null);
       return;
@@ -397,9 +397,7 @@ export default function AdminBookingsPage() {
                       </td>
                     </tr>
                   )}
-                </>
-              ))}
-            </tbody>
+              ))}            </tbody>
           </table>
         )}
       </div>

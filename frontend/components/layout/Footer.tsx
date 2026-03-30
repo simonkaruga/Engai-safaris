@@ -4,7 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 
-const SAFARI_HREFS: [string, string][] = [
+import type { TranslationKey } from "@/lib/i18n";
+
+const SAFARI_HREFS: [TranslationKey, string][] = [
   ["footer.classicSafaris",     "/safaris?category=classic"],
   ["footer.luxurySafaris",      "/safaris?category=luxury"],
   ["footer.photographySafaris", "/safaris?category=photography"],
@@ -21,7 +23,7 @@ const DESTINATION_HREFS: [string, string][] = [
   ["Lake Nakuru",   "/destinations/lake-nakuru"],
 ];
 
-const COMPANY_HREFS: [string, string][] = [
+const COMPANY_HREFS: [TranslationKey, string][] = [
   ["footer.aboutUs",      "/about"],
   ["footer.ourGuides",    "/guides"],
   ["footer.guestReviews", "/reviews"],
@@ -30,7 +32,7 @@ const COMPANY_HREFS: [string, string][] = [
   ["footer.contact",      "/contact"],
 ];
 
-const LEGAL_HREFS: [string, string][] = [
+const LEGAL_HREFS: [TranslationKey, string][] = [
   ["footer.terms",             "/terms"],
   ["footer.privacy",           "/privacy"],
   ["footer.cancellationPolicy","/cancellation-policy"],
@@ -106,7 +108,7 @@ export default function Footer() {
               {SAFARI_HREFS.map(([key, href]) => (
                 <li key={href}>
                   <Link href={href} className="text-sm text-gray-500 hover:text-white transition-colors">
-                    {t(key as any)}
+                    {t(key)}
                   </Link>
                 </li>
               ))}
@@ -139,7 +141,7 @@ export default function Footer() {
               {COMPANY_HREFS.map(([key, href]) => (
                 <li key={href}>
                   <Link href={href} className="text-sm text-gray-500 hover:text-white transition-colors">
-                    {t(key as any)}
+                    {t(key)}
                   </Link>
                 </li>
               ))}
@@ -158,7 +160,7 @@ export default function Footer() {
               {LEGAL_HREFS.map(([key, href]) => (
                 <li key={href}>
                   <Link href={href} className="text-sm text-gray-500 hover:text-white transition-colors">
-                    {t(key as any)}
+                    {t(key)}
                   </Link>
                 </li>
               ))}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 
 interface Message {
@@ -34,21 +34,37 @@ function getSessionId(): string {
   return id;
 }
 
-function formatMessage(text: string) {
-  return text
-    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.*?)\*/g, "<em>$1</em>")
-    .replace(/\n\n/g, "</p><p class='mt-2'>")
-    .replace(/\n/g, "<br/>");
+function formatMessage(text: string): React.ReactNode[] {
+  const nodes: React.ReactNode[] = [];
+  const paragraphs = text.split(/\n\n/);
+  paragraphs.forEach((para, pi) => {
+    if (pi > 0) nodes.push(<span key={`br-${pi}`} className="block mt-2" />);
+    const parts = para.split(/(\*\*.*?\*\*|\*.*?\*|\n)/);
+    parts.forEach((part, i) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        nodes.push(<strong key={`${pi}-${i}`}>{part.slice(2, -2)}</strong>);
+      } else if (part.startsWith("*") && part.endsWith("*")) {
+        nodes.push(<em key={`${pi}-${i}`}>{part.slice(1, -1)}</em>);
+      } else if (part === "\n") {
+        nodes.push(<br key={`${pi}-${i}`} />);
+      } else {
+        nodes.push(part);
+      }
+    });
+  });
+  return nodes;
 }
 
-function SafariPill({ slug }: { slug: string }) {
+function SafariPill({ slug, index }: { slug: string; index: number }) {
   const name = slug
     .split("-")
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
   return (
-    <div className="flex items-center gap-2 mt-1">
+    <div
+      className="flex items-center gap-2 mt-1 animate-fade-up"
+      style={{ animationDelay: `${index * 80}ms`, animationFillMode: "both" }}
+    >
       <Link
         href={`/safaris/${slug}`}
         className="inline-flex items-center gap-1.5 bg-white border border-gray-200 text-gray-700 hover:border-teal-DEFAULT hover:text-teal-DEFAULT px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
@@ -64,6 +80,15 @@ function SafariPill({ slug }: { slug: string }) {
         </svg>
         Book {name}
       </Link>
+    </div>
+  );
+}
+
+function SafariPillSkeleton() {
+  return (
+    <div className="flex items-center gap-2 mt-1 animate-pulse">
+      <div className="h-7 bg-gray-200 rounded-lg w-24" />
+      <div className="h-7 bg-teal-100 rounded-lg w-32" />
     </div>
   );
 }
@@ -203,9 +228,9 @@ export default function SafariPlannerChat() {
           if (data.error) throw new Error(data.error);
         }
       }
-    } catch (e: any) {
-      if (e?.name === "AbortError") return;
-      const errMsg = `Sorry, something went wrong: ${e?.message ?? "unknown error"}. Please try again or WhatsApp us.`;
+    } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") return;
+      const errMsg = `Sorry, something went wrong: ${err instanceof Error ? err.message : "unknown error"}. Please try again or WhatsApp us.`;
       setMessages((prev) => {
         const last = prev[prev.length - 1];
         if (last?.streaming) {
@@ -290,6 +315,7 @@ export default function SafariPlannerChat() {
         <button
           onClick={resetChat}
           title="Start a new conversation"
+          aria-label="Start a new conversation"
           className="text-gray-500 hover:text-gray-300 transition-colors p-1.5 rounded-lg hover:bg-white/10"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -318,19 +344,26 @@ export default function SafariPlannerChat() {
                 {msg.streaming && msg.content === "" ? (
                   <TypingDots />
                 ) : (
-                  <p dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }} />
+                  <p>{formatMessage(msg.content)}</p>
                 )}
                 {msg.streaming && msg.content !== "" && (
                   <span className="inline-block w-0.5 h-4 bg-teal-DEFAULT ml-0.5 animate-pulse align-middle" />
                 )}
               </div>
 
-              {/* Safari recommendation pills */}
+              {/* Safari recommendation pills — animate in staggered */}
               {msg.safariSlugs && msg.safariSlugs.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
-                  {msg.safariSlugs.map((slug) => (
-                    <SafariPill key={slug} slug={slug} />
+                  {msg.safariSlugs.map((slug, pi) => (
+                    <SafariPill key={slug} slug={slug} index={pi} />
                   ))}
+                </div>
+              )}
+
+              {/* Skeleton pills while streaming on turn 3+ (AI may be recommending safaris) */}
+              {msg.streaming && msg.content.length > 60 && aiTurnCount >= 3 && (
+                <div className="flex flex-wrap gap-1.5 mt-1">
+                  <SafariPillSkeleton />
                 </div>
               )}
             </div>

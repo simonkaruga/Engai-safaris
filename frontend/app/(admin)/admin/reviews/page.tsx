@@ -4,13 +4,25 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+interface Review {
+  id: string;
+  author_name?: string;
+  country?: string;
+  rating?: number;
+  safari_name?: string;
+  title?: string;
+  is_approved: boolean;
+  is_featured: boolean;
+}
+
 const FILTER_TABS = ["all", "pending", "approved", "featured"];
 
 export default function AdminReviewsPage() {
   const router = useRouter();
-  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const token = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
 
@@ -37,7 +49,8 @@ export default function AdminReviewsPage() {
   };
 
   const deleteReview = async (id: string) => {
-    if (!confirm("Delete this review? This cannot be undone.")) return;
+    if (confirmDeleteId !== id) { setConfirmDeleteId(id); return; }
+    setConfirmDeleteId(null);
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/reviews/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
@@ -128,6 +141,7 @@ export default function AdminReviewsPage() {
                         r.is_approved ? "bg-green-500 border-green-500" : "bg-gray-200 border-gray-300"
                       }`}
                       title={r.is_approved ? "Revoke approval" : "Approve"}
+                      aria-label={r.is_approved ? "Revoke approval" : "Approve review"}
                     />
                   </td>
                   <td className="px-5 py-3 text-center">
@@ -137,6 +151,7 @@ export default function AdminReviewsPage() {
                         r.is_featured ? "bg-gold-DEFAULT border-gold-DEFAULT text-white" : "bg-gray-100 border-gray-300 text-gray-400"
                       }`}
                       title={r.is_featured ? "Unfeature" : "Feature"}
+                      aria-label={r.is_featured ? "Unfeature review" : "Feature review"}
                     >
                       ★
                     </button>
@@ -144,9 +159,13 @@ export default function AdminReviewsPage() {
                   <td className="px-5 py-3">
                     <button
                       onClick={() => deleteReview(r.id)}
-                      className="text-xs text-red-500 hover:text-red-700 font-semibold"
+                      className={`text-xs font-semibold transition-colors ${
+                        confirmDeleteId === r.id
+                          ? "text-white bg-red-500 px-2 py-0.5 rounded"
+                          : "text-red-500 hover:text-red-700"
+                      }`}
                     >
-                      Delete
+                      {confirmDeleteId === r.id ? "Confirm delete" : "Delete"}
                     </button>
                   </td>
                 </tr>

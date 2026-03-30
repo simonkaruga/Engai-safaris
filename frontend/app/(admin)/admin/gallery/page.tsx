@@ -3,10 +3,15 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+  name: string;
+  cover_image?: string;
+  image_url?: string;
+}
 
 export default function AdminGalleryPage() {
   const router = useRouter();
-  const [safaris, setSafaris] = useState<any[]>([]);
+  const [safaris, setSafaris] = useState<GallerySafari[]>([]);
   const [loading, setLoading] = useState(true);
 
   const token = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
@@ -59,11 +64,9 @@ export default function AdminGalleryPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
             {images.map((img, i) => (
               <div key={i} className="group relative">
-                <img
-                  src={img.url}
-                  alt={img.name}
-                  className="w-full h-20 object-cover rounded-lg border border-gray-200"
-                />
+                <div className="relative w-full h-20">
+                  <Image src={img.url} alt={img.name} fill className="object-cover rounded-lg border border-gray-200" sizes="(max-width: 640px) 50vw, 16vw" />
+                </div>
                 <div className="absolute inset-0 bg-black/70 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-1">
                   <p className="text-white text-[10px] text-center font-medium leading-tight mb-1 line-clamp-2">
                     {img.name}

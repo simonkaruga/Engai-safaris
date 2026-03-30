@@ -2,19 +2,17 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
 import type { SafariList } from "@/types/api";
 import { useCurrency } from "@/context/CurrencyContext";
 import { formatPrice } from "@/lib/currency";
 import { useLanguage } from "@/context/LanguageContext";
 
-
-
 interface Props {
   safari: SafariList;
+  index?: number;
 }
 
-export default function SafariFeaturedCard({ safari }: Props) {
+export default function SafariFeaturedCard({ safari, index = 0 }: Props) {
   const { currency, rates } = useCurrency();
   const { t } = useLanguage();
   const priceUSD = safari.price_usd_2pax;
@@ -32,14 +30,12 @@ export default function SafariFeaturedCard({ safari }: Props) {
           fill
           className="object-cover transition-transform duration-700 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1280px) 66vw, 800px"
-          priority
+          priority={index < 2}
         />
       )}
 
       {/* Gradient overlays — top for badges, bottom for text */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-black/30" />
-
-
 
       {/* Top badges */}
       <div className="absolute top-4 left-4 flex gap-2 z-10">

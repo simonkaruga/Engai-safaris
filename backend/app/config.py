@@ -35,6 +35,8 @@ class Settings(BaseSettings):
 
     AFFILIATE_COOKIE_DAYS: int = 30
 
+    GOOGLE_CLIENT_ID: str = ""  # OAuth 2.0 client ID from Google Cloud Console
+
     # FX rate — update monthly via env var. Source: CBK / XE interbank mid.
     USD_TO_KES: float = 130.0
 
