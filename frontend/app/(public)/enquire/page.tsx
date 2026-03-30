@@ -143,7 +143,7 @@ function EnquirePageInner() {
               disabled={submitting || !form.customer_name || !form.customer_email}
               className="w-full bg-teal-DEFAULT hover:bg-teal-600 text-white py-4 rounded-xl font-semibold transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
             >
-              {submitting ? "Sending..." : "Send Enquiry — we reply within 4 hours"}
+              {submitting ? "Sending..." : "Send Enquiry. We reply within 4 hours"}
               {!submitting && (
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />

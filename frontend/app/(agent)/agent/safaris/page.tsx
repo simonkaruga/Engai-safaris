@@ -38,7 +38,7 @@ export default function AgentSafarisPage() {
         <h1 className="font-display text-3xl font-bold">Wholesale Catalogue</h1>
         <Link href="/agent/dashboard" className="text-sm text-gray-500 hover:text-teal-DEFAULT">← Dashboard</Link>
       </div>
-      <p className="text-gray-500 text-sm mb-6">All prices are wholesale — 15% below retail. Book for your clients and download PDF vouchers instantly.</p>
+      <p className="text-gray-500 text-sm mb-6">All prices are wholesale, 15% below retail. Book for your clients and download PDF vouchers instantly.</p>
       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 text-gray-500 text-xs uppercase">

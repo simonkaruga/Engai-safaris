@@ -64,7 +64,7 @@ export default function SafariPhotosPage() {
         }),
       });
       if (res.ok) showToast("Photos saved!");
-      else showToast("Save failed — check the URLs", false);
+      else showToast("Save failed. Check the URLs", false);
     } catch {
       showToast("Network error", false);
     } finally {
@@ -153,13 +153,13 @@ export default function SafariPhotosPage() {
               fill
               className="object-cover"
               unoptimized
-              onError={() => showToast("Cover image URL could not be loaded — check the URL", false)}
+              onError={() => showToast("Cover image URL could not be loaded. Check the URL", false)}
             />
           </div>
         )}
         {!coverUrl && (
           <div className="h-32 rounded-xl bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center">
-            <p className="text-gray-400 text-sm">No cover image yet — paste a URL above</p>
+            <p className="text-gray-400 text-sm">No cover image yet. Paste a URL above</p>
           </div>
         )}
       </section>

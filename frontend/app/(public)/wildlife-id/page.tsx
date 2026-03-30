@@ -93,7 +93,7 @@ export default function WildlifeIDPage() {
       const data: WildlifeResult = await res.json();
       setResult(data);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Something went wrong — please try again.");
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -129,7 +129,7 @@ export default function WildlifeIDPage() {
           What animal is that?
         </h1>
         <p className="text-teal-200 text-lg leading-relaxed">
-          Take a photo on safari and our AI identifies the animal instantly — species, Swahili name, fun facts, and where to find it in Kenya.
+          Take a photo on safari and our AI identifies the animal instantly: species, Swahili name, fun facts, and where to find it in Kenya.
         </p>
       </div>
 

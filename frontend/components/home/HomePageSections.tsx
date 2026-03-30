@@ -384,7 +384,7 @@ export default function HomePageSections({ reviews, safaris, featuredGuide, avgR
                   </div>
                 </div>
                 <div className="p-5">
-                  <p className="text-gold-DEFAULT font-semibold italic text-sm mb-3">&ldquo;Africa&apos;s apex predator — king of the savanna&rdquo;</p>
+                  <p className="text-gold-DEFAULT font-semibold italic text-sm mb-3">&ldquo;Africa&apos;s apex predator, king of the savanna&rdquo;</p>
                   <div className="grid grid-cols-2 gap-3 mb-4">
                     <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-3 text-center"><p className="text-gray-400 text-[10px] uppercase tracking-wide">Conservation</p><p className="text-yellow-700 font-bold text-sm mt-0.5">VU · Vulnerable</p></div>
                     <div className="bg-red-50 border border-red-100 rounded-xl p-3 text-center"><p className="text-gray-400 text-[10px] uppercase tracking-wide">Danger level</p><p className="text-red-700 font-bold text-sm mt-0.5">High</p></div>

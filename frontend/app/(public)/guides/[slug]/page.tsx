@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const guide = await getGuide(params.slug).catch(() => null);
   if (!guide) return {};
   return {
-    title: `${guide.name} — ${guide.title ?? "Safari Guide"}`,
+    title: `${guide.name}, ${guide.title ?? "Safari Guide"}`,
     description: guide.bio?.slice(0, 160),
     alternates: { canonical: `https://www.engaisafaris.com/guides/${guide.slug}` },
   };

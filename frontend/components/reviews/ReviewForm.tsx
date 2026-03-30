@@ -217,7 +217,7 @@ export default function ReviewForm({ onSuccess }: { onSuccess?: () => void }) {
           onChange={handleChange}
           rows={5}
           className={inputClass + " resize-none"}
-          placeholder="Tell others about your experience — the wildlife, your guide, the camp, what surprised you most..."
+          placeholder="Tell others about your experience: the wildlife, your guide, the camp, what surprised you most..."
         />
         <p className="text-xs text-gray-400 mt-1.5">{form.body.length} / 1000 characters</p>
       </div>

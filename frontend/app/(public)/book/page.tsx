@@ -33,8 +33,8 @@ type Preview = {
 };
 
 const SEASON_LABELS: Record<string, string> = {
-  peak: "Peak season — Jul–Oct (Great Migration)",
-  low: "Green season — Apr–May (lower rates)",
+  peak: "Peak season, Jul–Oct (Great Migration)",
+  low: "Green season, Apr–May (lower rates)",
   standard: "Standard season",
 };
 
@@ -472,7 +472,7 @@ function BookPageInner() {
                   </>
                 ) : preview ? (
                   <>
-                    Pay Deposit — {formatKES(promoResult ? Math.round(Math.round(preview.total_kes * (1 - promoResult.discount_pct / 100)) * preview.deposit_pct / 100) : preview.deposit_kes)}
+                    Pay Deposit: {formatKES(promoResult ? Math.round(Math.round(preview.total_kes * (1 - promoResult.discount_pct / 100)) * preview.deposit_pct / 100) : preview.deposit_kes)}
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                     </svg>

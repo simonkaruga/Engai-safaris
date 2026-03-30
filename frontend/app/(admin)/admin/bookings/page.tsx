@@ -68,7 +68,7 @@ export default function AdminBookingsPage() {
       });
       const data = await r.json();
       if (r.ok) {
-        showToast(`Balance request sent to ${data.email_sent_to} — KES ${Number(data.balance_kes).toLocaleString()}`);
+        showToast(`Balance request sent to ${data.email_sent_to}: KES ${Number(data.balance_kes).toLocaleString()}`);
       } else {
         showToast(data.detail || "Failed to send balance request", false);
       }
@@ -374,7 +374,7 @@ export default function AdminBookingsPage() {
                       <td colSpan={9} className="px-4 py-4">
                         <div className="max-w-lg">
                           <p className="text-xs font-semibold text-gray-700 mb-2">
-                            Mark trip complete — sends review request email automatically.
+                            Mark trip complete. Sends review request email automatically.
                             Add album URL to also send photo album email.
                           </p>
                           <div className="flex gap-2 items-center">

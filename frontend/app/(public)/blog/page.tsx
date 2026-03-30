@@ -58,7 +58,7 @@ export default async function BlogPage({
               Safari Blog
             </h1>
             <p className="text-gray-500 text-lg leading-relaxed">
-              Expert wildlife guides, honest destination advice, packing lists and planning tips — written by guides who live and work in Kenya's national parks.
+              Expert wildlife guides, honest destination advice, packing lists and planning tips, written by guides who live and work in Kenya's national parks.
             </p>
           </div>
         </div>

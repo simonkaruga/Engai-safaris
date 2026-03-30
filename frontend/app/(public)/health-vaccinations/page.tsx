@@ -69,7 +69,7 @@ const MALARIA_REGIONS = [
     region: "Nairobi (1,700m)",
     risk: "Very Low",
     color: "text-green-600",
-    note: "High altitude — malaria risk is negligible in the city. Discuss with your doctor.",
+    note: "High altitude, malaria risk is negligible in the city. Discuss with your doctor.",
   },
   {
     region: "Lake Victoria & Coast",
@@ -88,7 +88,7 @@ const MEDS = [
   {
     name: "Doxycycline",
     notes:
-      "Start 1–2 days before travel, take daily, stop 4 weeks after return. Cheap. Can cause sun sensitivity — wear high SPF sunscreen.",
+      "Start 1–2 days before travel, take daily, stop 4 weeks after return. Cheap but can cause sun sensitivity, so wear high SPF sunscreen.",
   },
   {
     name: "Mefloquine (Lariam)",
@@ -267,7 +267,7 @@ export default function HealthVaccinationsPage() {
               <p>
                 <strong>Travel insurance —</strong> Not a visa requirement but
                 strongly recommended. Ensure your policy covers emergency
-                medical evacuation — this is the most important coverage for
+                medical evacuation, which is the most important coverage for
                 remote safari areas.
               </p>
             </div>
@@ -300,7 +300,7 @@ export default function HealthVaccinationsPage() {
               "Oral rehydration sachets",
               "Ibuprofen / paracetamol",
               "Imodium (loperamide) for diarrhoea",
-              "Antibiotic (Ciprofloxacin) — ask your doctor",
+              "Antibiotic (Ciprofloxacin), ask your doctor first",
               "Antiseptic cream and plasters",
               "SPF 50+ sunscreen",
               "Blister plasters",
@@ -367,7 +367,7 @@ export default function HealthVaccinationsPage() {
           </h2>
           <p className="text-gray-600 text-sm mb-6 max-w-md mx-auto">
             Our team is available 7 days a week to answer any questions before
-            your safari — health, logistics, or anything else.
+            your safari, whether health, logistics or anything else.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link

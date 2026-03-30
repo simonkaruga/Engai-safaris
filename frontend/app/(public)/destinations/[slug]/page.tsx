@@ -334,7 +334,7 @@ export default async function DestinationPage({ params }: { params: { slug: stri
                     <p className="font-semibold text-amber-700">Add Lake Nakuru</p>
                   </div>
                   <p className="text-gray-600 mb-3 leading-relaxed">
-                    Nakuru is 45 minutes away. Both rhino species + flamingos — Kenya's best 2-day circuit.
+                    Nakuru is 45 minutes away. Both rhino species and flamingos, Kenya's best 2-day circuit.
                   </p>
                   <Link href="/safaris/naivasha-nakuru-2-day" className="text-teal-DEFAULT font-semibold hover:underline">
                     View 2-Day Circuit →

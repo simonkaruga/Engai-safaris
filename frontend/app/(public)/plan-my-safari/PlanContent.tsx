@@ -60,7 +60,7 @@ export default function PlanContent() {
   const HOW_STEPS = [
     { step: "1", titleKey: "plan.step1" as const, desc: t("plan.step2") },
     { step: "2", titleKey: "plan.step3" as const, desc: "Engai picks the best matching safari" },
-    { step: "3", titleKey: "plan.step4" as const, desc: "Click Book Now — deposit paid in seconds" },
+    { step: "3", titleKey: "plan.step4" as const, desc: "Click Book Now and your deposit is paid in seconds" },
   ];
 
   return (

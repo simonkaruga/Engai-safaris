@@ -20,7 +20,7 @@ export default function EnquiryConfirmationPage({ searchParams }: { searchParams
       )}
       <p className="text-gray-600 text-lg mb-8">
         Our team will review your details and send a personalised quote within 24 hours.
-        Check your email — and your spam folder just in case.
+        Check your email, and your spam folder just in case.
       </p>
       <div className="space-y-3">
         <a

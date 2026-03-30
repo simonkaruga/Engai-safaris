@@ -32,7 +32,7 @@ export default function manifest(): MetadataRoute.Manifest {
         type: "image/png",
         // @ts-ignore — form_factor is valid in the Web App Manifest spec
         form_factor: "wide",
-        label: "Engai Safaris — Where the Sky Meets the Wild",
+        label: "Engai Safaris: Where the Sky Meets the Wild",
       },
     ],
     shortcuts: [

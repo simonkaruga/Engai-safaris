@@ -163,7 +163,7 @@ export default function AdminGuidesPage() {
             <div className="sm:col-span-2">
               <label className="block text-xs font-semibold text-gray-500 mb-1">Bio</label>
               <textarea rows={3} value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })}
-                placeholder="Brief guide biography — background, experience, what makes them special..."
+                placeholder="Brief guide biography: background, experience, what makes them special..."
                 className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none" />
             </div>
             <div className="sm:col-span-2">

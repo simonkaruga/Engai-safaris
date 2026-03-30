@@ -6,7 +6,7 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Kenya Safari Destinations",
-  description: "Explore Kenya's greatest safari destinations — Masai Mara, Amboseli, Naivasha, Samburu and more. Expert guides, transparent pricing.",
+  description: "Explore Kenya's greatest safari destinations: Masai Mara, Amboseli, Naivasha, Samburu and more. Expert guides, transparent pricing.",
   alternates: { canonical: "https://www.engaisafaris.com/destinations" },
 };
 

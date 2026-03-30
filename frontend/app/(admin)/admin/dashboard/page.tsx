@@ -83,7 +83,7 @@ export default function AdminDashboardPage() {
             <svg className="w-5 h-5 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
             </svg>
-            <h2 className="font-bold text-amber-800 text-sm">Lodge Payment Due — Next 14 Days</h2>
+            <h2 className="font-bold text-amber-800 text-sm">Lodge Payment Due: Next 14 Days</h2>
           </div>
           <p className="text-amber-700 text-xs mb-4 leading-relaxed">
             These confirmed bookings have lodge payments falling due within 14 days (30 days before travel date).
@@ -116,8 +116,8 @@ export default function AdminDashboardPage() {
         <h2 className="font-bold text-teal-800 text-sm mb-3">Active Promo Codes</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {[
-            { code: "ENGAI10", desc: "10% welcome — first-time guests" },
-            { code: "ENGAI15", desc: "15% loyalty — returning guests" },
+            { code: "ENGAI10", desc: "10% welcome discount for first-time guests" },
+            { code: "ENGAI15", desc: "15% loyalty discount for returning guests" },
             { code: "HONEY20", desc: "20% honeymoon special" },
             { code: "FAMILY10", desc: "10% family safari" },
             { code: "AGENT5", desc: "5% agent referral" },

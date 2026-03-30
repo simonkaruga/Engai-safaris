@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Join a Group Safari Kenya | From $650/person | Engai Safaris",
   description:
-    "Join a shared group safari in Kenya. Share a private 4x4 with up to 6 guests, same guide and camps as a private safari — at a fraction of the cost. Fixed weekly departures from Nairobi.",
+    "Join a shared group safari in Kenya. Share a private 4x4 with up to 6 guests, same guide and camps as a private safari, at a fraction of the cost. Fixed weekly departures from Nairobi.",
   alternates: { canonical: "https://www.engaisafaris.com/group-safaris" },
 };
 
@@ -34,7 +34,7 @@ const BENEFITS = [
       </svg>
     ),
     title: "Meet fellow travellers",
-    desc: "Groups are typically 4–6 guests from different countries. Many guests leave as friends — and return together.",
+    desc: "Groups are typically 4–6 guests from different countries. Many guests leave as friends and often return together.",
   },
   {
     icon: (
@@ -55,7 +55,7 @@ const PACKAGES = [
     price: 650,
     departure: "Every Friday from Nairobi",
     parks: ["Masai Mara"],
-    highlight: "The world-famous Mara — big cats, wildebeest, open plains.",
+    highlight: "The world-famous Mara: big cats, wildebeest, open plains.",
     badge: "Most popular",
   },
   {
@@ -75,7 +75,7 @@ const PACKAGES = [
     price: 1950,
     departure: "Every other Sunday",
     parks: ["Masai Mara", "Amboseli", "Naivasha"],
-    highlight: "The definitive Kenya safari — three parks, three ecosystems.",
+    highlight: "The definitive Kenya safari: three parks, three ecosystems.",
     badge: null,
   },
 ];
@@ -89,11 +89,11 @@ const STEPS = [
 const FAQS = [
   {
     q: "Who will I be travelling with?",
-    a: "Groups are typically 4–6 guests from a mix of nationalities — solo travellers, couples, and sometimes small groups of friends. We intentionally keep groups small so the experience stays personal.",
+    a: "Groups are typically 4–6 guests from a mix of nationalities: solo travellers, couples, and sometimes small groups of friends. We intentionally keep groups small so the experience stays personal.",
   },
   {
     q: "Can couples join a group safari?",
-    a: "Absolutely. Couples book two spots and share the vehicle with the rest of the group. Many couples prefer this — you get the social atmosphere without sacrificing the private guide experience.",
+    a: "Absolutely. Couples book two spots and share the vehicle with the rest of the group. Many couples prefer this: you get the social atmosphere without giving up the private guide experience.",
   },
   {
     q: "What if the group doesn't fill up?",
@@ -120,7 +120,7 @@ export default function GroupSafarisPage() {
             Join a Group Safari
           </h1>
           <p className="text-teal-100 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-            Share a private 4x4 with up to 6 guests and explore Kenya at a fraction of the private cost — same guide, same camps, same experience.
+            Share a private 4x4 with up to 6 guests and explore Kenya at a fraction of the private cost. Same guide, same camps, same experience.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
             <a href="#packages" className="bg-gold-DEFAULT hover:bg-gold-600 text-white font-semibold px-8 py-3.5 rounded-xl transition-colors shadow-gold">

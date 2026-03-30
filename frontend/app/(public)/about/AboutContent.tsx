@@ -93,7 +93,7 @@ export default function AboutContent() {
               <span className="text-teal-DEFAULT">{t("about.nameExplain")}</span>
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed mb-5">
-              Engai is the supreme sky deity of the Maasai people — the divine force governing
+              Engai is the supreme sky deity of the Maasai people, the divine force governing
               rain, life, cattle, and the land. The Maasai are the original custodians of the
               Great Rift Valley, the plains of the Mara, the slopes of Kilimanjaro.
             </p>
@@ -153,7 +153,7 @@ export default function AboutContent() {
               },
               {
                 problem: "Anonymous drivers",
-                solution: "You see your guide's full profile — photo, bio, certifications, 14 years of experience — before you book.",
+                solution: "You see your guide's full profile: photo, bio, certifications, 14 years of experience, before you book.",
                 icon: (
                   <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
@@ -209,7 +209,7 @@ export default function AboutContent() {
             <p className="text-gray-500 leading-relaxed">
               We started with a simple conviction: Kenya&apos;s safari industry was built for
               the benefit of foreign intermediaries, not Kenyan guides or informed travellers.
-              We are fixing that — one transparent booking at a time.
+              We are fixing that, one transparent booking at a time.
             </p>
           </div>
 

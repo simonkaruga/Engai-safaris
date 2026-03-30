@@ -143,7 +143,7 @@ export default function CancellationPolicyPage() {
                   </tr>
                   <tr className="hover:bg-red-50 transition-colors">
                     <td className="px-5 py-4 font-medium text-gray-800">0–13 days / no-show</td>
-                    <td className="px-5 py-4 text-red-700 font-semibold">100% — non-refundable</td>
+                    <td className="px-5 py-4 text-red-700 font-semibold">100%, non-refundable</td>
                     <td className="px-5 py-4 text-gray-600 hidden sm:table-cell">No refund</td>
                   </tr>
                 </tbody>
@@ -213,9 +213,9 @@ export default function CancellationPolicyPage() {
               cancellation request being acknowledged. The method of refund is:
             </p>
             <ul className="space-y-1.5 list-disc list-inside text-sm text-gray-700">
-              <li>M-Pesa payments — refunded to the originating M-Pesa number</li>
-              <li>Card payments — refunded to the originating card via Pesapal</li>
-              <li>Bank transfers — refunded to the originating bank account</li>
+              <li>M-Pesa payments: refunded to the originating M-Pesa number</li>
+              <li>Card payments: refunded to the originating card via Pesapal</li>
+              <li>Bank transfers: refunded to the originating bank account</li>
             </ul>
             <p className="mt-4 text-sm text-gray-600 p-4 bg-blue-50 border border-blue-100 rounded-xl">
               International card refunds may take an additional 3–5 business days to appear on
@@ -273,7 +273,7 @@ export default function CancellationPolicyPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
                 </svg>
                 <div>
-                  <p className="font-semibold text-amber-800 mb-2">Great Migration season — stricter cancellation terms</p>
+                  <p className="font-semibold text-amber-800 mb-2">Great Migration season: stricter cancellation terms</p>
                   <p className="text-sm text-amber-700 leading-relaxed">
                     Safaris during July–October (Great Migration peak) involve pre-committed lodge and camp
                     reservations made many months in advance. Lodges in the Masai Mara are booked out and
@@ -321,7 +321,7 @@ export default function CancellationPolicyPage() {
           {/* Travel insurance */}
           <div id="travel-insurance" className="mb-12 pl-5 border-l-4 border-[#1B7A60]/30 hover:border-[#1B7A60] transition-colors">
             <h2 className="font-display text-xl md:text-2xl font-bold text-gray-900 mb-4">
-              Travel Insurance — Strongly Recommended
+              Travel Insurance: Strongly Recommended
             </h2>
             <p className="text-gray-700 text-sm leading-relaxed mb-5">
               Travel insurance is the single most important thing you can buy alongside your safari
@@ -368,7 +368,7 @@ export default function CancellationPolicyPage() {
 
             <p className="text-xs text-gray-500 p-4 bg-stone-50 rounded-xl border border-stone-200">
               Engai Safaris is not affiliated with any insurance provider and receives no commission.
-              These are suggestions only — please read policy documents carefully before purchasing.
+              These are suggestions only. Please read policy documents carefully before purchasing.
               Your policy should include at minimum: trip cancellation, medical evacuation ($100,000+),
               and emergency repatriation.
             </p>
@@ -382,7 +382,7 @@ export default function CancellationPolicyPage() {
             </h2>
             <p className="text-gray-400 text-sm mb-6 max-w-lg mx-auto">
               Our team answers cancellation and booking queries within a few hours. If something
-              comes up before your safari, talk to us — we&apos;ll always try to find a solution.
+              comes up before your safari, talk to us and we&apos;ll always try to find a solution.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link

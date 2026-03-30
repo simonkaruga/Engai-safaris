@@ -86,7 +86,7 @@ export default function BookingSidebar({ safari }: Props) {
       if (res.ok) setPromoValid(await res.json());
       else setPromoError("Invalid or expired code");
     } catch {
-      setPromoError("Could not check code — try again");
+      setPromoError("Could not check code. Try again");
     } finally {
       setCheckingPromo(false);
     }
@@ -176,10 +176,10 @@ export default function BookingSidebar({ safari }: Props) {
               Solo traveller heads-up
             </p>
             <p className="text-amber-700">
-              As a solo traveller you hire the full private vehicle — great for flexibility but the highest per-person cost.
+              As a solo traveller you hire the full private vehicle, great for flexibility but the highest per-person cost.
             </p>
             <p className="text-amber-700 mt-1.5">
-              <strong>Better value option:</strong> join one of our <Link href="/group-safaris" className="underline font-semibold hover:text-amber-900">group departures</Link> and split the vehicle with other travellers. Same parks, same guides — from <strong>40–60% less</strong>.
+              <strong>Better value option:</strong> join one of our <Link href="/group-safaris" className="underline font-semibold hover:text-amber-900">group departures</Link> and split the vehicle with other travellers. Same parks, same guides, from <strong>40–60% less</strong>.
             </p>
           </div>
         )}
@@ -289,7 +289,7 @@ export default function BookingSidebar({ safari }: Props) {
           href={bookHref}
           className="block w-full bg-teal-DEFAULT hover:bg-teal-600 text-white text-center py-4 rounded-xl font-bold text-lg transition-colors shadow-md hover:shadow-lg"
         >
-          {displayDepositSelected ? `Book Now — Pay ${displayDepositSelected}` : "Book This Safari →"}
+          {displayDepositSelected ? `Book Now: Pay ${displayDepositSelected}` : "Book This Safari →"}
         </Link>
 
         {/* Lipa Polepole */}
@@ -297,7 +297,7 @@ export default function BookingSidebar({ safari }: Props) {
           <div className="flex items-center gap-2.5 bg-amber-50 border border-amber-100 rounded-xl p-3">
             <MPesaLogo className="h-5 flex-shrink-0" />
             <div>
-              <p className="text-xs font-bold text-amber-700">Lipa Polepole — Pay in 4 instalments</p>
+              <p className="text-xs font-bold text-amber-700">Lipa Polepole: Pay in 4 instalments</p>
               <p className="text-xs text-gray-500">No interest. M-Pesa only.</p>
             </div>
           </div>

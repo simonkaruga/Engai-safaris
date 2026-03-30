@@ -251,7 +251,7 @@ export default function NewBlogPostPage() {
           )}
           {!coverImage && (
             <div className="mt-3 h-24 rounded-xl bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center">
-              <p className="text-gray-400 text-xs">No cover image — paste a URL above</p>
+              <p className="text-gray-400 text-xs">No cover image. Paste a URL above</p>
             </div>
           )}
         </div>

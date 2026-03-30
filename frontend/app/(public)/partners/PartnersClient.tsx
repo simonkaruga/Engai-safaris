@@ -178,7 +178,7 @@ export default function PartnersClient() {
         <div className="text-center mb-12">
           <p className="eyebrow text-teal-DEFAULT mb-3 uppercase tracking-widest text-xs font-semibold">Commission structure</p>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900">Transparent, tiered rates</h2>
-          <p className="text-gray-500 mt-3 max-w-xl mx-auto">Your tier upgrades automatically as your annual bookings grow. No applications needed — we track it for you.</p>
+          <p className="text-gray-500 mt-3 max-w-xl mx-auto">Your tier upgrades automatically as your annual bookings grow. No applications needed, we track it for you.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {TIERS.map((tier) => (

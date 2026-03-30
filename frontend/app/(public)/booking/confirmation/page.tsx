@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Booking Confirmed — Engai Safaris" };
+export const metadata: Metadata = { title: "Booking Confirmed | Engai Safaris" };
 
 export default function BookingConfirmationPage({
   searchParams,
@@ -52,7 +52,7 @@ export default function BookingConfirmationPage({
               {
                 step: "1",
                 title: "Confirmation email",
-                desc: "Check your inbox — your booking details and receipt are on their way.",
+                desc: "Check your inbox, your booking details and receipt are on their way.",
               },
               {
                 step: "2",

@@ -6,7 +6,7 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Our Safari Guides",
-  description: "Meet the Engai Safaris guides — TRA-certified naturalists with 7–14 years field experience. Full profiles, certifications and guest reviews before you book.",
+  description: "Meet the Engai Safaris guides, TRA-certified naturalists with 7–14 years field experience. Full profiles, certifications and guest reviews before you book.",
   alternates: { canonical: "https://www.engaisafaris.com/guides" },
 };
 

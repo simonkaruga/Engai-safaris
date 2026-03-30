@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "FAQ — Kenya Safari Questions Answered",
-  description: "50 frequently asked questions about Kenya safaris — costs, packing, visas, health, wildlife and more.",
+  title: "FAQ: Kenya Safari Questions Answered",
+  description: "50 frequently asked questions about Kenya safaris: costs, packing, visas, health, wildlife and more.",
   alternates: { canonical: "https://www.engaisafaris.com/faq" },
 };
 

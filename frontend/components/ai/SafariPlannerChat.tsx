@@ -15,14 +15,14 @@ const SESSION_KEY = "engai-chat-id";
 
 const INITIAL: Message = {
   role: "assistant",
-  content: "Jambo! I'm **Engai** — your personal Kenya safari planner.\n\nI'll help you build the perfect safari in a few questions.\n\n**When are you thinking of visiting Kenya, and roughly how many days do you have?**",
+  content: "Jambo! I'm **Engai**, your personal Kenya safari planner.\n\nI'll help you build the perfect safari in a few questions.\n\n**When are you thinking of visiting Kenya, and roughly how many days do you have?**",
 };
 
 // Context-aware quick reply chips
 const QUICK_REPLIES: Record<number, string[]> = {
   1: ["2–3 days", "5–7 days", "10–14 days", "Just a day trip"],
   2: ["Masai Mara (Big Five)", "Amboseli + Kilimanjaro", "Beach + Safari combo", "Family with kids", "Honeymoon"],
-  3: ["Budget — under $400/pp", "Mid-range $400–800/pp", "Luxury $800+/pp"],
+  3: ["Budget: under $400/pp", "Mid-range $400–800/pp", "Luxury $800+/pp"],
 };
 
 function getSessionId(): string {
@@ -403,7 +403,7 @@ export default function SafariPlannerChat() {
               href="/book"
               className="text-xs px-4 py-2 rounded-lg bg-teal-DEFAULT hover:bg-teal-600 text-white font-semibold transition-colors flex items-center gap-1.5"
             >
-              Book now — instant confirmation
+              Book now, instant confirmation
               <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
               </svg>

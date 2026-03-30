@@ -59,7 +59,7 @@ export default function GroupPricingTable({ safari }: Props) {
       {safari.price_usd_solo && (
         <div className="mt-3 bg-amber-50 border border-amber-100 rounded-xl p-3 text-xs text-amber-800 leading-relaxed">
           <p className="font-bold mb-0.5">Travelling solo?</p>
-          <p>Solo rate covers the full private vehicle. You&apos;ll save <strong>40–60%</strong> by joining a <Link href="/group-safaris" className="underline font-semibold hover:text-amber-900">group departure</Link> — same parks, same experience, shared cost.</p>
+          <p>Solo rate covers the full private vehicle. You&apos;ll save <strong>40–60%</strong> by joining a <Link href="/group-safaris" className="underline font-semibold hover:text-amber-900">group departure</Link>, same parks, same experience, shared cost.</p>
         </div>
       )}
     </div>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Kenya Wildlife Calendar — What to See Every Month",
+  title: "Kenya Wildlife Calendar: What to See Every Month",
   description: "Month-by-month guide to Kenya's wildlife. When to see the Great Migration, lion cubs, whale sharks, flamingos, and every park at its best.",
   alternates: { canonical: "https://www.engaisafaris.com/wildlife-calendar" },
 };
@@ -11,7 +11,7 @@ const MONTHS = [
   {
     month: "January",
     season: "Dry",
-    highlight: "Calving season in the Mara — thousands of wildebeest calves born",
+    highlight: "Calving season in the Mara: thousands of wildebeest calves born",
     parks: ["Masai Mara", "Amboseli"],
     wildlife: ["Wildebeest calves", "Elephants near Kilimanjaro", "Lion cubs", "Cheetah with young"],
     tip: "Amboseli has perfect Kilimanjaro views in January's clear skies.",
@@ -21,37 +21,37 @@ const MONTHS = [
   {
     month: "February",
     season: "Dry",
-    highlight: "Peak dry season — best game viewing before the long rains",
+    highlight: "Peak dry season, best game viewing before the long rains",
     parks: ["Masai Mara", "Samburu", "Laikipia"],
     wildlife: ["Lion prides", "Reticulated giraffe (Samburu)", "Grevy's zebra", "Elephants"],
-    tip: "Samburu's unique northern species — Grevy's zebra, reticulated giraffe — are at their most visible.",
+    tip: "Samburu's unique northern species: Grevy's zebra and reticulated giraffe are at their most visible.",
     crowd: "Low–Medium",
     rain: "None",
   },
   {
     month: "March",
     season: "Shoulder",
-    highlight: "Last chance before long rains — good prices, low crowds",
+    highlight: "Last chance before long rains, good prices and low crowds",
     parks: ["Tsavo", "Amboseli", "Lake Naivasha"],
     wildlife: ["Elephants", "Buffalo herds", "Hippos at Naivasha", "Colobus monkeys"],
-    tip: "Tsavo East's red elephants are spectacular — cheaper rates, fewer tourists.",
+    tip: "Tsavo East's red elephants are spectacular, cheaper rates and fewer tourists.",
     crowd: "Low",
     rain: "Starting",
   },
   {
     month: "April",
     season: "Long Rains",
-    highlight: "Landscape turns brilliant green — good for birdwatching",
+    highlight: "Landscape turns brilliant green, great for birdwatching",
     parks: ["Naivasha", "Nakuru", "Aberdares"],
     wildlife: ["Flamingos at Nakuru", "Migratory birds", "Waterfowl", "Leopards in Aberdares"],
-    tip: "April rains mean dramatic skies and lush scenery — great for photography despite wet conditions.",
+    tip: "April rains mean dramatic skies and lush scenery, great for photography despite the wet.",
     crowd: "Very Low",
     rain: "Heavy",
   },
   {
     month: "May",
     season: "Long Rains",
-    highlight: "Long rains peak — off-season rates at their lowest",
+    highlight: "Long rains peak, off-season rates at their lowest",
     parks: ["Aberdares", "Mt Kenya"],
     wildlife: ["Forest species", "Colobus monkeys", "Bongo (rare)", "Mountain birds"],
     tip: "Mt Kenya trekking is quiet and lush. Best lodge rates of the year.",
@@ -61,17 +61,17 @@ const MONTHS = [
   {
     month: "June",
     season: "Cool Dry",
-    highlight: "Migration begins — wildebeest moving north from Tanzania",
+    highlight: "Migration begins, wildebeest moving north from Tanzania",
     parks: ["Masai Mara", "Serengeti border"],
     wildlife: ["Wildebeest herds building", "Zebra", "Gazelle", "Lions hunting"],
-    tip: "The Mara is less crowded than peak months. Book now — this is when the drama starts.",
+    tip: "The Mara is less crowded than peak months. Book now, this is when the drama starts.",
     crowd: "Medium",
     rain: "Low",
   },
   {
     month: "July",
     season: "Peak",
-    highlight: "Great Migration river crossings BEGIN — crocodiles, lions, chaos",
+    highlight: "Great Migration river crossings BEGIN: crocodiles, lions, chaos",
     parks: ["Masai Mara"],
     wildlife: ["Wildebeest river crossings", "Nile crocodile", "Hippos", "Big cats hunting"],
     tip: "This is the month most people come for. Book 6–9 months ahead for July camps.",
@@ -81,7 +81,7 @@ const MONTHS = [
   {
     month: "August",
     season: "Peak",
-    highlight: "Peak river crossings — over 1.5 million wildebeest in the Mara",
+    highlight: "Peak river crossings. Over 1.5 million wildebeest in the Mara",
     parks: ["Masai Mara"],
     wildlife: ["Wildebeest crossings daily", "Lion prides", "Cheetah", "Leopard"],
     tip: "The single best month for river crossings. Most expensive and most crowded.",
@@ -91,7 +91,7 @@ const MONTHS = [
   {
     month: "September",
     season: "Peak",
-    highlight: "Migration continues — wildebeest still crossing, big cat action",
+    highlight: "Migration continues, wildebeest still crossing and big cat action",
     parks: ["Masai Mara", "Amboseli"],
     wildlife: ["River crossings winding down", "Big cats", "Elephant families", "Cheetah cubs"],
     tip: "Better value than August, same wildlife. Often our favourite month.",
@@ -101,30 +101,30 @@ const MONTHS = [
   {
     month: "October",
     season: "Shoulder",
-    highlight: "Migration exits south — Amboseli elephant herds at peak",
+    highlight: "Migration exits south, Amboseli elephant herds at peak",
     parks: ["Amboseli", "Tsavo", "Laikipia"],
     wildlife: ["Large elephant herds", "Buffalo", "Whale sharks (Diani coast)", "Migratory birds arriving"],
-    tip: "Whale sharks at Diani Beach in October — combine with a Tsavo safari.",
+    tip: "Whale sharks at Diani Beach in October. Combine with a Tsavo safari.",
     crowd: "Medium",
     rain: "Short Rains Starting",
   },
   {
     month: "November",
     season: "Short Rains",
-    highlight: "Short rains — green landscapes, baby animals, empty parks",
+    highlight: "Short rains: green landscapes, baby animals and empty parks",
     parks: ["Masai Mara", "Nakuru", "Naivasha"],
-    wildlife: ["Baby animals — many species calve now", "Flamingos", "Migratory birds peak", "Elephants"],
-    tip: "November has the most migratory birds of any month — ideal for birding safaris.",
+    wildlife: ["Baby animals, many species calve now", "Flamingos", "Migratory birds peak", "Elephants"],
+    tip: "November has the most migratory birds of any month, ideal for birding safaris.",
     crowd: "Low",
     rain: "Moderate",
   },
   {
     month: "December",
     season: "Dry",
-    highlight: "Festive season — Mara and Amboseli at their festive best",
+    highlight: "Festive season, Mara and Amboseli at their best",
     parks: ["Masai Mara", "Amboseli", "Diani"],
     wildlife: ["Big cats", "Elephant families", "Flamingos", "Whale sharks (last chance)"],
-    tip: "Book early — Christmas and New Year weeks sell out a year in advance.",
+    tip: "Book early. Christmas and New Year weeks sell out a year in advance.",
     crowd: "High (Dec 20–Jan 2)",
     rain: "Low",
   },
@@ -151,7 +151,7 @@ export default function WildlifeCalendarPage() {
           <span className="text-teal-DEFAULT">Month by Month</span>
         </h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Every month in Kenya is different. This is our honest guide to what you'll see, when crowds peak, and which parks deliver — written by our guides.
+          Every month in Kenya is different. This is our honest guide to what you'll see, when crowds peak, and which parks deliver, written by our guides.
         </p>
       </section>
 

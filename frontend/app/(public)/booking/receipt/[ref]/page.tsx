@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import PrintButton from "./PrintButton";
 
 export const metadata: Metadata = {
-  title: "Payment Receipt — Engai Safaris",
+  title: "Payment Receipt | Engai Safaris",
   robots: { index: false },
 };
 
@@ -201,7 +201,7 @@ export default async function ReceiptPage({
                   Paid today
                 </p>
                 <p className="text-[10px] text-teal-500 mt-0.5">
-                  Deposit — secures your booking
+                  Deposit: secures your booking
                 </p>
               </div>
               <p className="text-teal-DEFAULT font-bold text-2xl font-display">

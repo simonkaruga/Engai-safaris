@@ -66,7 +66,7 @@ export default function GlobalError({
         </h1>
 
         <p className="text-gray-400 text-lg md:text-xl leading-relaxed mb-10 max-w-lg mx-auto">
-          A wild error appeared. Our team has been notified — try again or WhatsApp us if it persists.
+          A wild error appeared. Our team has been notified. Try again or WhatsApp us if it keeps happening.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">

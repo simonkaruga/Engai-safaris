@@ -115,7 +115,7 @@ const SECTIONS = [
               </tr>
               <tr className="hover:bg-gray-50 transition-colors">
                 <td className="px-4 py-3 text-gray-700">Less than 14 days / no-show</td>
-                <td className="px-4 py-3 font-medium text-red-700">100% — non-refundable</td>
+                <td className="px-4 py-3 font-medium text-red-700">100%, non-refundable</td>
               </tr>
             </tbody>
           </table>
@@ -123,7 +123,7 @@ const SECTIONS = [
 
         <p className="mt-4 text-sm text-gray-600 bg-amber-50 border border-amber-100 rounded-xl p-4">
           <strong className="text-amber-800">Travel insurance required:</strong> Cancellation
-          charges apply regardless of reason — including illness, injury, or bereavement — unless
+          charges apply regardless of reason, including illness, injury or bereavement, unless
           your travel insurance covers the cost. We strongly recommend comprehensive travel insurance
           purchased at the time of booking.
         </p>
@@ -266,7 +266,7 @@ const SECTIONS = [
       <>
         <p>
           Safari activities take place in wild, natural environments. Wildlife sightings —
-          including the Big Five — <strong>cannot be guaranteed</strong>. Animal behaviour is entirely
+          including the Big Five, which <strong>cannot be guaranteed</strong>. Animal behaviour is entirely
           unpredictable. Engai Safaris will use all reasonable skill and expertise to maximise
           wildlife sightings but accepts no liability for the absence of any particular species.
         </p>
