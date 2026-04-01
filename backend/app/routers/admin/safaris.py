@@ -41,6 +41,12 @@ class SafariUpdate(BaseModel):
     sort_order: int | None = None
     meta_title: str | None = None
     meta_desc: str | None = None
+    # Cost tracking fields (admin only)
+    cost_park_fees_usd: float | None = None
+    cost_accommodation_usd: float | None = None
+    cost_vehicle_usd: float | None = None
+    cost_insurance_usd: float | None = None
+    cost_evac_usd: float | None = None
 
 
 @router.get("")

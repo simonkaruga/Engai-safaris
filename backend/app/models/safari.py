@@ -49,6 +49,14 @@ class Safari(Base):
     meta_title: Mapped[str | None] = mapped_column(String(300))
     meta_desc: Mapped[str | None] = mapped_column(String(500))
     sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    # Cost tracking — admin only, never exposed to public API
+    # Per-person costs (based on 4pax group as baseline)
+    cost_park_fees_usd: Mapped[float | None] = mapped_column(Numeric(10, 2))    # park fees per person
+    cost_accommodation_usd: Mapped[float | None] = mapped_column(Numeric(10, 2))  # lodge/camp per person per night (net rate)
+    cost_vehicle_usd: Mapped[float | None] = mapped_column(Numeric(10, 2))      # vehicle hire per day (full cost)
+    cost_insurance_usd: Mapped[float | None] = mapped_column(Numeric(10, 2))    # vehicle + passenger liability per person per trip
+    cost_evac_usd: Mapped[float | None] = mapped_column(Numeric(10, 2))         # AMREF emergency evacuation per person
+
     # Beach extension add-on
     has_beach_extension: Mapped[bool] = mapped_column(Boolean, default=False)
     beach_extension_days: Mapped[int | None] = mapped_column(Integer)
