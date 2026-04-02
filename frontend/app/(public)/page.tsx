@@ -3,7 +3,7 @@ import SchemaOrg from "@/components/seo/SchemaOrg";
 import HeroSection from "@/components/home/HeroSection";
 import HomePageSections from "@/components/home/HomePageSections";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const [reviews, guides, safaris] = await Promise.all([

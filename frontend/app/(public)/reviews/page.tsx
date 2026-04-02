@@ -2,7 +2,7 @@ import { getReviews } from "@/lib/api";
 import ReviewsContent from "./ReviewsContent";
 import type { Metadata } from "next";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Guest Reviews",

@@ -2,7 +2,7 @@ import { getGuides } from "@/lib/api";
 import GuidesContent from "./GuidesContent";
 import type { Metadata } from "next";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Our Safari Guides",

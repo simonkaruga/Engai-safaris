@@ -2,7 +2,7 @@ import { getDestinations } from "@/lib/api";
 import DestinationsContent from "./DestinationsContent";
 import type { Metadata } from "next";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Kenya Safari Destinations",
