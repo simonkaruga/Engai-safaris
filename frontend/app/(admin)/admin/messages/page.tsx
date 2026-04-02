@@ -7,6 +7,7 @@ import Link from "next/link";
 interface Message {
   id: string;
   customer_name?: string;
+  name?: string;
   customer_email?: string;
   customer_phone?: string;
   message?: string;

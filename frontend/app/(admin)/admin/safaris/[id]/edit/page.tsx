@@ -25,6 +25,21 @@ interface SafariFull {
   wholesale_usd: number | null;
   deposit_pct: number;
   installments_ok: boolean;
+  difficulty: string | null;
+  peak_multiplier: number | null;
+  low_multiplier: number | null;
+  is_shared: boolean;
+  has_beach_extension: boolean;
+  beach_extension_days: number | null;
+  beach_extension_price_usd: number | null;
+  beach_extension_price_kes: number | null;
+  beach_extension_desc: string | null;
+  // Cost tracking (admin only)
+  cost_park_fees_usd: number | null;
+  cost_accommodation_usd: number | null;
+  cost_vehicle_usd: number | null;
+  cost_insurance_usd: number | null;
+  cost_evac_usd: number | null;
   cover_image: string | null;
   video_url: string | null;
   gallery: string[];
@@ -111,6 +126,15 @@ export default function SafariEditorPage() {
           price_kes_4pax: safari.price_kes_4pax ? Number(safari.price_kes_4pax) : null,
           price_kes_6pax: safari.price_kes_6pax ? Number(safari.price_kes_6pax) : null,
           wholesale_usd: safari.wholesale_usd ? Number(safari.wholesale_usd) : null,
+          cost_park_fees_usd: safari.cost_park_fees_usd ? Number(safari.cost_park_fees_usd) : null,
+          cost_accommodation_usd: safari.cost_accommodation_usd ? Number(safari.cost_accommodation_usd) : null,
+          cost_vehicle_usd: safari.cost_vehicle_usd ? Number(safari.cost_vehicle_usd) : null,
+          cost_insurance_usd: safari.cost_insurance_usd ? Number(safari.cost_insurance_usd) : null,
+          cost_evac_usd: safari.cost_evac_usd ? Number(safari.cost_evac_usd) : null,
+          peak_multiplier: safari.peak_multiplier ? Number(safari.peak_multiplier) : null,
+          low_multiplier: safari.low_multiplier ? Number(safari.low_multiplier) : null,
+          difficulty: safari.difficulty || null,
+          is_shared: safari.is_shared,
           deposit_pct: Number(safari.deposit_pct),
           installments_ok: safari.installments_ok,
           cover_image: safari.cover_image || null,
@@ -264,6 +288,14 @@ export default function SafariEditorPage() {
               <input type="number" value={safari.sort_order}
                 onChange={e => set("sort_order", Number(e.target.value))} className={inp} />
             </Field>
+            <Field label="Difficulty" hint="Shown on safari detail page">
+              <select value={safari.difficulty ?? ""} onChange={e => set("difficulty", e.target.value || null)} className={inp}>
+                <option value="">Not set</option>
+                <option value="Easy">Easy</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Challenging">Challenging</option>
+              </select>
+            </Field>
           </div>
         </>}
 
@@ -324,6 +356,88 @@ export default function SafariEditorPage() {
               <input type="number" min={10} max={100} value={safari.deposit_pct}
                 onChange={e => set("deposit_pct", Number(e.target.value))} className={inp} />
             </Field>
+          </div>
+
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-2">Seasonal Multipliers</p>
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="Peak Season Multiplier" hint="Jul–Oct Great Migration. Default: 1.35 (+35%)">
+              <input type="number" min={1} max={3} step={0.05} value={safari.peak_multiplier ?? 1.35}
+                onChange={e => set("peak_multiplier", Number(e.target.value))} className={inp} />
+            </Field>
+            <Field label="Low Season Multiplier" hint="Apr–May long rains. Default: 0.75 (−25%)">
+              <input type="number" min={0.5} max={1} step={0.05} value={safari.low_multiplier ?? 0.75}
+                onChange={e => set("low_multiplier", Number(e.target.value))} className={inp} />
+            </Field>
+          </div>
+
+          {/* Cost Breakdown — admin only */}
+          <div className="mt-4 border border-amber-200 bg-amber-50 rounded-2xl p-5 space-y-4">
+            <div>
+              <p className="text-xs font-bold text-amber-800 uppercase tracking-widest">Cost Breakdown (Admin Only — Not Shown to Customers)</p>
+              <p className="text-xs text-amber-700 mt-1">
+                Enter your actual costs per person (based on 4pax group). The margin calculator below will update live.
+                KWS park fees 2024/25: Mara $80/day · Amboseli $90/day · Nakuru $60/day · Hell&apos;s Gate $26 · Mt Kenya $52/day.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {([
+                { label: "Park Fees (per person)", key: "cost_park_fees_usd" as const, hint: "Total KWS fees per person for all parks visited" },
+                { label: "Accommodation (per person/night)", key: "cost_accommodation_usd" as const, hint: "Your net/contract rate per person per night" },
+                { label: "Vehicle Hire (per day total)", key: "cost_vehicle_usd" as const, hint: "Full vehicle cost per day — divided by group size in margin calc" },
+                { label: "Insurance (per person/trip)", key: "cost_insurance_usd" as const, hint: "Vehicle + passenger liability insurance share per person" },
+                { label: "AMREF Evacuation (per person)", key: "cost_evac_usd" as const, hint: "AMREF emergency evacuation cover per person" },
+              ]).map(({ label, key, hint }) => (
+                <Field key={key} label={label} hint={hint}>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-600 text-sm font-medium">$</span>
+                    <input type="number" min={0} value={safari[key] ?? ""}
+                      onChange={e => set(key, e.target.value ? Number(e.target.value) : null)}
+                      className="w-full border border-amber-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white pl-7" placeholder="0" />
+                  </div>
+                </Field>
+              ))}
+            </div>
+
+            {/* Live margin calculator */}
+            {(() => {
+              const parkFees = safari.cost_park_fees_usd ?? 0;
+              const accPerNight = safari.cost_accommodation_usd ?? 0;
+              const vehiclePerDay = safari.cost_vehicle_usd ?? 0;
+              const insurance = safari.cost_insurance_usd ?? 0;
+              const evac = safari.cost_evac_usd ?? 0;
+              const nights = Math.max(0, safari.duration_days - 1);
+              const groups: { label: string; size: number; price: number | null }[] = [
+                { label: "Solo", size: 1, price: safari.price_usd_solo },
+                { label: "2 Pax", size: 2, price: safari.price_usd_2pax },
+                { label: "4 Pax", size: 4, price: safari.price_usd_4pax },
+                { label: "6 Pax", size: 6, price: safari.price_usd_6pax },
+              ];
+              return (
+                <div className="bg-white rounded-xl border border-amber-200 overflow-hidden">
+                  <div className="px-4 py-3 bg-amber-100 border-b border-amber-200">
+                    <p className="text-xs font-bold text-amber-900">Estimated Margin by Group Size</p>
+                    <p className="text-xs text-amber-700 mt-0.5">Cost = park fees + (accommodation x {nights} nights) + (vehicle / group size x {safari.duration_days} days) + insurance + evac</p>
+                  </div>
+                  <div className="divide-y divide-amber-100">
+                    {groups.map(({ label, size, price }) => {
+                      if (!price) return null;
+                      const costPP = parkFees + (accPerNight * nights) + ((vehiclePerDay * safari.duration_days) / size) + insurance + evac;
+                      const margin = price > 0 ? Math.round(((price - costPP) / price) * 100) : 0;
+                      const color = margin >= 25 ? "text-green-700 bg-green-50" : margin >= 10 ? "text-amber-700 bg-amber-50" : "text-red-700 bg-red-50";
+                      return (
+                        <div key={label} className="flex items-center justify-between px-4 py-2.5 text-sm">
+                          <span className="text-gray-600 font-medium w-16">{label}</span>
+                          <span className="text-gray-500 tabular-nums">${price}/pp · cost ~${Math.round(costPP)}/pp</span>
+                          <span className={`px-2.5 py-1 rounded-full text-xs font-bold tabular-nums ${color}`}>
+                            {margin}% margin
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </>}
 

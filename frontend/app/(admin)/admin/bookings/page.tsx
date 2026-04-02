@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -13,6 +13,21 @@ const STATUS_COLORS: Record<string, string> = {
 
 const BOOKING_STATUSES = ["pending", "confirmed", "cancelled", "completed"];
 const FILTER_TABS = ["all", "pending", "confirmed", "cancelled", "completed"];
+
+interface Booking {
+  id: string;
+  reference: string;
+  customer_name?: string;
+  guest_name?: string;
+  safari_name?: string;
+  travel_date?: string;
+  num_adults?: number;
+  pax?: number;
+  total_kes?: number;
+  status: string;
+  vehicle_ref?: string;
+  created_at?: string;
+}
 
 export default function AdminBookingsPage() {
   const router = useRouter();
@@ -112,7 +127,7 @@ export default function AdminBookingsPage() {
     setVehiclePanel(booking.id);
     // Pre-fill with current value or fetch a suggested ref if none
     if (booking.vehicle_ref) {
-      setVehicleInputs((prev) => ({ ...prev, [booking.id]: booking.vehicle_ref }));
+      setVehicleInputs((prev) => ({ ...prev, [booking.id]: booking.vehicle_ref! }));
     } else {
       // Fetch next suggested ref
       try {
@@ -252,7 +267,8 @@ export default function AdminBookingsPage() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filtered.map((b) => (
-                <tr key={b.id} className="hover:bg-gray-50">
+                <React.Fragment key={b.id}>
+                <tr className="hover:bg-gray-50">
                     <td className="px-4 py-3 font-mono text-xs text-teal-DEFAULT font-semibold">
                       {b.reference || b.id?.slice(0, 8)}
                     </td>
@@ -396,6 +412,7 @@ export default function AdminBookingsPage() {
                       </td>
                     </tr>
                   )}
+                </React.Fragment>
               ))}
             </tbody>
           </table>

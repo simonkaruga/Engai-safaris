@@ -106,7 +106,7 @@ export default function AdminAffiliatesPage() {
                   <td className="px-5 py-3">
                     {a.code && (
                       <button
-                        onClick={() => copyLink(a.code, a.id)}
+                        onClick={() => copyLink(a.code!, a.id)}
                         className={`text-xs font-semibold px-3 py-1 rounded border transition-colors ${
                           copied === a.id
                             ? "bg-green-100 text-green-700 border-green-300"

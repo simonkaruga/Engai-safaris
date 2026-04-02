@@ -91,7 +91,7 @@ export default function AdminAgentsPage() {
                   <td className="px-5 py-3 text-gray-500">{a.email ?? "—"}</td>
                   <td className="px-5 py-3 text-gray-500">{a.phone ?? "—"}</td>
                   <td className="px-5 py-3">
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${TIER_COLORS[a.tier] ?? "bg-gray-100 text-gray-600"}`}>
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${TIER_COLORS[a.tier ?? ""] ?? "bg-gray-100 text-gray-600"}`}>
                       {a.tier ?? "standard"}
                     </span>
                   </td>

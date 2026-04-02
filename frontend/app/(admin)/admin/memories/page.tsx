@@ -8,6 +8,7 @@ interface CompletedBooking {
   id: string;
   reference?: string;
   customer_name?: string;
+  guest_name?: string;
   travel_date?: string;
   memories_url?: string;
   created_at?: string;

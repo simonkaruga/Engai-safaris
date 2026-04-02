@@ -7,9 +7,11 @@ import Link from "next/link";
 interface Review {
   id: string;
   author_name?: string;
+  name?: string;
   country?: string;
   rating?: number;
   safari_name?: string;
+  safari?: { name?: string };
   title?: string;
   is_approved: boolean;
   is_featured: boolean;

@@ -10,7 +10,7 @@ interface BlogPost {
   slug: string;
   category?: string;
   is_published: boolean;
-  published_at?: string;
+  published_at?: string | null;
 }
 
 const FILTER_TABS = ["all", "published", "drafts"];

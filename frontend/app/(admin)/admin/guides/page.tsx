@@ -215,6 +215,7 @@ export default function AdminGuidesPage() {
                 <th className="px-5 py-3 text-left">Languages</th>
                 <th className="px-5 py-3 text-left">Rating</th>
                 <th className="px-5 py-3 text-center">Featured</th>
+                <th className="px-5 py-3 text-left">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -252,6 +253,14 @@ export default function AdminGuidesPage() {
                     ) : (
                       <span className="inline-block w-2 h-2 rounded-full bg-gray-200" title="Not featured" />
                     )}
+                  </td>
+                  <td className="px-5 py-3">
+                    <Link
+                      href={`/admin/guides/${g.id}/edit`}
+                      className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-teal-200 bg-teal-50 text-teal-DEFAULT hover:bg-teal-DEFAULT hover:text-white transition-colors"
+                    >
+                      Edit
+                    </Link>
                   </td>
                 </tr>
               ))}

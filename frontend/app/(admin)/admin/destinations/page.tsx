@@ -3,12 +3,15 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Destination {
   id: string;
+  slug: string;
   name: string;
   region?: string;
-  park_fee_usd?: number;
+  cover_image?: string | null;
+  peak_fee_usd?: number;
   best_months?: string[] | string;
   is_active: boolean;
 }
@@ -65,15 +68,25 @@ export default function AdminDestinationsPage() {
                 <th className="px-5 py-3 text-left">Park Fee</th>
                 <th className="px-5 py-3 text-left">Best Months</th>
                 <th className="px-5 py-3 text-center">Active</th>
+                <th className="px-5 py-3 text-left">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {destinations.map((d) => (
                 <tr key={d.id} className="hover:bg-gray-50">
-                  <td className="px-5 py-3 font-medium">{d.name}</td>
+                  <td className="px-5 py-3 font-medium">
+                    <div className="flex items-center gap-3">
+                      {d.cover_image ? (
+                        <Image src={d.cover_image} alt={d.name} width={36} height={36} className="w-9 h-9 rounded-lg object-cover shrink-0" unoptimized />
+                      ) : (
+                        <div className="w-9 h-9 rounded-lg bg-teal-100 flex items-center justify-center text-teal-700 text-xs font-bold shrink-0">📍</div>
+                      )}
+                      {d.name}
+                    </div>
+                  </td>
                   <td className="px-5 py-3 text-gray-600 capitalize">{d.region ?? "—"}</td>
                   <td className="px-5 py-3 text-gray-500">
-                    {d.park_fee_usd != null ? `$${d.park_fee_usd}/day` : "—"}
+                    {d.peak_fee_usd != null ? `$${d.peak_fee_usd}/day` : "—"}
                   </td>
                   <td className="px-5 py-3 text-gray-500 max-w-[200px]">
                     {Array.isArray(d.best_months) ? d.best_months.join(", ") : d.best_months ?? "—"}
@@ -87,6 +100,14 @@ export default function AdminDestinationsPage() {
                       title={d.is_active ? "Deactivate" : "Activate"}
                       aria-label={d.is_active ? "Deactivate destination" : "Activate destination"}
                     />
+                  </td>
+                  <td className="px-5 py-3">
+                    <Link
+                      href={`/admin/destinations/${d.id}/edit`}
+                      className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-teal-200 bg-teal-50 text-teal-DEFAULT hover:bg-teal-DEFAULT hover:text-white transition-colors"
+                    >
+                      Edit
+                    </Link>
                   </td>
                 </tr>
               ))}

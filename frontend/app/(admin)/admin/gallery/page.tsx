@@ -31,7 +31,7 @@ export default function AdminGalleryPage() {
 
   const images = safaris
     .filter((s) => s.cover_image || s.image_url)
-    .map((s) => ({ name: s.name, url: s.cover_image ?? s.image_url }));
+    .map((s) => ({ name: s.name, url: (s.cover_image ?? s.image_url)! }));
 
   if (loading) return <div className="flex items-center justify-center h-64 text-gray-500">Loading...</div>;
 
