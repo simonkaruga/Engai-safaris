@@ -7,9 +7,14 @@ async function get<T>(path: string, revalidate: number | "no-store" = 3600): Pro
     revalidate === "no-store"
       ? { cache: "no-store" }
       : { next: { revalidate } };
-  const res = await fetch(`${BASE}/api${path}`, opts);
-  if (!res.ok) throw new Error(`API error ${res.status}: ${path}`);
-  return res.json();
+  try {
+    const res = await fetch(`${BASE}/api${path}`, opts);
+    if (!res.ok) throw new Error(`API error ${res.status}: ${path}`);
+    return res.json();
+  } catch (err) {
+    console.error(`[API] GET ${path} failed:`, err);
+    throw err;
+  }
 }
 
 async function post<T>(path: string, body: unknown): Promise<T> {

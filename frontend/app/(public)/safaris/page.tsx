@@ -15,7 +15,7 @@ export default async function SafarisPage({
 }: {
   searchParams: { category?: string };
 }) {
-  const safaris = await getSafaris({});
+  const safaris = await getSafaris({}).catch(() => [] as import("@/types/api").SafariList[]);
 
   return (
     <SafarisContent
