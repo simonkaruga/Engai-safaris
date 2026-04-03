@@ -155,12 +155,31 @@ DESTINATIONS = [
 ]
 
 
+_IMAGES = {
+    "masai-mara":    "/images/destinations/masai-mara.jpg",
+    "amboseli":      "/images/destinations/amboseli.jpg",
+    "lake-naivasha": "/images/destinations/lake-naivasha.jpg",
+    "samburu":       "/images/destinations/samburu.jpg",
+    "nairobi":       "/images/destinations/nairobi.jpg",
+    "lake-nakuru":   "/images/destinations/lake-nakuru.jpg",
+    "tsavo":         "/images/destinations/tsavo.jpg",
+    "diani-beach":   "/images/destinations/diani-beach.jpg",
+    "hells-gate":    "/images/destinations/hells-gate.jpg",
+    "ol-pejeta":     "/images/destinations/ol-pejeta.jpg",
+    "lake-bogoria":  "/images/destinations/lake-bogoria.jpg",
+    "mount-kenya":   "/images/destinations/mount-kenya.jpg",
+    "kakamega":      "/images/destinations/kakamega.jpg",
+    "lamu":          "/images/destinations/lamu.jpg",
+}
+
+
 async def seed():
     async with SessionLocal() as db:
         count = 0
         for d in DESTINATIONS:
             # Convert month numbers to names for display
             d["best_months"] = [MONTH_NAMES[m - 1] for m in d["best_months"]]
+            d.setdefault("cover_image", _IMAGES.get(d["slug"]))
             result = await db.execute(select(Destination).where(Destination.slug == d["slug"]))
             existing = result.scalar_one_or_none()
             if existing:

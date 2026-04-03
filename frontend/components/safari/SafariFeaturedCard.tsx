@@ -20,7 +20,7 @@ export default function SafariFeaturedCard({ safari, index = 0 }: Props) {
   return (
     <Link
       href={`/safaris/${safari.slug}`}
-      className="group relative flex flex-col justify-end overflow-hidden rounded-2xl bg-gray-900 min-h-[380px]"
+      className="group relative flex flex-col justify-end overflow-hidden rounded-2xl bg-gray-900 h-[380px]"
     >
       {/* Background image */}
       {safari.cover_image && (
@@ -28,17 +28,17 @@ export default function SafariFeaturedCard({ safari, index = 0 }: Props) {
           src={safari.cover_image}
           alt={`${safari.name} — Kenya safari package`}
           fill
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          className="object-cover transition-transform duration-700 group-hover:scale-105 z-0"
           sizes="(max-width: 768px) 100vw, (max-width: 1280px) 66vw, 800px"
           priority={index < 2}
         />
       )}
 
       {/* Gradient overlays — top for badges, bottom for text */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-black/30" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent z-[1]" />
 
       {/* Top badges */}
-      <div className="absolute top-4 left-4 flex gap-2 z-10">
+      <div className="absolute top-4 left-4 flex gap-2 z-[2]">
         {safari.category && (
           <span className="bg-teal-DEFAULT text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
             {safari.category}
@@ -50,7 +50,7 @@ export default function SafariFeaturedCard({ safari, index = 0 }: Props) {
       </div>
 
       {/* Content — sits on gradient at bottom */}
-      <div className="relative z-10 p-5 md:p-6">
+      <div className="relative z-[2] p-5 md:p-6">
         <h3 className="font-display text-white font-bold text-xl md:text-2xl leading-tight mb-1 group-hover:text-gold-DEFAULT transition-colors">
           {safari.name}
         </h3>

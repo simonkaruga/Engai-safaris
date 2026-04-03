@@ -80,7 +80,7 @@ export default async function DestinationPage({ params }: { params: { slug: stri
       />
 
       {/* Cinematic hero — full bleed, bleeds under fixed header */}
-      <section className="-mt-[100px] min-h-[70vh] relative bg-gray-900 flex items-end overflow-hidden">
+      <section className="-mt-[100px] h-[70vh] relative bg-gray-900 flex items-end overflow-hidden">
         {dest.cover_image && (
           <Image src={dest.cover_image} alt={dest.name} fill priority className="object-cover" sizes="100vw" />
         )}

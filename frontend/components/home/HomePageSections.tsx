@@ -418,7 +418,7 @@ export default function HomePageSections({ reviews, safaris, featuredGuide, avgR
 
       {/* Final CTA */}
       <section className="relative overflow-hidden bg-teal-900 py-28 px-4 md:px-6">
-        <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 opacity-20">
           <Image src="/images/destinations/masai-mara.png" alt="" fill className="object-cover" aria-hidden="true" />
         </div>
         <div className="absolute inset-0 bg-gradient-to-br from-teal-900 via-teal-900/90 to-gray-950/80" />

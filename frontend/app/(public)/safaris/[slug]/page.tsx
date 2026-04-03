@@ -79,7 +79,7 @@ export default async function SafariDetailPage({ params }: { params: { slug: str
       />
 
       {/* Cinematic hero */}
-      <section className="-mt-[100px] min-h-[75vh] relative bg-gray-900 flex items-end overflow-hidden">
+      <section className="-mt-[100px] h-[75vh] relative bg-gray-900 flex items-end overflow-hidden">
         {safari.cover_image && (
           <Image src={safari.cover_image} alt={safari.name} fill priority className="object-cover" sizes="100vw" />
         )}

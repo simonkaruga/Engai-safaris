@@ -97,7 +97,7 @@ export default async function BlogPage({
               >
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-0.5">
                   {/* Image */}
-                  <div className="relative h-64 lg:h-auto min-h-[280px] bg-gray-900 overflow-hidden">
+                  <div className="relative h-64 lg:h-[280px] bg-gray-900 overflow-hidden">
                     {featuredPost.cover_image ? (
                       <Image src={featuredPost.cover_image} alt={featuredPost.title} fill priority className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 1024px) 100vw, 50vw" />
                     ) : (

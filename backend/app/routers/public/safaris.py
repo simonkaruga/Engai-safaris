@@ -28,7 +28,7 @@ async def list_safaris(
 @router.get("/featured", response_model=list[SafariListOut])
 async def featured_safaris(db: AsyncSession = Depends(get_db)):
     result = await db.execute(
-        select(Safari).where(Safari.is_active == True, Safari.is_featured == True).limit(3)
+        select(Safari).where(Safari.is_active == True, Safari.is_featured == True).limit(6)
     )
     return result.scalars().all()
 

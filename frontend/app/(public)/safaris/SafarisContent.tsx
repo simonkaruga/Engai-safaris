@@ -121,10 +121,10 @@ export default function SafarisContent({ safaris, initialCategory }: Props) {
       {/* Hero */}
       <section className="relative bg-gray-950 pt-36 pb-20 px-4 md:px-6 overflow-hidden border-b border-stone-800">
         <div className="absolute inset-0">
-          <Image src="/images/safaris/3-day-masai-mara.png" alt="" fill className="object-cover opacity-30" sizes="100vw" />
+          <Image src="/images/safaris/3-day-masai-mara.png" alt="" fill className="object-cover opacity-60" sizes="100vw" />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-950/90 via-gray-950/60 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-transparent to-gray-950/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-950/95 via-gray-950/70 to-gray-950/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-gray-950/90 via-transparent to-gray-950/50" />
         <div className="relative max-w-7xl mx-auto">
           <div className="max-w-2xl">
             <p className="eyebrow text-teal-300 mb-4">{t("safaris.subtitle")}</p>
@@ -132,7 +132,7 @@ export default function SafarisContent({ safaris, initialCategory }: Props) {
               Kenya Safari<br />
               <span className="italic text-gradient-gold">Packages.</span>
             </h1>
-            <p className="text-white/65 text-lg leading-relaxed max-w-xl">
+            <p className="text-white/90 text-lg leading-relaxed max-w-xl font-medium drop-shadow-sm">
               {t("safaris.subtext")}
             </p>
           </div>
@@ -190,20 +190,11 @@ export default function SafarisContent({ safaris, initialCategory }: Props) {
               {t("safaris.viewAll")}
             </button>
           </div>
-        ) : isFiltered ? (
+        ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredSafaris.map((safari) => (
               <SafariCard key={safari.id} safari={safari} />
             ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredSafaris.map((safari) => (
-              <SafariFeaturedCard key={safari.id} safari={safari} />
-            ))}
-            {filteredSafaris.length === 1 && (
-              <div className="md:col-span-2 lg:col-span-2" />
-            )}
           </div>
         )}
       </div>

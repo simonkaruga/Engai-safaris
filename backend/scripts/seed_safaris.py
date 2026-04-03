@@ -512,12 +512,32 @@ SAFARIS = [
 ]
 
 
+# Map slug → local image path (served by Next.js from /public)
+_IMAGES: dict[str, str] = {
+    "luxury-mara-private-camp":        "/images/safaris/luxury-mara-private-camp.png",
+    "mount-kenya-trekking":            "/images/safaris/mount-kenya-trekking.jpg",
+    "maasai-cultural-immersion":       "/images/safaris/maasai-cultural-immersion.png",
+    "photography-safari-mara":         "/images/safaris/photography-safari-mara.png",
+    "corporate-team-safari":           "/images/safaris/corporate-team-safari.png",
+    "naivasha-day-trip":               "/images/safaris/naivasha-day-trip.jpg",
+    "naivasha-weekend":                "/images/safaris/naivasha-nakuru-2-day.jpg",
+    "3-day-masai-mara":                "/images/safaris/3-day-masai-mara.jpg",
+    "big-three-safari":                "/images/safaris/5-day-mara-amboseli.jpg",
+    "naivasha-weekend-2day":           "/images/safaris/naivasha-nakuru-2-day.jpg",
+    "mara-nakuru-4-day":               "/images/safaris/3-day-mara-nakuru.jpg",
+    "rift-valley-circuit":             "/images/safaris/naivasha-hells-gate-combo.jpg",
+    "classic-kenya-7-day":             "/images/safaris/7-day-classic-kenya.png",
+    "5-day-mara-amboseli":             "/images/safaris/5-day-mara-amboseli.jpg",
+}
+
+
 async def seed():
     async with SessionLocal() as db:
         ok = 0
         for entry in SAFARIS:
             # Work on a copy so the module-level list is never mutated
             s = {k: v for k, v in entry.items() if k != "days"}
+            s.setdefault("cover_image", _IMAGES.get(s["slug"]))
             days = entry["days"]
             try:
                 result = await db.execute(select(Safari).where(Safari.slug == s["slug"]))
