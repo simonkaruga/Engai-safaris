@@ -1,10 +1,6 @@
 import type { Destination, Guide, SafariList, SafariDetail, Review, ReviewCreate, BlogPost, EnquiryCreate, EnquiryOut } from "@/types/api";
 
-const BASE = process.env.NEXT_PUBLIC_API_URL ?? (
-  process.env.NODE_ENV === "production"
-    ? (() => { throw new Error("NEXT_PUBLIC_API_URL is not set") })()
-    : "http://localhost:8000"
-);
+const BASE = process.env.NEXT_PUBLIC_API_URL ?? "https://engai-safaris-production.up.railway.app";
 
 async function get<T>(path: string, revalidate: number | "no-store" = 3600): Promise<T> {
   const opts: RequestInit =
