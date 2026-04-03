@@ -7,7 +7,7 @@ from app.database import get_db
 from app.models.safari import Safari
 from app.models.enquiry import Enquiry
 from app.schemas import AIPlannerRequest
-from app.services.claude_ai import chat, stream_chat, get_safari_recommendation
+from app.services.claude_ai import chat, stream_chat, stream_agentic_chat, get_safari_recommendation
 from app.services.sms import send_sms
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -28,6 +28,39 @@ class SubmitEnquiryRequest(BaseModel):
     customer_name:  str
     customer_email: str
     customer_phone: str | None = None
+
+
+@router.post("/agent-stream")
+@limiter.limit("20/minute")
+async def ai_agent_stream(
+    request: Request,
+    body: ChatRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    """Agentic SSE endpoint — Claude uses tools to search safaris, check availability, create enquiries."""
+    if len(body.conversation) > 30:
+        raise HTTPException(status_code=400, detail="Conversation too long. Please start a new chat.")
+
+    async def generate():
+        try:
+            async for line in stream_agentic_chat(body.conversation, db):
+                if line.startswith("\x00"):  # text chunk
+                    data = json.loads(line[1:])
+                    yield f"data: {json.dumps({'type': 'chunk', **data})}\n\n"
+                elif line.startswith("\x01"):  # tool event
+                    data = json.loads(line[1:])
+                    yield f"data: {json.dumps({'type': 'tool', **data})}\n\n"
+                elif line.startswith("\x02"):  # done
+                    yield f"data: {json.dumps({'type': 'done'})}\n\n"
+        except Exception as e:
+            logger.exception("Agentic AI stream failed")
+            yield f"data: {json.dumps({'type': 'error', 'message': str(e)})}\n\n"
+
+    return StreamingResponse(
+        generate(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 
 @router.post("/chat-stream")
