@@ -100,10 +100,13 @@ export default function BookingSidebar({ safari }: Props) {
   const displayDepositKES = preview ? Math.round(preview.deposit_kes * discountFactor) : null;
   const displayBalanceKES = displayTotalKES && displayDepositKES ? displayTotalKES - displayDepositKES : null;
 
-  // Convert to selected currency for display (always use USD as the base)
-  const displayTotalSelected = preview ? formatPrice(preview.total_usd * discountFactor, currency, rates) : null;
-  const displayDepositSelected = preview ? formatPrice((preview.deposit_kes * discountFactor / (rates["KES"] ?? 130)), currency, rates) : null;
-  const displayBalanceSelected = preview ? formatPrice(((preview.total_kes - preview.deposit_kes) * discountFactor / (rates["KES"] ?? 130)), currency, rates) : null;
+  // Convert to selected currency — derive deposit/balance from total_usd to avoid KES→USD→currency rounding errors
+  const discountedTotalUSD = preview ? preview.total_usd * discountFactor : null;
+  const depositUSD = discountedTotalUSD != null ? discountedTotalUSD * (preview!.deposit_pct / 100) : null;
+  const balanceUSD = discountedTotalUSD != null && depositUSD != null ? discountedTotalUSD - depositUSD : null;
+  const displayTotalSelected = discountedTotalUSD != null ? formatPrice(discountedTotalUSD, currency, rates) : null;
+  const displayDepositSelected = depositUSD != null ? formatPrice(depositUSD, currency, rates) : null;
+  const displayBalanceSelected = balanceUSD != null ? formatPrice(balanceUSD, currency, rates) : null;
   const showKESAlso = currency !== "KES";
 
   const bookHref = date

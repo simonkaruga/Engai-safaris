@@ -43,6 +43,8 @@ class Safari(Base):
     what_to_bring: Mapped[dict | None] = mapped_column(JSONB)
     cancellation_policy: Mapped[str | None] = mapped_column(Text)
 
+    difficulty: Mapped[str | None] = mapped_column(String(50))  # e.g. "Easy", "Moderate", "Challenging"
+
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_featured: Mapped[bool] = mapped_column(Boolean, default=False)
     is_shared: Mapped[bool] = mapped_column(Boolean, default=False)  # "Join a Group" departure

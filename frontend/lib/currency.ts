@@ -76,11 +76,12 @@ export function convert(
 
 export function format(amount: number, currency: CurrencyCode): string {
   const { symbol } = CURRENCIES[currency];
-  // JPY and KES don't use decimals
-  if (currency === "JPY" || currency === "KES") {
+  // Whole-number currencies (no decimals)
+  if (currency === "JPY" || currency === "KES" || currency === "SEK" || currency === "INR" || currency === "ZAR") {
     return `${symbol}${Math.round(amount).toLocaleString()}`;
   }
-  return `${symbol}${Math.round(amount).toLocaleString()}`;
+  // USD, GBP, EUR, AUD, CAD, CHF show 2 decimal places
+  return `${symbol}${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 export function formatPrice(

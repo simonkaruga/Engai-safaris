@@ -1,4 +1,4 @@
-"""add cost tracking to safaris
+"""add cost tracking, difficulty, and missing admin fields to safaris
 
 Revision ID: d1f8a29c4e05
 Revises: c3e07f73f0fc
@@ -14,14 +14,18 @@ depends_on = None
 
 
 def upgrade() -> None:
+    # Cost tracking columns
     op.add_column('safaris', sa.Column('cost_park_fees_usd', sa.Numeric(10, 2), nullable=True))
     op.add_column('safaris', sa.Column('cost_accommodation_usd', sa.Numeric(10, 2), nullable=True))
     op.add_column('safaris', sa.Column('cost_vehicle_usd', sa.Numeric(10, 2), nullable=True))
     op.add_column('safaris', sa.Column('cost_insurance_usd', sa.Numeric(10, 2), nullable=True))
     op.add_column('safaris', sa.Column('cost_evac_usd', sa.Numeric(10, 2), nullable=True))
+    # Difficulty level (Easy / Moderate / Challenging)
+    op.add_column('safaris', sa.Column('difficulty', sa.String(50), nullable=True))
 
 
 def downgrade() -> None:
+    op.drop_column('safaris', 'difficulty')
     op.drop_column('safaris', 'cost_evac_usd')
     op.drop_column('safaris', 'cost_insurance_usd')
     op.drop_column('safaris', 'cost_vehicle_usd')

@@ -27,7 +27,7 @@ INSURANCE_LEVY_USD_PP_PD = 5.0
 
 def get_season(
     date: datetime.date,
-    peak_multiplier: float = 1.60,
+    peak_multiplier: float = 1.35,
     low_multiplier: float = 0.75,
 ) -> tuple[str, float]:
     # Christmas / New Year peak — Dec 20 through Jan 5
@@ -41,12 +41,20 @@ def get_season(
 
 
 def get_price_usd(safari: Safari, pax: int) -> tuple[float, int] | tuple[None, None]:
-    """Return (group_total_usd, tier_pax). Price fields are per-group totals, not per-person."""
+    """Return (group_total_usd, tier_pax). Price fields are per-group totals, not per-person.
+
+    Tier selection: use the smallest tier that fits the whole group so customers
+    always get the lowest per-person rate.
+      1 person  → solo tier
+      2 people  → 2pax tier
+      3-4 pax   → 4pax tier  (cheaper pp rate than 2pax scaled up)
+      5-6+ pax  → 6pax tier
+    """
     if pax == 1 and safari.price_usd_solo:
         return float(safari.price_usd_solo), 1
-    if pax <= 3 and safari.price_usd_2pax:
+    if pax <= 2 and safari.price_usd_2pax:
         return float(safari.price_usd_2pax), 2
-    if pax <= 5 and safari.price_usd_4pax:
+    if pax <= 4 and safari.price_usd_4pax:
         return float(safari.price_usd_4pax), 4
     if safari.price_usd_6pax:
         return float(safari.price_usd_6pax), 6
@@ -144,7 +152,11 @@ async def price_preview(data: PricePreview, db: AsyncSession = Depends(get_db)):
     except ValueError:
         raise HTTPException(400, "Invalid date")
 
-    pax = max(1, min(data.pax, safari.group_size_max))
+    if data.pax < 1:
+        raise HTTPException(400, "Group size must be at least 1")
+    if data.pax > safari.group_size_max:
+        raise HTTPException(400, f"Maximum group size for this safari is {safari.group_size_max} people. Please contact us for larger groups.")
+    pax = data.pax
     season, multiplier = get_season(
         date,
         peak_multiplier=float(safari.peak_multiplier),
@@ -204,7 +216,11 @@ async def create_booking(data: BookingCreate, db: AsyncSession = Depends(get_db)
     if avail and avail.status in ("blocked", "full"):
         raise HTTPException(409, f"This date is {avail.status}. Please choose another date.")
 
-    pax = max(1, min(data.pax, safari.group_size_max))
+    if data.pax < 1:
+        raise HTTPException(400, "Group size must be at least 1")
+    if data.pax > safari.group_size_max:
+        raise HTTPException(400, f"Maximum group size for this safari is {safari.group_size_max} people. Please contact us for larger groups.")
+    pax = data.pax
     season, multiplier = get_season(
         date,
         peak_multiplier=float(safari.peak_multiplier),

@@ -36,11 +36,22 @@ class SafariUpdate(BaseModel):
     exclusions: Any = None
     what_to_bring: Any = None
     cancellation_policy: str | None = None
+    difficulty: str | None = None
     is_active: bool | None = None
     is_featured: bool | None = None
+    is_shared: bool | None = None
     sort_order: int | None = None
     meta_title: str | None = None
     meta_desc: str | None = None
+    # Seasonal multipliers
+    peak_multiplier: float | None = None
+    low_multiplier: float | None = None
+    # Beach extension
+    has_beach_extension: bool | None = None
+    beach_extension_days: int | None = None
+    beach_extension_price_usd: float | None = None
+    beach_extension_price_kes: float | None = None
+    beach_extension_desc: str | None = None
     # Cost tracking fields (admin only)
     cost_park_fees_usd: float | None = None
     cost_accommodation_usd: float | None = None

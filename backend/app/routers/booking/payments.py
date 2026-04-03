@@ -2,6 +2,7 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from pydantic import BaseModel
 from app.database import get_db
 from app.models.booking import Booking
 from app.models.payment import Payment
@@ -11,6 +12,12 @@ from app.services.pesapal import pesapal
 from app.services.email import send_booking_confirmation
 from app.services import sms as sms_svc
 from app.config import settings
+
+
+class PesapalIPN(BaseModel):
+    OrderTrackingId: str | None = None
+    OrderNotificationType: str | None = None
+    OrderMerchantReference: str | None = None
 
 logger = logging.getLogger(__name__)
 
@@ -38,8 +45,8 @@ async def initiate_payment(data: PaymentInitiate, db: AsyncSession = Depends(get
 
 
 @router.post("/ipn")
-async def pesapal_ipn(payload: dict, db: AsyncSession = Depends(get_db)):
-    tracking_id = payload.get("OrderTrackingId")
+async def pesapal_ipn(payload: PesapalIPN, db: AsyncSession = Depends(get_db)):
+    tracking_id = payload.OrderTrackingId
     if not tracking_id:
         raise HTTPException(status_code=400)
     token = await pesapal.get_token()
